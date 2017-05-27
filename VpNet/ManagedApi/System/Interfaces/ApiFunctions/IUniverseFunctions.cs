@@ -30,18 +30,18 @@ namespace VpNet.Interfaces
     public interface IUniverseFunctions<TResult>
         where TResult : class, IRc, new()
     {
-        Task<TResult> Connect(string host = "universe.virtualparadise.org", ushort port = 57000);
-        Task<TResult> Login(string username, string password, string botname);
+        Task<TResult> ConnectAsync(string host = "universe.virtualparadise.org", ushort port = 57000);
+        Task<TResult> LoginAsync(string username, string password, string botname);
         /// <summary>
         /// Logs in the user, using the preloaded instance configuration.
         /// </summary>
         /// <returns></returns>
-        Task<TResult> Login();
+        Task<TResult> LoginAsync();
         /// <summary>
         /// Logs in to the universe and automatically enters the world using the preloaded instance configiguration.
         /// </summary>
         /// <param name="isAnnounceAvatar">if set to <c>true</c> [is announce avatar] then the avatar is updated on the given position as specified within the instance configuration. If the position is not specified, the avatar will appear at Ground Zero.</param>
         /// <returns></returns>
-        Task<TResult> LoginAndEnter(bool isAnnounceAvatar = true);
+        Task<TResult> LoginAndEnterAsync(bool isAnnounceAvatar = true);
     }
 }

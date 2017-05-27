@@ -433,7 +433,7 @@ namespace VpNet.Abstract
 
         #region IUniverseFunctions Implementations
 
-        virtual public Task<TResult> Connect(string host = "universe.virtualparadise.org", ushort port = 57000)
+        virtual public Task<TResult> ConnectAsync(string host = "universe.virtualparadise.org", ushort port = 57000)
         {
             Universe.Host = host;
             Universe.Port = port;
@@ -450,19 +450,19 @@ namespace VpNet.Abstract
             }
         }
 
-        virtual public async Task<TResult> LoginAndEnter(bool announceAvatar = true)
+        virtual public async Task<TResult> LoginAndEnterAsync(bool announceAvatar = true)
         {
-            await Connect();
-            await Login();
+            await ConnectAsync();
+            await LoginAsync();
             if (announceAvatar)
             {
-                await Enter();
+                await EnterAsync();
                 return UpdateAvatar();
             }
-            return await Enter();
+            return await EnterAsync();
         }
 
-        virtual public async Task<TResult> Login()
+        virtual public async Task<TResult> LoginAsync()
         {
             if (Configuration == null ||
                 string.IsNullOrEmpty(Configuration.BotName) ||
@@ -472,10 +472,10 @@ namespace VpNet.Abstract
             {
                 throw new ArgumentException("Can't login because of Incomplete login configuration.");
             }
-            return await Login(Configuration.UserName, Configuration.Password, Configuration.BotName);
+            return await LoginAsync(Configuration.UserName, Configuration.Password, Configuration.BotName);
         }
 
-        virtual public Task<TResult> Login(string username, string password, string botname)
+        virtual public Task<TResult> LoginAsync(string username, string password, string botname)
         {
             lock (this)
             {
@@ -504,19 +504,19 @@ namespace VpNet.Abstract
             return new TResult { Rc = 0 };
         }
 
-        virtual public Task<TResult> Enter(string worldname)
+        virtual public Task<TResult> EnterAsync(string worldname)
         {
-            return Enter(new TWorld { Name = worldname });
+            return EnterAsync(new TWorld { Name = worldname });
         }
 
-        virtual public Task<TResult> Enter()
+        virtual public Task<TResult> EnterAsync()
         {
             if (Configuration == null || Configuration.World == null || string.IsNullOrEmpty(Configuration.World.Name))
                 throw new ArgumentException("Can't login because of Incomplete instance world configuration.");
-            return Enter(Configuration.World);
+            return EnterAsync(Configuration.World);
         }
 
-        virtual public Task<TResult> Enter(TWorld world)
+        virtual public Task<TResult> EnterAsync(TWorld world)
         {
             lock (this)
             {

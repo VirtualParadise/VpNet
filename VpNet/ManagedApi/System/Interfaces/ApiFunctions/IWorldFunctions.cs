@@ -33,13 +33,13 @@ namespace VpNet.Interfaces
         where TWorldAttributes : class, IWorldAttributes,new()
     {
         TRc Wait(int milliseconds=0);
-        Task<TRc> Enter(TWorld world);
-        Task<TRc> Enter(string world);
+        Task<TRc> EnterAsync(TWorld world);
+        Task<TRc> EnterAsync(string world);
         /// <summary>
         /// Enter world using instance configuration.
         /// </summary>
         /// <returns></returns>
-        Task<TRc> Enter();
+        Task<TRc> EnterAsync();
         TRc ListWorlds();
         TRc Leave();
     }
