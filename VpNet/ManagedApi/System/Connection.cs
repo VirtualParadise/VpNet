@@ -28,6 +28,17 @@ namespace VpNet
             socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
         }
 
+        private void Notify(NetworkNotification notification, int rc)
+        {
+            lock (lockObject)
+            {
+                if (vpConnection != IntPtr.Zero)
+                {
+                    Functions.vp_net_notify(vpConnection, (int)notification, rc);
+                }
+            }
+        }
+
         public int Connect(string host, ushort port)
         {
             socket.BeginConnect(host, port, ConnectCallback, this);
@@ -44,21 +55,11 @@ namespace VpNet
                 connection.pendingBuffer = new byte[1024];
                 connection.socket.BeginReceive(connection.pendingBuffer, 0, 1024, SocketFlags.None, ReceiveCallback, connection);
 
-                lock (connection.lockObject)
-                {
-                    Functions.vp_net_notify(connection.vpConnection,
-                        (int)NetworkNotification.Connect,
-                        (int)NetworkReturnCode.Success);
-                }
+                connection.Notify(NetworkNotification.Connect, (int)NetworkReturnCode.Success);
             }
             catch (SocketException e)
             {
-                lock (connection.lockObject)
-                {
-                    Functions.vp_net_notify(connection.vpConnection,
-                    (int)NetworkNotification.Connect,
-                    (int)NetworkReturnCode.ConnectionError);
-                }
+                connection.Notify(NetworkNotification.Connect, (int)NetworkReturnCode.ConnectionError);
             }
         }
 
@@ -67,7 +68,13 @@ namespace VpNet
         {
             var buffer = new byte[length];
             Marshal.Copy(data, buffer, 0, (int)length);
-            return socket.Send(buffer);
+            try
+            {
+                return socket.Send(buffer);
+            } catch (SocketException e)
+            {
+                return -1;
+            }
         }
 
         public int Receive(IntPtr data, uint length)
@@ -110,7 +117,18 @@ namespace VpNet
         private static void ReceiveCallback(IAsyncResult ar)
         {
             var connection = ar.AsyncState as Connection;
-            var bytesRead = connection.socket.EndReceive(ar);
+            int bytesRead;
+
+            try
+            {
+                bytesRead = connection.socket.EndReceive(ar);
+            }
+            catch (SocketException e)
+            {
+                connection.Notify(NetworkNotification.Disconnect, e.ErrorCode);
+                return;
+            }
+
             if (bytesRead < connection.pendingBuffer.Length)
             {
                 var buffer = new byte[bytesRead];
@@ -127,17 +145,19 @@ namespace VpNet
             {
                 if (bytesRead > 0)
                 {
-                    lock (connection.lockObject)
+                    connection.Notify(NetworkNotification.ReadReady, 0);
+
+                    try
                     {
-                        Functions.vp_net_notify(connection.vpConnection, (int)NetworkNotification.ReadReady, 0);
+                        connection.socket.BeginReceive(connection.pendingBuffer, 0, 1024, SocketFlags.None, ReceiveCallback, connection);
                     }
-                    connection.socket.BeginReceive(connection.pendingBuffer, 0, 1024, SocketFlags.None, ReceiveCallback, connection);
+                    catch (SocketException e)
+                    {
+                       connection.Notify(NetworkNotification.Disconnect, e.ErrorCode);
+                    }
                 } else
                 {
-                    lock (connection.lockObject)
-                    {
-                        Functions.vp_net_notify(connection.vpConnection, (int)NetworkNotification.Disconnect, 0);
-                    }
+                    connection.Notify(NetworkNotification.Disconnect, 0);
                 }
             }
         }
@@ -146,10 +166,7 @@ namespace VpNet
         {
             if (timer != null)
             {
-                lock (lockObject)
-                {
-                    Functions.vp_net_notify(vpConnection, (int)NetworkNotification.Timeout, 0);
-                }
+                Notify(NetworkNotification.Timeout, 0);
             }
         }
 

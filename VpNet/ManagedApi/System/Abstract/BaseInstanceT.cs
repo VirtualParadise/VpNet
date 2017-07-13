@@ -384,14 +384,14 @@ namespace VpNet.Abstract
         {
             lock (this)
             {
-                LoginCompletionSource.SetResult(new TResult { Rc = rc });
+                SetCompletionResultFromRc(LoginCompletionSource, rc);
             }
         }
         internal void OnEnterCallbackNativeEvent1(IntPtr instance, int rc, int reference)
         {
             lock (this)
             {
-                EnterCompletionSource.SetResult(new TResult { Rc = rc });
+                SetCompletionResultFromRc(EnterCompletionSource, rc);
             }
         }
         internal void OnJoinCallbackNativeEvent1(IntPtr instance, int rc, int reference) { lock (this) { OnJoinCallbackNativeEvent(instance, rc, reference); } }
@@ -399,7 +399,7 @@ namespace VpNet.Abstract
         {
             lock (this)
             {
-                ConnectCompletionSource.SetResult(new TResult { Rc = rc });
+                SetCompletionResultFromRc(ConnectCompletionSource, rc);
             }
         }
         internal void OnWorldPermissionUserSetCallbackNative1(IntPtr instance, int rc, int reference) { lock (this) { OnWorldPermissionUserSetCallbackNativeEvent(instance, rc, reference); } }
@@ -431,6 +431,18 @@ namespace VpNet.Abstract
 
         #region Methods
 
+        private void SetCompletionResultFromRc(TaskCompletionSource<TResult> cs, int rc)
+        {
+            try
+            {
+                var result = new TResult { Rc = rc };
+                cs.SetResult(result);
+            } catch (Exception e)
+            {
+                cs.SetException(e);
+            }
+        }
+
         #region IUniverseFunctions Implementations
 
         virtual public Task<TResult> ConnectAsync(string host = "universe.virtualparadise.org", ushort port = 57000)
@@ -444,7 +456,7 @@ namespace VpNet.Abstract
                 var rc = Functions.vp_connect_universe(_instance, host, port);
                 if (rc != 0)
                 {
-                    ConnectCompletionSource.SetResult(new TResult { Rc = rc });
+                    SetCompletionResultFromRc(ConnectCompletionSource, rc);
                 }
                 return ConnectCompletionSource.Task;
             }
@@ -1371,7 +1383,7 @@ namespace VpNet.Abstract
         private void OnEnterCallbackNative(IntPtr sender, int rc, int reference) { /* todo: implement this */  }
         private void OnJoinCallbackNative(IntPtr sender, int rc, int reference) { /* todo: implement this */  }
         private void OnConnectUniverseCallbackNative(IntPtr sender, int rc, int reference) {
-            ConnectCompletionSource.SetResult(new TResult { Rc = rc });
+            SetCompletionResultFromRc(ConnectCompletionSource, rc);
         }
         private void OnWorldPermissionUserSetCallbackNative(IntPtr sender, int rc, int reference) { /* todo: implement this */  }
         private void OnWorldPermissionSessionSetCallbackNative(IntPtr sender, int rc, int reference) { /* todo: implement this */  }
