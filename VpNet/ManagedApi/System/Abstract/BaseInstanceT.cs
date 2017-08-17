@@ -591,7 +591,7 @@ namespace VpNet.Abstract
             _isInitialized = false;
             InitVpNative();
             if (OnUniverseDisconnect != null)
-                OnUniverseDisconnect(Implementor, new TUniverseDisconnectEventargs { Universe = Universe,DisconnectType = DisconnectType.UserDisconnected  });
+                OnUniverseDisconnect(Implementor, new TUniverseDisconnectEventargs { Universe = Universe,DisconnectType = VpNet.DisconnectType.UserDisconnected  });
         }
 
         virtual public TResult ListWorlds()

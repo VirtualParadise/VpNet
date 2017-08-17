@@ -33,7 +33,7 @@ namespace VpNet.Abstract
     {
         public TUniverse Universe { get; set; }
 
-        public DisconnectType DisconnectType { get; set; }
+        public VpNet.DisconnectType DisconnectType { get; set; }
 
         protected BaseUniverseDisconnectEventArgs(TUniverse universe)
         {
