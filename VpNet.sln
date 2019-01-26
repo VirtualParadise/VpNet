@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.26430.6
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VpNet", "VpNet\VpNet.csproj", "{DBE501A7-0176-473F-B2E8-F4ADA721917F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VpNet", "VpNet\VpNet.csproj", "{DBE501A7-0176-473F-B2E8-F4ADA721917F}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{E9817EF7-6E46-43A5-9AAE-37EC231962BB}"
 	ProjectSection(SolutionItems) = preProject
@@ -12,13 +12,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
-		Debug (Signed)|Any CPU = Debug (Signed)|Any CPU
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{DBE501A7-0176-473F-B2E8-F4ADA721917F}.Debug (Signed)|Any CPU.ActiveCfg = Debug|Any CPU
-		{DBE501A7-0176-473F-B2E8-F4ADA721917F}.Debug (Signed)|Any CPU.Build.0 = Debug|Any CPU
 		{DBE501A7-0176-473F-B2E8-F4ADA721917F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{DBE501A7-0176-473F-B2E8-F4ADA721917F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DBE501A7-0176-473F-B2E8-F4ADA721917F}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -26,5 +23,8 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {17E4BBF5-B410-4EA6-A6C3-44B940CE4782}
 	EndGlobalSection
 EndGlobal
