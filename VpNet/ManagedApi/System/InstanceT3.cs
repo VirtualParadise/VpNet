@@ -42,7 +42,6 @@ namespace VpNet
         TVector3,
         TVpObject,
         World,
-        WorldAttributes,
         Cell,
         ChatMessage,
         Terrain,

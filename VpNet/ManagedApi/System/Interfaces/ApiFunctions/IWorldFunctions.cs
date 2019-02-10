@@ -27,10 +27,9 @@ using System.Threading.Tasks;
 
 namespace VpNet.Interfaces
 {
-    public interface IWorldFunctions<TRc, in TWorld, in TWorldAttributes> 
+    public interface IWorldFunctions<TRc, in TWorld> 
         where TRc: class, IRc, new()
         where TWorld : class, IWorld, new()
-        where TWorldAttributes : class, IWorldAttributes,new()
     {
         TRc Wait(int milliseconds=0);
         Task<TRc> EnterAsync(TWorld world);

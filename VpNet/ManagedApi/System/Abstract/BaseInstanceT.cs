@@ -63,7 +63,7 @@ namespace VpNet.Abstract
     public abstract partial class BaseInstanceT<T,
         /* Scene Type specifications ----------------------------------------------------------------------------------------------------------------------------------------------*/
         TAvatar, TFriend, TResult, TTerrainCell, TTerrainNode,
-        TTerrainTile, TVector3, TVpObject, TWorld, TWorldAttributes,TCell,TChatMessage,TTerrain,TUniverse,TTeleport,
+        TTerrainTile, TVector3, TVpObject, TWorld, TCell,TChatMessage,TTerrain,TUniverse,TTeleport,
         TUserAttributes
         > :
         /* Interface specifications -----------------------------------------------------------------------------------------------------------------------------------------*/
@@ -75,7 +75,7 @@ namespace VpNet.Abstract
         ITeleportFunctions<TResult, TWorld, TAvatar, TVector3>,
         ITerrainFunctions<TResult, TTerrainTile, TTerrainNode, TTerrainCell>,
         IVpObjectFunctions<TResult, TVpObject, TVector3>,
-        IWorldFunctions<TResult, TWorld, TWorldAttributes>,
+        IWorldFunctions<TResult, TWorld>,
         IUniverseFunctions<TResult>
 /* Constraints ----------------------------------------------------------------------------------------------------------------------------------------------------*/
         where TUniverse : class, IUniverse, new()
@@ -91,7 +91,6 @@ namespace VpNet.Abstract
         where TFriend : class, IFriend, new()
         where TVpObject : class, IVpObject<TVector3>, new()
         where TVector3 : struct, IVector3
-        where TWorldAttributes : class, IWorldAttributes, new()
         where TTeleport : class, ITeleport<TWorld,TAvatar,TVector3>, new()
         where TUserAttributes : class, IUserAttributes, new()
         where T : class, new()

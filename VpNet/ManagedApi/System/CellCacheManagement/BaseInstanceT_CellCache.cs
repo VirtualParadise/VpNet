@@ -44,7 +44,6 @@ namespace VpNet.Abstract
     /// <typeparam name="TVector3">The type of the vector3.</typeparam>
     /// <typeparam name="TVpObject">The type of the vp object.</typeparam>
     /// <typeparam name="TWorld">The type of the world.</typeparam>
-    /// <typeparam name="TWorldAttributes">The type of the world attributes.</typeparam>
     /// <typeparam name="TCell">The type of the cell.</typeparam>
     /// <typeparam name="TChatMessage">The type of the chat message.</typeparam>
     /// <typeparam name="TTerrain">The type of the terrain.</typeparam>
@@ -53,7 +52,7 @@ namespace VpNet.Abstract
     public abstract partial class BaseInstanceT<T,
         /* Scene Type specifications ----------------------------------------------------------------------------------------------------------------------------------------------*/
         TAvatar, TFriend, TResult, TTerrainCell, TTerrainNode,
-        TTerrainTile, TVector3, TVpObject, TWorld, TWorldAttributes, TCell, TChatMessage, TTerrain, TUniverse, TTeleport,
+        TTerrainTile, TVector3, TVpObject, TWorld, TCell, TChatMessage, TTerrain, TUniverse, TTeleport,
         TUserAttributes
         > :
         /* Interface specifications -----------------------------------------------------------------------------------------------------------------------------------------*/
@@ -65,7 +64,7 @@ namespace VpNet.Abstract
         ITeleportFunctions<TResult, TWorld, TAvatar, TVector3>,
         ITerrainFunctions<TResult, TTerrainTile, TTerrainNode, TTerrainCell>,
         IVpObjectFunctions<TResult, TVpObject, TVector3>,
-        IWorldFunctions<TResult, TWorld, TWorldAttributes>,
+        IWorldFunctions<TResult, TWorld>,
         IUniverseFunctions<TResult>
         /* Constraints ----------------------------------------------------------------------------------------------------------------------------------------------------*/
         where TUniverse : class, IUniverse, new()
@@ -81,7 +80,6 @@ namespace VpNet.Abstract
         where TFriend : class, IFriend, new()
         where TVpObject : class, IVpObject<TVector3>, new()
         where TVector3 : struct, IVector3
-        where TWorldAttributes : class, IWorldAttributes, new()
         where TTeleport : class, ITeleport<TWorld, TAvatar, TVector3>, new()
         where TUserAttributes : class, IUserAttributes, new()
         where T : class, new()

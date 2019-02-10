@@ -42,7 +42,6 @@ namespace VpNet
         Vector3, 
         VpObject<Vector3>, 
         World, 
-        WorldAttributes,
         Cell,
         ChatMessage,
         Terrain,
