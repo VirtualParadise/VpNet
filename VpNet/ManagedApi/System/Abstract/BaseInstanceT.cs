@@ -45,7 +45,6 @@ namespace VpNet.Abstract
     /// </summary>
     /// <typeparam name="T">Type of the abstract implementation</typeparam>
     /// <typeparam name="TAvatar">The type of the avatar.</typeparam>
-    /// <typeparam name="TColor">The type of the color.</typeparam>
     /// <typeparam name="TFriend">The type of the friend.</typeparam>
     /// <typeparam name="TResult">The type of the result.</typeparam>
     /// <typeparam name="TTerrainCell">The type of the terrain cell.</typeparam>
@@ -63,7 +62,7 @@ namespace VpNet.Abstract
     [Serializable]
     public abstract partial class BaseInstanceT<T,
         /* Scene Type specifications ----------------------------------------------------------------------------------------------------------------------------------------------*/
-        TAvatar, TColor, TFriend, TResult, TTerrainCell, TTerrainNode,
+        TAvatar, TFriend, TResult, TTerrainCell, TTerrainNode,
         TTerrainTile, TVector3, TVpObject, TWorld, TWorldAttributes,TCell,TChatMessage,TTerrain,TUniverse,TTeleport,
         TUserAttributes
         > :
@@ -71,7 +70,7 @@ namespace VpNet.Abstract
         /* Functions */
         BaseInstanceEvents<TWorld>,
         IAvatarFunctions<TResult, TAvatar, TVector3>,
-        IChatFunctions<TResult, TAvatar, TColor, TVector3>,
+        IChatFunctions<TResult, TAvatar, TVector3>,
         IFriendFunctions<TResult, TFriend>,
         ITeleportFunctions<TResult, TWorld, TAvatar, TVector3>,
         ITerrainFunctions<TResult, TTerrainTile, TTerrainNode, TTerrainCell>,
@@ -82,7 +81,7 @@ namespace VpNet.Abstract
         where TUniverse : class, IUniverse, new()
         where TTerrain : class, ITerrain, new()
         where TCell : class, ICell, new()
-        where TChatMessage : class, IChatMessage<TColor>, new()
+        where TChatMessage : class, IChatMessage, new()
         where TTerrainCell : class, ITerrainCell, new()
         where TTerrainNode : class, ITerrainNode<TTerrainTile,TTerrainNode,TTerrainCell>, new()
         where TTerrainTile : class, ITerrainTile<TTerrainTile,TTerrainNode, TTerrainCell>, new()
@@ -90,7 +89,6 @@ namespace VpNet.Abstract
         where TWorld : class, IWorld, new()
         where TAvatar : class, IAvatar<TVector3>, new()
         where TFriend : class, IFriend, new()
-        where TColor : class, IColor, new()
         where TVpObject : class, IVpObject<TVector3>, new()
         where TVector3 : struct, IVector3
         where TWorldAttributes : class, IWorldAttributes, new()
@@ -893,31 +891,31 @@ namespace VpNet.Abstract
             return new TResult { Rc = Functions.vp_console_message(_instance, targetSession, name, message, (int)effects, red, green, blue) };
         }
 
-        public TResult ConsoleMessage(TAvatar avatar, string name, string message, TColor color, TextEffectTypes effects = (TextEffectTypes) 0)
+        public TResult ConsoleMessage(TAvatar avatar, string name, string message, Color color, TextEffectTypes effects = (TextEffectTypes) 0)
         {
             if (color == null)
-                color = new TColor();
+                color = new Color();
             return new TResult { Rc = Functions.vp_console_message(_instance, avatar.Session, name, message, (int)effects, color.R, color.G, color.B) };
         }
 
-        public TResult ConsoleMessage(int targetSession, string name, string message, TColor color, TextEffectTypes effects = (TextEffectTypes) 0)
+        public TResult ConsoleMessage(int targetSession, string name, string message, Color color, TextEffectTypes effects = (TextEffectTypes) 0)
         {
             if (color == null)
-                color = new TColor();
+                color = new Color();
             return new TResult { Rc = Functions.vp_console_message(_instance, targetSession, name, message, (int)effects, color.R, color.G, color.B) };
         }
 
-        public TResult ConsoleMessage(string name, string message, TColor color, TextEffectTypes effects = (TextEffectTypes) 0)
+        public TResult ConsoleMessage(string name, string message, Color color, TextEffectTypes effects = (TextEffectTypes) 0)
         {
             if (color == null)
-                color = new TColor();
+                color = new Color();
             return new TResult { Rc = Functions.vp_console_message(_instance, 0, name, message, (int)effects, color.R, color.G, color.B) };
         }
 
-        public TResult ConsoleMessage(string message, TColor color, TextEffectTypes effects = (TextEffectTypes) 0)
+        public TResult ConsoleMessage(string message, Color color, TextEffectTypes effects = (TextEffectTypes) 0)
         {
             if (color == null)
-                color = new TColor();
+                color = new Color();
             return new TResult { Rc = Functions.vp_console_message(_instance, 0, string.Empty, message, (int)effects, color.R, color.G, color.B) };
         }
 
@@ -1146,7 +1144,7 @@ namespace VpNet.Abstract
         }
 
         //public delegate void Event(T sender);
-        public delegate void ChatMessageDelegate(T sender, ChatMessageEventArgsT<TAvatar, TChatMessage, TVector3, TColor> args);
+        public delegate void ChatMessageDelegate(T sender, ChatMessageEventArgsT<TAvatar, TChatMessage, TVector3> args);
 
         public delegate void AvatarChangeDelegate(T sender, AvatarChangeEventArgsT<TAvatar,TVector3> args);
         public delegate void AvatarEnterDelegate(T sender, AvatarEnterEventArgsT<TAvatar, TVector3> args);
@@ -1383,7 +1381,7 @@ namespace VpNet.Abstract
 
         private void OnChatNative(IntPtr sender)
         {
-            ChatMessageEventArgsT<TAvatar, TChatMessage, TVector3, TColor> data;
+            ChatMessageEventArgsT<TAvatar, TChatMessage, TVector3> data;
             lock (this)
             {
                 if (!_avatars.ContainsKey(Functions.vp_int(sender, Attribute.AvatarSession)))
@@ -1395,7 +1393,7 @@ namespace VpNet.Abstract
                         };
                     _avatars.Add(avatar.Session, avatar);
                 }
-                data = new ChatMessageEventArgsT<TAvatar, TChatMessage, TVector3, TColor>
+                data = new ChatMessageEventArgsT<TAvatar, TChatMessage, TVector3>
                 {
                     Avatar = _avatars[Functions.vp_int(sender, Attribute.AvatarSession)],
                     ChatMessage = new TChatMessage
@@ -1414,16 +1412,16 @@ namespace VpNet.Abstract
                 if (OnChatMessage == null) return;
                 if (data.ChatMessage.Type == ChatMessageTypes.Console)
                 {
-                    data.ChatMessage.Color = new TColor
-                                                 {
-                                                     R = (byte) Functions.vp_int(sender, Attribute.ChatRolorRed),
-                                                     G = (byte) Functions.vp_int(sender, Attribute.ChatColorGreen),
-                                                     B = (byte) Functions.vp_int(sender, Attribute.ChatColorBlue)
-                                                 };
+                    data.ChatMessage.Color = new Color
+                    {
+                        R = (byte)Functions.vp_int(sender, Attribute.ChatRolorRed),
+                        G = (byte)Functions.vp_int(sender, Attribute.ChatColorGreen),
+                        B = (byte)Functions.vp_int(sender, Attribute.ChatColorBlue)
+                    };
                 }
                 else
                 {
-                    data.ChatMessage.Color = new TColor
+                    data.ChatMessage.Color = new Color
                     {
                         R = 0,
                         G = 0,

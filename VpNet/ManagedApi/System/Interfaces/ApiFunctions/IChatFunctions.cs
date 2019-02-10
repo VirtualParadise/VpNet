@@ -25,9 +25,8 @@ ____   ___.__         __               .__    __________                        
 
 namespace VpNet.Interfaces
 {
-    public interface IChatFunctions<out TRc, in TAvatar, in TColor, TVector3> 
+    public interface IChatFunctions<out TRc, in TAvatar, TVector3> 
         where TRc : class, IRc, new()
-        where TColor : class, IColor, new()
         where TVector3 : struct, IVector3
         where TAvatar : class, IAvatar<TVector3>, new()
         
@@ -37,10 +36,10 @@ namespace VpNet.Interfaces
 
         TRc ConsoleMessage(TAvatar targetAvatar, string name, string message, TextEffectTypes effects = 0, byte red = 0, byte green = 0, byte blue = 0);
         TRc ConsoleMessage(int targetSession, string name, string message, TextEffectTypes effects = 0, byte red = 0, byte green = 0, byte blue = 0);
-        TRc ConsoleMessage(TAvatar targetAvatar, string name, string message, TColor color, TextEffectTypes effects = 0);
-        TRc ConsoleMessage(int targetSession, string name, string message, TColor color, TextEffectTypes effects = 0);
-        TRc ConsoleMessage(string name, string message, TColor color, TextEffectTypes effects = 0);
-        TRc ConsoleMessage(string message, TColor color, TextEffectTypes effects = 0);
+        TRc ConsoleMessage(TAvatar targetAvatar, string name, string message, Color color, TextEffectTypes effects = 0);
+        TRc ConsoleMessage(int targetSession, string name, string message, Color color, TextEffectTypes effects = 0);
+        TRc ConsoleMessage(string name, string message, Color color, TextEffectTypes effects = 0);
+        TRc ConsoleMessage(string message, Color color, TextEffectTypes effects = 0);
         TRc ConsoleMessage(string message);
     }
 }

@@ -29,14 +29,12 @@ namespace VpNet.Interfaces
     /// <summary>
     /// Chat Message templated interface specifications.
     /// </summary>
-    /// <typeparam name="TColor">The type of the color.</typeparam>
-    public interface IChatMessage<TColor>
-        where TColor : IColor
+    public interface IChatMessage
     {
         [XmlAttribute]
         ChatMessageTypes Type { get; set; }
 
-        TColor Color { get; set; }
+        Color Color { get; set; }
 
         [XmlAttribute]
         TextEffectTypes TextEffectTypes { get; set; }

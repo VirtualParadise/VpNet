@@ -30,7 +30,7 @@ using VpNet.Interfaces;
 namespace VpNet.Abstract
 {
     [Serializable]
-    public abstract class BaseColor : IColor
+    public abstract class BaseColor
     {
         [XmlAttribute]
         public byte R { get; set; }

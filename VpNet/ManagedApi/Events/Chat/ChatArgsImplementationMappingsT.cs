@@ -32,10 +32,9 @@ namespace VpNet
     /// Default Event Arguments implementation mapping. You can define your own mappings when implementing VpNet.Abstract.BaseInstanceT
     /// </summary>
     [XmlRoot("OnChatMessage", Namespace = Global.XmlNsEvent)]
-    public class ChatMessageEventArgsT<TAvatar,TChatMessage,TVector3, TColor> : Abstract.BaseChatMessageEventArgs<TAvatar, TChatMessage,TVector3,TColor> 
+    public class ChatMessageEventArgsT<TAvatar, TChatMessage, TVector3> : Abstract.BaseChatMessageEventArgs<TAvatar, TChatMessage,TVector3> 
         where TVector3 : struct, IVector3
-        where TChatMessage : class, IChatMessage<TColor>, new()
-        where TColor : class, IColor, new()
+        where TChatMessage : class, IChatMessage, new()
         where TAvatar : class, IAvatar<TVector3>, new()
     { }
 }

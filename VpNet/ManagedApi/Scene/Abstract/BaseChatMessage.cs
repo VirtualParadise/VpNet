@@ -28,12 +28,11 @@ using VpNet.Interfaces;
 
 namespace VpNet.Abstract
 {
-    public abstract class ChatMessage<TColor> : IChatMessage<TColor>
-        where TColor : IColor, new()
+    public abstract class ChatMessage : IChatMessage
     {
         [XmlAttribute]
         virtual public ChatMessageTypes Type { get; set; }
-        virtual public TColor Color { get; set; }
+        virtual public Color Color { get; set; }
         [XmlAttribute]
         virtual public TextEffectTypes TextEffectTypes { get; set; }
         [XmlAttribute]

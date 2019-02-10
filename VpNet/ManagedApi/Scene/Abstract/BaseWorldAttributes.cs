@@ -73,7 +73,7 @@ namespace VpNet.Abstract
         /// <Author>8/5/2012 6:30 PM cube3</Author>
         public string Skybox { get; set; }
         public bool SkyboxSwapLr { get; set; }
-        public IColor WorldLightAmbient { get; set; }
+        public Color WorldLightAmbient { get; set; }
 
 //        objectpath, terrain, terrainscale, ground, skybox, skybox_swaplr, worldlight_ambient, worldlight_diffuse, worldlight_specular, worldlight_position, w
 //elcome, fov, nearplane, farplane

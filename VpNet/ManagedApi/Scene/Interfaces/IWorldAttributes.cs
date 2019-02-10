@@ -79,6 +79,6 @@ namespace VpNet.Interfaces
         string Skybox { get; set; }
 
         bool SkyboxSwapLr { get; set; }
-        IColor WorldLightAmbient { get; set; }
+        Color WorldLightAmbient { get; set; }
     }
 }

@@ -36,7 +36,6 @@ namespace VpNet.Abstract
     /// </summary>
     /// <typeparam name="T">Type of the abstract implementation</typeparam>
     /// <typeparam name="TAvatar">The type of the avatar.</typeparam>
-    /// <typeparam name="TColor">The type of the color.</typeparam>
     /// <typeparam name="TFriend">The type of the friend.</typeparam>
     /// <typeparam name="TResult">The type of the result.</typeparam>
     /// <typeparam name="TTerrainCell">The type of the terrain cell.</typeparam>
@@ -53,7 +52,7 @@ namespace VpNet.Abstract
     /// <typeparam name="TTeleport">The type of the teleport.</typeparam>
     public abstract partial class BaseInstanceT<T,
         /* Scene Type specifications ----------------------------------------------------------------------------------------------------------------------------------------------*/
-        TAvatar, TColor, TFriend, TResult, TTerrainCell, TTerrainNode,
+        TAvatar, TFriend, TResult, TTerrainCell, TTerrainNode,
         TTerrainTile, TVector3, TVpObject, TWorld, TWorldAttributes, TCell, TChatMessage, TTerrain, TUniverse, TTeleport,
         TUserAttributes
         > :
@@ -61,7 +60,7 @@ namespace VpNet.Abstract
         /* Functions */
         BaseInstanceEvents<TWorld>,
         IAvatarFunctions<TResult, TAvatar, TVector3>,
-        IChatFunctions<TResult, TAvatar, TColor, TVector3>,
+        IChatFunctions<TResult, TAvatar, TVector3>,
         IFriendFunctions<TResult, TFriend>,
         ITeleportFunctions<TResult, TWorld, TAvatar, TVector3>,
         ITerrainFunctions<TResult, TTerrainTile, TTerrainNode, TTerrainCell>,
@@ -72,7 +71,7 @@ namespace VpNet.Abstract
         where TUniverse : class, IUniverse, new()
         where TTerrain : class, ITerrain, new()
         where TCell : class, ICell, new()
-        where TChatMessage : class, IChatMessage<TColor>, new()
+        where TChatMessage : class, IChatMessage, new()
         where TTerrainCell : class, ITerrainCell, new()
         where TTerrainNode : class, ITerrainNode<TTerrainTile, TTerrainNode, TTerrainCell>, new()
         where TTerrainTile : class, ITerrainTile<TTerrainTile, TTerrainNode, TTerrainCell>, new()
@@ -80,7 +79,6 @@ namespace VpNet.Abstract
         where TWorld : class, IWorld, new()
         where TAvatar : class, IAvatar<TVector3>, new()
         where TFriend : class, IFriend, new()
-        where TColor : class, IColor, new()
         where TVpObject : class, IVpObject<TVector3>, new()
         where TVector3 : struct, IVector3
         where TWorldAttributes : class, IWorldAttributes, new()

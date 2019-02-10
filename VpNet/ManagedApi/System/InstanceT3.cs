@@ -34,7 +34,6 @@ namespace VpNet
     [XmlRoot("Instance", Namespace = Global.XmlNsInstance)]
     public class Instance<TResult, TVector3, TAvatar, TVpObject> : BaseInstanceT<Instance<TResult, TVector3,TAvatar, TVpObject>,
         TAvatar,
-        Color,
         Friend,
         TResult,
         TerrainCell,

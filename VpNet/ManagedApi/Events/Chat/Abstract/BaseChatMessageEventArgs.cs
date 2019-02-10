@@ -29,12 +29,11 @@ using VpNet.Interfaces;
 namespace VpNet.Abstract
 {
     [Serializable]
-    public abstract class BaseChatMessageEventArgs<TAvatar, TChatMessage, TVector3, TColor> : TimedEventArgs, 
-        IChatMessageEventArgs<TAvatar, TChatMessage, TVector3,TColor> 
+    public abstract class BaseChatMessageEventArgs<TAvatar, TChatMessage, TVector3> : TimedEventArgs, 
+        IChatMessageEventArgs<TAvatar, TChatMessage, TVector3> 
         where TVector3 : struct, IVector3
-        where TColor : class, IColor, new()
         where TAvatar : class, IAvatar<TVector3>,new()
-        where TChatMessage : class, IChatMessage<TColor>,new()
+        where TChatMessage : class, IChatMessage,new()
     {
         public TAvatar Avatar { get; set; }
         public TChatMessage ChatMessage {get;set;}

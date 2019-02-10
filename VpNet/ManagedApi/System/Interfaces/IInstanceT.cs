@@ -29,7 +29,7 @@ namespace VpNet.Interfaces
 {
     public interface IInstanceT<TImplementor,
 /* Scene Type specifications ----------------------------------------------------------------------------------------------------------------------------------------------*/
-        TAvatar, in TColor, in TFriend, TResult, TTerrainCell, TTerrainNode,
+        TAvatar, in TFriend, TResult, TTerrainCell, TTerrainNode,
         in TTerrainTile, TVector3, in TVpObject, in TWorld, in TWorldAttributes,
         in TCell,TChatMessage,TTerrain,TUniverse,TTeleport,
 /* Event Arg types --------------------------------------------------------------------------------------------------------------------------------------------------------*/
@@ -56,7 +56,7 @@ namespace VpNet.Interfaces
 /* Interface specifications -----------------------------------------------------------------------------------------------------------------------------------------*/
         /* Functions */
         IAvatarFunctions<TResult, TAvatar, TVector3>,
-        IChatFunctions<TResult, TAvatar, TColor, TVector3>,
+        IChatFunctions<TResult, TAvatar, TVector3>,
         IFriendFunctions<TResult, TFriend>,
         ITeleportFunctions<TResult, TWorld, TAvatar, TVector3>,
         ITerrainFunctions<TResult, TTerrainTile, TTerrainNode, TTerrainCell>,
@@ -75,7 +75,6 @@ namespace VpNet.Interfaces
         where TWorld : class, IWorld, new()
         where TAvatar : class, IAvatar<TVector3>, new()
         where TFriend : class, IFriend, new()
-        where TColor : class, IColor, new()
         where TVpObject : class, IVpObject<TVector3>, new()
         where TVector3 : struct, IVector3
         where TWorldAttributes : class, IWorldAttributes, new()

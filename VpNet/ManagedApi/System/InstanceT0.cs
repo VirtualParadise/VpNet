@@ -34,7 +34,6 @@ namespace VpNet
     [XmlRoot("Instance", Namespace = Global.XmlNsInstance)]
     public class Instance : BaseInstanceT<Instance,
         Avatar<Vector3>, 
-        Color, 
         Friend, 
         RcDefault, 
         TerrainCell, 
