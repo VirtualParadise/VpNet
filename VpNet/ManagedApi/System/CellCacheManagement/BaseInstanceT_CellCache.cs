@@ -51,62 +51,11 @@ namespace VpNet.Abstract
     /// <typeparam name="TTerrain">The type of the terrain.</typeparam>
     /// <typeparam name="TUniverse">The type of the universe.</typeparam>
     /// <typeparam name="TTeleport">The type of the teleport.</typeparam>
-    /// <typeparam name="TAvatarChangeEventArgs">The type of the avatar change event args.</typeparam>
-    /// <typeparam name="TAvatarEnterEventArgs">The type of the avatar enter event args.</typeparam>
-    /// <typeparam name="TAvatarLeaveEventArgs">The type of the avatar leave event args.</typeparam>
-    /// <typeparam name="TQueryCellResultArgs">The type of the query cell result args.</typeparam>
-    /// <typeparam name="TQueryCellEndArgs">The type of the query cell end args.</typeparam>
-    /// <typeparam name="TChatMessageEventArgs">The type of the chat message event args.</typeparam>
-    /// <typeparam name="TFriendAddCallbackEventArgs">The type of the friend add callback event args.</typeparam>
-    /// <typeparam name="TFriendDeleteCallbackEventArgs">The type of the friend delete callback event args.</typeparam>
-    /// <typeparam name="TFriendsGetCallbackEventArgs">The type of the friends get callback event args.</typeparam>
-    /// <typeparam name="TTerainNodeEventArgs">The type of the terain node event args.</typeparam>
-    /// <typeparam name="TUniverseDisconnectEventargs">The type of the universe disconnect eventargs.</typeparam>
-    /// <typeparam name="TObjectChangeArgs">The type of the object change args.</typeparam>
-    /// <typeparam name="TObjectChangeCallbackArgs">The type of the object change callback args.</typeparam>
-    /// <typeparam name="TObjectClickArgs">The type of the object click args.</typeparam>
-    /// <typeparam name="TObjectCreateArgs">The type of the object create args.</typeparam>
-    /// <typeparam name="TObjectBumpArgs">The type of the object bump args.</typeparam>
-    /// <typeparam name="TObjectCreateCallbackArgs">The type of the object create callback args.</typeparam>
-    /// <typeparam name="TObjectDeleteArgs">The type of the object delete args.</typeparam>
-    /// <typeparam name="TObjectDeleteCallbackArgs">The type of the object delete callback args.</typeparam>
-    /// <typeparam name="TWorldDisconnectEventArg">The type of the world disconnect event arg.</typeparam>
-    /// <typeparam name="TWorldListEventargs">The type of the world list eventargs.</typeparam>
-    /// <typeparam name="TWorldSettingsChangedEventArg">The type of the world settings changed event arg.</typeparam>
-    /// <typeparam name="TTeleportEventArgs">The type of the teleport event args.</typeparam>
-    /// <typeparam name="TWorldEnterEventArgs">The type of the world enter event args.</typeparam>
-    /// <typeparam name="TWorldLeaveEventArgs">The type of the world leave event args.</typeparam>
-    /// <typeparam name="TAvatarClickEventArgs"> </typeparam>
     public abstract partial class BaseInstanceT<T,
         /* Scene Type specifications ----------------------------------------------------------------------------------------------------------------------------------------------*/
         TAvatar, TColor, TFriend, TResult, TTerrainCell, TTerrainNode,
         TTerrainTile, TVector3, TVpObject, TWorld, TWorldAttributes, TCell, TChatMessage, TTerrain, TUniverse, TTeleport,
-        TUserAttributes,THud,
-
-        /* Event Arg types --------------------------------------------------------------------------------------------------------------------------------------------------------*/
-        /* Avatar Event Args */
-        TAvatarChangeEventArgs, TAvatarEnterEventArgs, TAvatarLeaveEventArgs, TAvatarClickEventArgs,
-        /* Cell Event Args */
-        TQueryCellResultArgs, TQueryCellEndArgs,
-        /* Chat Event Args */
-        TChatMessageEventArgs,
-        /* Friend Event Args */
-        TFriendAddCallbackEventArgs, TFriendDeleteCallbackEventArgs, TFriendsGetCallbackEventArgs,
-        /* Terrain Event Args */
-        TTerainNodeEventArgs,
-        /* Universe Event Args */
-        TUniverseDisconnectEventargs,
-        /* VpObject Event Args */
-        TObjectChangeArgs, TObjectChangeCallbackArgs, TObjectClickArgs, TObjectCreateArgs,
-        TObjectCreateCallbackArgs, TObjectDeleteArgs, TObjectDeleteCallbackArgs, TObjectGetCallbackArgs, TObjectBumpArgs,
-        /* World Event Args */
-            TWorldDisconnectEventArg, TWorldListEventargs, TWorldSettingsChangedEventArg,
-        /* Teleport Event Args */
-        TTeleportEventArgs,
-        TWorldEnterEventArgs,
-        TWorldLeaveEventArgs,
-        TUserAttributesEventArgs,
-        TJoinEventArgs
+        TUserAttributes,THud
         > :
         /* Interface specifications -----------------------------------------------------------------------------------------------------------------------------------------*/
         /* Functions */
@@ -139,48 +88,11 @@ namespace VpNet.Abstract
         where TUserAttributes : class, IUserAttributes, new()
         where THud : IHud<TAvatar,TVector3>
         where T : class, new()
-        /* Event Arg types --------------------------------------------------------------------------------------------------------------------------------------------------------*/
-        /* Avatar Event Args */
-        where TAvatarChangeEventArgs : class, IAvatarChangeEventArgs<TAvatar, TVector3>, ITimedEventArgs, new()
-        where TAvatarEnterEventArgs : class, IAvatarEnterEventArgs<TAvatar, TVector3>, ITimedEventArgs, new()
-        where TAvatarLeaveEventArgs : class, IAvatarLeaveEventArgs<TAvatar, TVector3>, ITimedEventArgs, new()
-        where TAvatarClickEventArgs : class, IAvatarClickEventArgs<TAvatar, TVector3>, ITimedEventArgs, new()
-        /* Cell Event Args */
-        where TQueryCellResultArgs : class, IQueryCellResultArgs<TVpObject, TVector3>, new()
-        where TQueryCellEndArgs : class, IQueryCellEndArgs<TCell>, new()
-        /* Chat Event Args */
-        where TChatMessageEventArgs : class, IChatMessageEventArgs<TAvatar, TChatMessage, TVector3, TColor>, new()
-        /* Friend Event Args */
-        where TFriendAddCallbackEventArgs : class,IFriendAddCallbackEventArgs<TFriend>, new()
-        where TFriendDeleteCallbackEventArgs : class, IFriendDeleteCallbackEventArgs<TFriend>, new()
-        where TFriendsGetCallbackEventArgs : class, IFriendsGetCallbackEventArgs<TFriend>, new()
-        /* Terrain Event Args */
-        where TTerainNodeEventArgs : class, ITerrainNodeEventArgs<TTerrain>, new()
-        /* Universe Event Args */
-        where TUniverseDisconnectEventargs : class, IUniverseDisconnectEventArgs<TUniverse>, new()
-        /* VpObject Event Args */
-        where TObjectChangeArgs : class,IObjectChangeArgs<TAvatar, TVpObject, TVector3>, new()
-        where TObjectChangeCallbackArgs : class,IObjectChangeCallbackArgs<TResult, TVpObject, TVector3>, new()
-        where TObjectClickArgs : class, IObjectClickArgs<TAvatar, TVpObject, TVector3>, new()
-        where TObjectCreateArgs : class, IObjectCreateArgs<TAvatar, TVpObject, TVector3>, new()
-        where TObjectCreateCallbackArgs : class, IObjectCreateCallbackArgs<TResult, TVpObject, TVector3>, new()
-        where TObjectDeleteArgs : class, IObjectDeleteArgs<TAvatar, TVpObject, TVector3>, new()
-        where TObjectDeleteCallbackArgs : class,IObjectDeleteCallbackArgs<TResult, TVpObject, TVector3>, new()
-        where TObjectGetCallbackArgs : class,IObjectGetCallbackArgs<TResult, TVpObject, TVector3>, new()
-        where TObjectBumpArgs : class, IObjectBumpArgs<TAvatar, TVpObject, TVector3>, new() /* World Event Args */
-        where TWorldDisconnectEventArg : class, IWorldDisconnectEventArgs<TWorld>, new()
-        where TWorldListEventargs : class, IWorldListEventArgs<TWorld>, new()
-        where TWorldSettingsChangedEventArg : class,IWorldSettingsChangedEventArgs<TWorld>, new()
-        where TTeleportEventArgs : class, ITeleportEventArgs<TTeleport, TWorld, TAvatar, TVector3>, new()
-        where TWorldEnterEventArgs : class, IWorldEnterEventArgs<TWorld>, new()
-        where TWorldLeaveEventArgs : class, IWorldLeaveEventArgs<TWorld>, new()
-        where TUserAttributesEventArgs : class, IUserAttributesEventArgs<TUserAttributes>, new()
-        where TJoinEventArgs : class, IJoinEventArgs, new()
     {
         public delegate void CellRangeQueryCompletedDelegate(T sender, CellRangeQueryCompletedArgs<TVpObject,TVector3> args);
-        public delegate void CellRangeObjectChangedDelegate(T sender, TObjectChangeArgs args);
-        public delegate void CellRangeObjectCreatedDelegate(T sender, TObjectCreateArgs args);
-        public delegate void CellRangeObjectDeletedDelegate(T sender, TObjectDeleteArgs args);
+        public delegate void CellRangeObjectChangedDelegate(T sender, ObjectChangeArgsT<TAvatar, TVpObject, TVector3> args);
+        public delegate void CellRangeObjectDeletedDelegate(T sender, ObjectDeleteArgsT<TAvatar, TVpObject, TVector3> args);
+        public delegate void CellRangeObjectCreatedDelegate(T sender, ObjectCreateArgsT<TAvatar, TVpObject, TVector3> args);
 
         public event CellRangeQueryCompletedDelegate OnQueryCellRangeEnd;
         public event CellRangeObjectChangedDelegate OnObjectCellRangeChange;
@@ -238,7 +150,7 @@ namespace VpNet.Abstract
             return  _cacheScanned.Exists(p => p.X == vpObject.Cell.X && p.Z == vpObject.Cell.Z);
         }
 
-        void BaseInstanceT_OnObjectCreate(T sender, TObjectCreateArgs args)
+        void BaseInstanceT_OnObjectCreate(T sender, ObjectCreateArgsT<TAvatar, TVpObject, TVector3> args)
         {
             if (!IsInCellCacheRange(args.VpObject))
                 return;
@@ -246,7 +158,7 @@ namespace VpNet.Abstract
 
         }
 
-        void BaseInstanceT_OnObjectDelete(T sender, TObjectDeleteArgs args)
+        void BaseInstanceT_OnObjectDelete(T sender, ObjectDeleteArgsT<TAvatar, TVpObject, TVector3> args)
         {
             if (!IsInCellCacheRange(args.VpObject))
                 return;
@@ -254,7 +166,7 @@ namespace VpNet.Abstract
             _objects.Remove(o);
         }
 
-        void BaseInstanceT_CellCache_OnObjectChange(T sender, TObjectChangeArgs args)
+        void BaseInstanceT_CellCache_OnObjectChange(T sender, ObjectChangeArgsT<TAvatar, TVpObject, TVector3> args)
         {
             lock (this)
             {
@@ -273,7 +185,7 @@ namespace VpNet.Abstract
             }
         }
 
-        void BaseInstanceT_CellCache_OnQueryCellEnd(T sender, TQueryCellEndArgs args)
+        void BaseInstanceT_CellCache_OnQueryCellEnd(T sender, QueryCellEndArgsT<TCell> args)
         {
             lock (this)
             {
@@ -294,7 +206,7 @@ namespace VpNet.Abstract
             }
         }
 
-        void BaseInstanceT_CellCache_OnQueryCellResult(T sender, TQueryCellResultArgs args)
+        void BaseInstanceT_CellCache_OnQueryCellResult(T sender, QueryCellResultArgsT<TVpObject, TVector3> args)
         {
             lock (this)
             {

@@ -60,63 +60,12 @@ namespace VpNet.Abstract
     /// <typeparam name="TTerrain">The type of the terrain.</typeparam>
     /// <typeparam name="TUniverse">The type of the universe.</typeparam>
     /// <typeparam name="TTeleport">The type of the teleport.</typeparam>
-    /// <typeparam name="TAvatarChangeEventArgs">The type of the avatar change event args.</typeparam>
-    /// <typeparam name="TAvatarEnterEventArgs">The type of the avatar enter event args.</typeparam>
-    /// <typeparam name="TAvatarLeaveEventArgs">The type of the avatar leave event args.</typeparam>
-    /// <typeparam name="TQueryCellResultArgs">The type of the query cell result args.</typeparam>
-    /// <typeparam name="TQueryCellEndArgs">The type of the query cell end args.</typeparam>
-    /// <typeparam name="TChatMessageEventArgs">The type of the chat message event args.</typeparam>
-    /// <typeparam name="TFriendAddCallbackEventArgs">The type of the friend add callback event args.</typeparam>
-    /// <typeparam name="TFriendDeleteCallbackEventArgs">The type of the friend delete callback event args.</typeparam>
-    /// <typeparam name="TFriendsGetCallbackEventArgs">The type of the friends get callback event args.</typeparam>
-    /// <typeparam name="TTerainNodeEventArgs">The type of the terain node event args.</typeparam>
-    /// <typeparam name="TUniverseDisconnectEventargs">The type of the universe disconnect eventargs.</typeparam>
-    /// <typeparam name="TObjectChangeArgs">The type of the object change args.</typeparam>
-    /// <typeparam name="TObjectChangeCallbackArgs">The type of the object change callback args.</typeparam>
-    /// <typeparam name="TObjectClickArgs">The type of the object click args.</typeparam>
-    /// <typeparam name="TObjectCreateArgs">The type of the object create args.</typeparam>
-    /// <typeparam name="TObjectBumpArgs">The type of the object bump args.</typeparam>
-    /// <typeparam name="TObjectCreateCallbackArgs">The type of the object create callback args.</typeparam>
-    /// <typeparam name="TObjectDeleteArgs">The type of the object delete args.</typeparam>
-    /// <typeparam name="TObjectDeleteCallbackArgs">The type of the object delete callback args.</typeparam>
-    /// <typeparam name="TWorldDisconnectEventArg">The type of the world disconnect event arg.</typeparam>
-    /// <typeparam name="TWorldListEventargs">The type of the world list eventargs.</typeparam>
-    /// <typeparam name="TWorldSettingsChangedEventArg">The type of the world settings changed event arg.</typeparam>
-    /// <typeparam name="TTeleportEventArgs">The type of the teleport event args.</typeparam>
-    /// <typeparam name="TWorldEnterEventArgs">The type of the world enter event args.</typeparam>
-    /// <typeparam name="TWorldLeaveEventArgs">The type of the world leave event args.</typeparam>
-    /// <typeparam name="TAvatarClickEventArgs"> </typeparam>
     [Serializable]
     public abstract partial class BaseInstanceT<T,
         /* Scene Type specifications ----------------------------------------------------------------------------------------------------------------------------------------------*/
         TAvatar, TColor, TFriend, TResult, TTerrainCell, TTerrainNode,
         TTerrainTile, TVector3, TVpObject, TWorld, TWorldAttributes,TCell,TChatMessage,TTerrain,TUniverse,TTeleport,
-        TUserAttributes,THud,
-
-        /* Event Arg types --------------------------------------------------------------------------------------------------------------------------------------------------------*/
-        /* Avatar Event Args */
-        TAvatarChangeEventArgs, TAvatarEnterEventArgs, TAvatarLeaveEventArgs,TAvatarClickEventArgs,
-        /* Cell Event Args */
-        TQueryCellResultArgs, TQueryCellEndArgs,
-        /* Chat Event Args */
-        TChatMessageEventArgs,
-        /* Friend Event Args */
-        TFriendAddCallbackEventArgs, TFriendDeleteCallbackEventArgs, TFriendsGetCallbackEventArgs,
-        /* Terrain Event Args */
-        TTerainNodeEventArgs,
-        /* Universe Event Args */
-        TUniverseDisconnectEventargs,
-        /* VpObject Event Args */
-        TObjectChangeArgs, TObjectChangeCallbackArgs, TObjectClickArgs, TObjectCreateArgs,
-        TObjectCreateCallbackArgs, TObjectDeleteArgs, TObjectDeleteCallbackArgs, TObjectGetCallbackArgs, TObjectBumpArgs,
-        /* World Event Args */
-            TWorldDisconnectEventArg, TWorldListEventargs, TWorldSettingsChangedEventArg,
-          /* Teleport Event Args */
-        TTeleportEventArgs,
-        TWorldEnterEventArgs,
-        TWorldLeaveEventArgs,
-        TUserAttributesEventArgs,
-        TJoinEventArgs
+        TUserAttributes,THud
         > :
         /* Interface specifications -----------------------------------------------------------------------------------------------------------------------------------------*/
         /* Functions */
@@ -149,43 +98,6 @@ namespace VpNet.Abstract
         where TUserAttributes : class, IUserAttributes, new()
         where THud : IHud<TAvatar,TVector3>
         where T : class, new()
-        /* Event Arg types --------------------------------------------------------------------------------------------------------------------------------------------------------*/
-        /* Avatar Event Args */
-        where TAvatarChangeEventArgs : class, IAvatarChangeEventArgs<TAvatar,TVector3>,ITimedEventArgs, new()
-        where TAvatarEnterEventArgs : class, IAvatarEnterEventArgs<TAvatar,TVector3>,ITimedEventArgs, new()
-        where TAvatarLeaveEventArgs : class, IAvatarLeaveEventArgs<TAvatar,TVector3>,ITimedEventArgs, new()
-        where TAvatarClickEventArgs : class, IAvatarClickEventArgs<TAvatar,TVector3>,ITimedEventArgs, new()
-        /* Cell Event Args */
-        where TQueryCellResultArgs : class, IQueryCellResultArgs<TVpObject,TVector3>, new()
-        where TQueryCellEndArgs : class, IQueryCellEndArgs<TCell>, new()
-        /* Chat Event Args */
-        where TChatMessageEventArgs : class, IChatMessageEventArgs<TAvatar,TChatMessage,TVector3,TColor>, new()
-        /* Friend Event Args */
-        where TFriendAddCallbackEventArgs : class,IFriendAddCallbackEventArgs<TFriend>, new()
-        where TFriendDeleteCallbackEventArgs : class, IFriendDeleteCallbackEventArgs<TFriend>,  new()
-        where TFriendsGetCallbackEventArgs : class, IFriendsGetCallbackEventArgs<TFriend>,  new()
-        /* Terrain Event Args */
-        where TTerainNodeEventArgs : class, ITerrainNodeEventArgs<TTerrain>,  new()
-        /* Universe Event Args */
-        where TUniverseDisconnectEventargs : class, IUniverseDisconnectEventArgs<TUniverse>, new()
-        /* VpObject Event Args */
-        where TObjectChangeArgs : class,IObjectChangeArgs<TAvatar,TVpObject,TVector3>, new()
-        where TObjectChangeCallbackArgs : class,IObjectChangeCallbackArgs<TResult,TVpObject,TVector3>, new()
-        where TObjectClickArgs : class, IObjectClickArgs<TAvatar,TVpObject,TVector3>,  new()
-        where TObjectCreateArgs : class, IObjectCreateArgs<TAvatar,TVpObject,TVector3>, new()
-        where TObjectCreateCallbackArgs : class, IObjectCreateCallbackArgs<TResult,TVpObject,TVector3>, new()
-        where TObjectDeleteArgs : class, IObjectDeleteArgs<TAvatar,TVpObject,TVector3>,  new()
-        where TObjectDeleteCallbackArgs : class,IObjectDeleteCallbackArgs<TResult,TVpObject,TVector3>,  new()
-        where TObjectGetCallbackArgs : class,IObjectGetCallbackArgs<TResult, TVpObject, TVector3>, new()
-        where TObjectBumpArgs : class, IObjectBumpArgs<TAvatar,TVpObject,TVector3>, new() /* World Event Args */
-        where TWorldDisconnectEventArg : class, IWorldDisconnectEventArgs<TWorld>, new()
-        where TWorldListEventargs : class, IWorldListEventArgs<TWorld>,new()
-        where TWorldSettingsChangedEventArg : class,IWorldSettingsChangedEventArgs<TWorld>, new()
-        where TTeleportEventArgs : class, ITeleportEventArgs<TTeleport,TWorld,TAvatar,TVector3>, new()
-        where TWorldEnterEventArgs : class, IWorldEnterEventArgs<TWorld>, new()
-        where TWorldLeaveEventArgs : class, IWorldLeaveEventArgs<TWorld>, new()
-        where TUserAttributesEventArgs : class, IUserAttributesEventArgs<TUserAttributes>, new()
-        where TJoinEventArgs : class, IJoinEventArgs, new()
     {
         bool _isInitialized;
 
@@ -578,7 +490,7 @@ namespace VpNet.Abstract
                 var result = new TResult {Rc = Functions.vp_leave(_instance)};
                 if (result.Rc == 0 && OnWorldLeave !=null)
                 {
-                    OnWorldLeave(Implementor,new TWorldLeaveEventArgs {World = Configuration.World});
+                    OnWorldLeave(Implementor,new WorldLeaveEventArgsT<TWorld> {World = Configuration.World});
                 }
                 return result;
             }
@@ -591,7 +503,7 @@ namespace VpNet.Abstract
             _isInitialized = false;
             InitVpNative();
             if (OnUniverseDisconnect != null)
-                OnUniverseDisconnect(Implementor, new TUniverseDisconnectEventargs { Universe = Universe,DisconnectType = VpNet.DisconnectType.UserDisconnected  });
+                OnUniverseDisconnect(Implementor, new UniverseDisconnectEventArgsT<TUniverse> { Universe = Universe,DisconnectType = VpNet.DisconnectType.UserDisconnected  });
         }
 
         virtual public TResult ListWorlds()
@@ -1239,43 +1151,43 @@ namespace VpNet.Abstract
         }
 
         //public delegate void Event(T sender);
-        public delegate void ChatMessageDelegate(T sender, TChatMessageEventArgs args);
+        public delegate void ChatMessageDelegate(T sender, ChatMessageEventArgsT<TAvatar, TChatMessage, TVector3, TColor> args);
 
-        public delegate void AvatarChangeDelegate(T sender, TAvatarChangeEventArgs args);
-        public delegate void AvatarEnterDelegate(T sender, TAvatarEnterEventArgs args);
-        public delegate void AvatarLeaveDelegate(T sender, TAvatarLeaveEventArgs args);
-        public delegate void AvatarClickDelegate(T sender, TAvatarClickEventArgs args);
+        public delegate void AvatarChangeDelegate(T sender, AvatarChangeEventArgsT<TAvatar,TVector3> args);
+        public delegate void AvatarEnterDelegate(T sender, AvatarEnterEventArgsT<TAvatar, TVector3> args);
+        public delegate void AvatarLeaveDelegate(T sender, AvatarLeaveEventArgsT<TAvatar, TVector3> args);
+        public delegate void AvatarClickDelegate(T sender, AvatarClickEventArgsT<TAvatar, TVector3> args);
 
-        public delegate void TeleportDelegate(T sender, TTeleportEventArgs args);
+        public delegate void TeleportDelegate(T sender, TeleportEventArgsT<TTeleport, TWorld, TAvatar, TVector3> args);
 
-        public delegate void UserAttributesDelegate(T sender, TUserAttributesEventArgs args);
+        public delegate void UserAttributesDelegate(T sender, UserAttributesEventArgsT<TUserAttributes> args);
 
-        public delegate void WorldListEventDelegate(T sender, TWorldListEventargs args);
+        public delegate void WorldListEventDelegate(T sender, WorldListEventArgsT<TWorld> args);
 
-        public delegate void ObjectCreateDelegate(T sender, TObjectCreateArgs args);
-        public delegate void ObjectChangeDelegate(T sender, TObjectChangeArgs args);
-        public delegate void ObjectDeleteDelegate(T sender, TObjectDeleteArgs args);
-        public delegate void ObjectClickDelegate(T sender, TObjectClickArgs args);
-        public delegate void ObjectBumpDelegate(T sender, TObjectBumpArgs args);
+        public delegate void ObjectCreateDelegate(T sender, ObjectCreateArgsT<TAvatar, TVpObject, TVector3> args);
+        public delegate void ObjectChangeDelegate(T sender, ObjectChangeArgsT<TAvatar, TVpObject, TVector3> args);
+        public delegate void ObjectDeleteDelegate(T sender, ObjectDeleteArgsT<TAvatar, TVpObject, TVector3> args);
+        public delegate void ObjectClickDelegate(T sender, ObjectClickArgsT<TAvatar, TVpObject, TVector3> args);
+        public delegate void ObjectBumpDelegate(T sender, ObjectBumpArgsT<TAvatar, TVpObject, TVector3> args);
 
 
-        public delegate void ObjectCreateCallback(T sender, TObjectCreateCallbackArgs args);
-        public delegate void ObjectChangeCallback(T sender, TObjectChangeCallbackArgs args);
-        public delegate void ObjectDeleteCallback(T sender, TObjectDeleteCallbackArgs args);
-        public delegate void ObjectGetCallback(T sender, TObjectGetCallbackArgs args);
+        public delegate void ObjectCreateCallback(T sender, ObjectCreateCallbackArgsT<TResult, TVpObject, TVector3> args);
+        public delegate void ObjectChangeCallback(T sender, ObjectChangeCallbackArgsT<TResult, TVpObject, TVector3> args);
+        public delegate void ObjectDeleteCallback(T sender, ObjectDeleteCallbackArgsT<TResult, TVpObject, TVector3> args);
+        public delegate void ObjectGetCallback(T sender, ObjectGetCallbackArgsT<TResult, TVpObject, TVector3> args);
 
-        public delegate void QueryCellResultDelegate(T sender, TQueryCellResultArgs args);
-        public delegate void QueryCellEndDelegate(T sender, TQueryCellEndArgs args);
+        public delegate void QueryCellResultDelegate(T sender, QueryCellResultArgsT<TVpObject, TVector3> args);
+        public delegate void QueryCellEndDelegate(T sender, QueryCellEndArgsT<TCell> args);
 
-        public delegate void WorldSettingsChangedDelegate(T sender, TWorldSettingsChangedEventArg args);
-        public delegate void WorldDisconnectDelegate(T sender, TWorldDisconnectEventArg args);
+        public delegate void WorldSettingsChangedDelegate(T sender, WorldSettingsChangedEventArgsT<TWorld> args);
+        public delegate void WorldDisconnectDelegate(T sender, WorldDisconnectEventArgsT<TWorld> args);
 
-        public delegate void UniverseDisconnectDelegate(T sender, TUniverseDisconnectEventargs args);
-        public delegate void JoinDelegate(T sender, TJoinEventArgs args);
+        public delegate void UniverseDisconnectDelegate(T sender, UniverseDisconnectEventArgsT<TUniverse> args);
+        public delegate void JoinDelegate(T sender, JoinEventArgsT args);
 
-        public delegate void FriendAddCallbackDelegate(T sender, TFriendAddCallbackEventArgs args);
-        public delegate void FriendDeleteCallbackDelegate(T sender, TFriendDeleteCallbackEventArgs args);
-        public delegate void FriendsGetCallbackDelegate(T sender, TFriendsGetCallbackEventArgs args);
+        public delegate void FriendAddCallbackDelegate(T sender, FriendAddCallbackEventArgsT<TFriend> args);
+        public delegate void FriendDeleteCallbackDelegate(T sender, FriendDeleteCallbackEventArgsT<TFriend> args);
+        public delegate void FriendsGetCallbackDelegate(T sender, FriendsGetCallbackEventArgsT<TFriend> args);
 
         public event ChatMessageDelegate OnChatMessage;
         public event AvatarEnterDelegate OnAvatarEnter;
@@ -1313,9 +1225,9 @@ namespace VpNet.Abstract
 
         /* Events indirectly assosicated with VP */
 
-        public delegate void WorldEnterDelegate(T sender, TWorldEnterEventArgs args);
+        public delegate void WorldEnterDelegate(T sender, WorldEnterEventArgsT<TWorld> args);
         public event WorldEnterDelegate OnWorldEnter;
-        public delegate void WorldLeaveDelegate(T sender, TWorldLeaveEventArgs args);
+        public delegate void WorldLeaveDelegate(T sender, WorldLeaveEventArgsT<TWorld> args);
         public event WorldLeaveDelegate OnWorldLeave;
 
         #endregion
@@ -1331,7 +1243,7 @@ namespace VpNet.Abstract
                 if (OnObjectCreateCallback != null)
                 {
                     vpObject.Id = Functions.vp_int(sender, Attribute.ObjectId);
-                    OnObjectCreateCallback(Implementor, new TObjectCreateCallbackArgs { Result = new TResult { Rc = rc }, VpObject = vpObject });
+                    OnObjectCreateCallback(Implementor, new ObjectCreateCallbackArgsT<TResult, TVpObject, TVector3> { Result = new TResult { Rc = rc }, VpObject = vpObject });
                 }
             }
         }
@@ -1346,7 +1258,7 @@ namespace VpNet.Abstract
                 if (OnObjectChangeCallback != null)
                 {
                     vpObject.Id = Functions.vp_int(sender, Attribute.ObjectId);
-                    OnObjectChangeCallback(Implementor, new TObjectChangeCallbackArgs { Result = new TResult { Rc = rc }, VpObject = vpObject });
+                    OnObjectChangeCallback(Implementor, new ObjectChangeCallbackArgsT<TResult, TVpObject, TVector3> { Result = new TResult { Rc = rc }, VpObject = vpObject });
                 }
             }
         }
@@ -1360,7 +1272,7 @@ namespace VpNet.Abstract
 
                 if (OnObjectDeleteCallback != null)
                 {
-                    OnObjectDeleteCallback(Implementor, new TObjectDeleteCallbackArgs { Result = new TResult { Rc = rc }, VpObject = vpObject });
+                    OnObjectDeleteCallback(Implementor, new ObjectDeleteCallbackArgsT<TResult, TVpObject, TVector3> { Result = new TResult { Rc = rc }, VpObject = vpObject });
                 }
             }
         }
@@ -1373,7 +1285,7 @@ namespace VpNet.Abstract
                 GetVpObject(sender,out vpObject);
                 if (OnObjectGetCallback != null)
                 {
-                    OnObjectGetCallback(Implementor, new TObjectGetCallbackArgs { Result = new TResult { Rc = rc }, VpObject = vpObject });
+                    OnObjectGetCallback(Implementor, new ObjectGetCallbackArgsT<TResult, TVpObject, TVector3> { Result = new TResult { Rc = rc }, VpObject = vpObject });
                 }
             }
         }
@@ -1414,7 +1326,7 @@ namespace VpNet.Abstract
                                                                                                 Attribute.UserRegistrationTime))
                           };
             }
-            OnUserAttributes(Implementor,new TUserAttributesEventArgs(){UserAttributes = att});
+            OnUserAttributes(Implementor,new UserAttributesEventArgsT<TUserAttributes>(){UserAttributes = att});
         }
 
         private void OnTeleportNative(IntPtr sender)
@@ -1443,7 +1355,7 @@ namespace VpNet.Abstract
                         World = new TWorld { Name = Functions.vp_string(sender, Attribute.TeleportWorld),State = WorldState.Unknown, UserCount=-1 }
                     };
             }
-            OnTeleport(Implementor, new TTeleportEventArgs{Teleport = teleport});
+            OnTeleport(Implementor, new TeleportEventArgsT<TTeleport, TWorld, TAvatar, TVector3>{Teleport = teleport});
         }
 
         private void OnGetFriendsCallbackNative(IntPtr sender, int rc, int reference)
@@ -1459,7 +1371,7 @@ namespace VpNet.Abstract
                         Name = Functions.vp_string(sender,Attributes.FriendName),
                        Online = Functions.vp_int(sender,Attributes.FriendOnline)==1
                     };
-                OnFriendsGetCallback(Implementor,new TFriendsGetCallbackEventArgs{Friend=friend});
+                OnFriendsGetCallback(Implementor, new FriendsGetCallbackEventArgsT<TFriend> { Friend = friend });
             }
         }
 
@@ -1476,7 +1388,7 @@ namespace VpNet.Abstract
 
         private void OnChatNative(IntPtr sender)
         {
-            TChatMessageEventArgs data;
+            ChatMessageEventArgsT<TAvatar, TChatMessage, TVector3, TColor> data;
             lock (this)
             {
                 if (!_avatars.ContainsKey(Functions.vp_int(sender, Attribute.AvatarSession)))
@@ -1488,7 +1400,7 @@ namespace VpNet.Abstract
                         };
                     _avatars.Add(avatar.Session, avatar);
                 }
-                data = new TChatMessageEventArgs
+                data = new ChatMessageEventArgsT<TAvatar, TChatMessage, TVector3, TColor>
                 {
                     Avatar = _avatars[Functions.vp_int(sender, Attribute.AvatarSession)],
                     ChatMessage = new TChatMessage
@@ -1547,7 +1459,7 @@ namespace VpNet.Abstract
             }
             data.LastChanged = DateTime.UtcNow;
             if (OnAvatarEnter == null) return;
-            var args = new TAvatarEnterEventArgs {Avatar = data, Implementor = Implementor};
+            var args = new AvatarEnterEventArgsT<TAvatar, TVector3> {Avatar = data, Implementor = Implementor};
             args.Initialize();
             OnAvatarEnter(Implementor, args);
         }
@@ -1581,7 +1493,7 @@ namespace VpNet.Abstract
 
             }
             if (OnAvatarChange != null)
-                OnAvatarChange(Implementor, new TAvatarChangeEventArgs { Avatar = _avatars[data.Session], AvatarPrevious = old });
+                OnAvatarChange(Implementor, new AvatarChangeEventArgsT<TAvatar, TVector3> { Avatar = _avatars[data.Session], AvatarPrevious = old });
         }
 
         private void OnAvatarDeleteNative(IntPtr sender)
@@ -1594,7 +1506,7 @@ namespace VpNet.Abstract
                     data = _avatars[Functions.vp_int(sender, Attribute.AvatarSession)];
                     _avatars.Remove(data.Session);
                     if (OnAvatarLeave == null) return;
-                    OnAvatarLeave(Implementor, new TAvatarLeaveEventArgs { Avatar = data });
+                    OnAvatarLeave(Implementor, new AvatarLeaveEventArgsT<TAvatar, TVector3> { Avatar = data });
                 }
                 catch
                 {
@@ -1613,7 +1525,7 @@ namespace VpNet.Abstract
                     clickedAvatar = Functions.vp_int(sender, Attribute.AvatarSession);
 
                 OnAvatarClick(Implementor,
-                    new TAvatarClickEventArgs
+                    new AvatarClickEventArgsT<TAvatar, TVector3>
                     {
                         Avatar = GetAvatar(Functions.vp_int(sender, Attribute.AvatarSession)),
                         ClickedAvatar = GetAvatar(clickedAvatar),
@@ -1646,7 +1558,7 @@ namespace VpNet.Abstract
             }
             
             OnObjectClick(Implementor,
-                          new TObjectClickArgs
+                          new ObjectClickArgsT<TAvatar,TVpObject, TVector3>
                               {WorldHit=world, Avatar = GetAvatar(session), VpObject = new TVpObject {Id = objectId}});
         }
 
@@ -1663,7 +1575,7 @@ namespace VpNet.Abstract
             }
 
             OnObjectBump(Implementor,
-                          new TObjectBumpArgs { BumpType=BumpType.BumpBegin, Avatar = GetAvatar(session), VpObject = new TVpObject { Id = objectId } });
+                          new ObjectBumpArgsT<TAvatar, TVpObject, TVector3> { BumpType = BumpType.BumpBegin, Avatar = GetAvatar(session), VpObject = new TVpObject { Id = objectId } });
         }
 
         private void OnObjectBumpEndNative(IntPtr sender)
@@ -1679,7 +1591,7 @@ namespace VpNet.Abstract
             }
 
             OnObjectBump(Implementor,
-                          new TObjectBumpArgs { BumpType = BumpType.BumpEnd, Avatar = GetAvatar(session), VpObject = new TVpObject { Id = objectId } });
+                          new ObjectBumpArgsT<TAvatar, TVpObject, TVector3> { BumpType = BumpType.BumpEnd, Avatar = GetAvatar(session), VpObject = new TVpObject { Id = objectId } });
         }
 
         private void OnObjectDeleteNative(IntPtr sender)
@@ -1692,7 +1604,7 @@ namespace VpNet.Abstract
                 session = Functions.vp_int(sender, Attribute.AvatarSession);
                 objectId = Functions.vp_int(sender, Attribute.ObjectId);
             }
-            OnObjectDelete(Implementor, new TObjectDeleteArgs{Avatar=GetAvatar(session),VpObject = new TVpObject { Id = objectId }});
+            OnObjectDelete(Implementor, new ObjectDeleteArgsT<TAvatar, TVpObject, TVector3> { Avatar = GetAvatar(session), VpObject = new TVpObject { Id = objectId } });
         }
 
         private void OnObjectCreateNative(IntPtr sender)
@@ -1706,10 +1618,10 @@ namespace VpNet.Abstract
                 GetVpObject(sender, out vpObject);
             }
             if (session == 0 && OnQueryCellResult != null)
-                OnQueryCellResult(Implementor, new TQueryCellResultArgs{VpObject=vpObject});
+                OnQueryCellResult(Implementor, new QueryCellResultArgsT<TVpObject, TVector3> { VpObject = vpObject });
             else
                 if (OnObjectCreate != null)
-                    OnObjectCreate(Implementor, new TObjectCreateArgs { Avatar =  GetAvatar(session), VpObject = vpObject });
+                OnObjectCreate(Implementor, new ObjectCreateArgsT<TAvatar, TVpObject, TVector3> { Avatar = GetAvatar(session), VpObject = vpObject });
         }
 
 
@@ -1802,7 +1714,7 @@ namespace VpNet.Abstract
                 GetVpObject(sender,out vpObject);
                 sessionId = Functions.vp_int(sender, Attribute.AvatarSession);
             }
-            OnObjectChange(Implementor, new TObjectChangeArgs { Avatar = GetAvatar(sessionId), VpObject = vpObject });
+            OnObjectChange(Implementor, new ObjectChangeArgsT<TAvatar, TVpObject, TVector3> { Avatar = GetAvatar(sessionId), VpObject = vpObject });
         }
 
         private void OnQueryCellEndNative(IntPtr sender)
@@ -1815,7 +1727,7 @@ namespace VpNet.Abstract
                 x = Functions.vp_int(sender, Attribute.CellX);
                 z = Functions.vp_int(sender, Attribute.CellZ);
             }
-            OnQueryCellEnd(Implementor, new TQueryCellEndArgs{Cell=new TCell{X=x,Z=z}});
+            OnQueryCellEnd(Implementor, new QueryCellEndArgsT<TCell> { Cell = new TCell { X = x, Z = z } });
         }
 
         private void OnWorldListNative(IntPtr sender)
@@ -1837,7 +1749,7 @@ namespace VpNet.Abstract
             if (_worlds.ContainsKey(data.Name))
                 _worlds.Remove(data.Name);
             _worlds.Add(data.Name,data);
-            OnWorldList(Implementor,new TWorldListEventargs{ World=data});
+            OnWorldList(Implementor, new WorldListEventArgsT<TWorld> { World = data });
         }
 
         private void OnWorldSettingNativeEvent(IntPtr instance)
@@ -1862,25 +1774,25 @@ namespace VpNet.Abstract
                 ModelCacheProvider = new OpCacheProvider(_worlds[Configuration.World.Name].RawAttributes["objectpath"],world.LocalCachePath);
             }
             if (OnWorldSettingsChanged != null)
-                OnWorldSettingsChanged(Implementor, new TWorldSettingsChangedEventArg() { World = _worlds[Configuration.World.Name]});
+                OnWorldSettingsChanged(Implementor, new WorldSettingsChangedEventArgsT<TWorld>() { World = _worlds[Configuration.World.Name]});
         }
 
         private void OnUniverseDisconnectNative(IntPtr sender)
         {
             if (OnUniverseDisconnect == null) return;
-            OnUniverseDisconnect(Implementor,new TUniverseDisconnectEventargs{Universe = Universe});
+            OnUniverseDisconnect(Implementor, new UniverseDisconnectEventArgsT<TUniverse> { Universe = Universe });
         }
 
         private void OnWorldDisconnectNative(IntPtr sender)
         {
             if (OnWorldDisconnect == null) return;
-            OnWorldDisconnect(Implementor,new TWorldDisconnectEventArg{World=World});
+            OnWorldDisconnect(Implementor, new WorldDisconnectEventArgsT<TWorld> { World = World });
         }
 
         private void OnJoinNative(IntPtr sender)
         {
             if (OnJoin == null) return;
-            OnJoin(Implementor, new TJoinEventArgs {
+            OnJoin(Implementor, new JoinEventArgsT {
                 UserId = Functions.vp_int(sender, Attributes.UserId),
                 Id = Functions.vp_int(sender, Attributes.JoinId),
                 Name = Functions.vp_string(sender, Attributes.JoinName)
