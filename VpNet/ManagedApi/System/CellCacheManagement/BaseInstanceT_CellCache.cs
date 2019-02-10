@@ -55,7 +55,7 @@ namespace VpNet.Abstract
         /* Scene Type specifications ----------------------------------------------------------------------------------------------------------------------------------------------*/
         TAvatar, TColor, TFriend, TResult, TTerrainCell, TTerrainNode,
         TTerrainTile, TVector3, TVpObject, TWorld, TWorldAttributes, TCell, TChatMessage, TTerrain, TUniverse, TTeleport,
-        TUserAttributes,THud
+        TUserAttributes
         > :
         /* Interface specifications -----------------------------------------------------------------------------------------------------------------------------------------*/
         /* Functions */
@@ -86,7 +86,6 @@ namespace VpNet.Abstract
         where TWorldAttributes : class, IWorldAttributes, new()
         where TTeleport : class, ITeleport<TWorld, TAvatar, TVector3>, new()
         where TUserAttributes : class, IUserAttributes, new()
-        where THud : IHud<TAvatar,TVector3>
         where T : class, new()
     {
         public delegate void CellRangeQueryCompletedDelegate(T sender, CellRangeQueryCompletedArgs<TVpObject,TVector3> args);

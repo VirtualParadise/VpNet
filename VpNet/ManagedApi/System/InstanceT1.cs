@@ -49,8 +49,7 @@ namespace VpNet
         Terrain,
         Universe,
         Teleport<World,Avatar<TVector3>,TVector3>, 
-        UserAttributes,
-        IHud<Avatar<TVector3>, TVector3>
+        UserAttributes
         >
 
          where TVector3 : struct, IVector3
