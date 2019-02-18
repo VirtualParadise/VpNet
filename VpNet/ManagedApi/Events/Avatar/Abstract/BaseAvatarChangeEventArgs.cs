@@ -32,11 +32,9 @@ namespace VpNet.Abstract
     /// Abstract implementation
     /// </summary>
     /// <typeparam name="TAvatar">The type of the avatar.</typeparam>
-    /// <typeparam name="TVector3">The type of the vector3.</typeparam>
     [Serializable]
-    public abstract class BaseAvatarChangeEventArgs<TAvatar,TVector3> : TimedEventArgs,IAvatarChangeEventArgs<TAvatar,TVector3>
-        where TVector3 : struct, IVector3
-        where TAvatar : class, IAvatar<TVector3>, new()
+    public abstract class BaseAvatarChangeEventArgs<TAvatar> : TimedEventArgs,IAvatarChangeEventArgs<TAvatar>
+        where TAvatar : class, IAvatar, new()
     {
         virtual public TAvatar Avatar { get; set; }
         virtual public TAvatar AvatarPrevious { get; set; }

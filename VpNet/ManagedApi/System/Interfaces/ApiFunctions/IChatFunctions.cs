@@ -25,10 +25,9 @@ ____   ___.__         __               .__    __________                        
 
 namespace VpNet.Interfaces
 {
-    public interface IChatFunctions<out TRc, in TAvatar, TVector3> 
+    public interface IChatFunctions<out TRc, in TAvatar> 
         where TRc : class, IRc, new()
-        where TVector3 : struct, IVector3
-        where TAvatar : class, IAvatar<TVector3>, new()
+        where TAvatar : class, IAvatar, new()
         
     {
         TRc Say(string message);

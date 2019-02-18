@@ -33,20 +33,19 @@ namespace VpNet
     [Serializable]
     [XmlRoot("Instance", Namespace = Global.XmlNsInstance)]
     public class Instance : BaseInstanceT<Instance,
-        Avatar<Vector3>, 
+        Avatar, 
         Friend, 
         RcDefault, 
         TerrainCell, 
         TerrainNode, 
         TerrainTile,
-        Vector3, 
-        VpObject<Vector3>, 
+        VpObject, 
         World, 
         Cell,
         ChatMessage,
         Terrain,
         Universe,
-        Teleport<World,Avatar<Vector3>,Vector3>,
+        Teleport<World,Avatar>,
         UserAttributes
         >
       

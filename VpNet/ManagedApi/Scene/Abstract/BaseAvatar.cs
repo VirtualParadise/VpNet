@@ -30,8 +30,7 @@ using VpNet.Interfaces;
 namespace VpNet.Abstract
 {
     [Serializable]
-    public abstract class BaseAvatar<TVector3> : IAvatar<TVector3>
-        where TVector3 : struct, IVector3
+    public abstract class BaseAvatar : IAvatar
     {
         [XmlAttribute]
         virtual public DateTime LastChanged { get; set; }
@@ -43,8 +42,8 @@ namespace VpNet.Abstract
         virtual public int Session { get;set; }
         [XmlAttribute]
         virtual public int AvatarType { get; set; }
-        virtual public TVector3 Position { get; set; }
-        virtual public TVector3 Rotation { get; set; } // X pitch, Y yaw
+        virtual public Vector3 Position { get; set; }
+        virtual public Vector3 Rotation { get; set; } // X pitch, Y yaw
         [XmlIgnore]
         public virtual bool IsBot
         {
@@ -54,7 +53,7 @@ namespace VpNet.Abstract
             }
         }
 
-        protected BaseAvatar(int userId, string name,int session,int avatarType,TVector3 position,TVector3 rotation)
+        protected BaseAvatar(int userId, string name,int session,int avatarType,Vector3 position,Vector3 rotation)
         {
             UserId = userId;
             Name = name;

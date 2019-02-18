@@ -29,10 +29,8 @@ namespace VpNet.Interfaces
     /// Avater enter event arguments templated interface specifications.
     /// </summary>
     /// <typeparam name="TAvatar">The type of the avatar.</typeparam>
-    /// <typeparam name="TVector3">The type of the vector3.</typeparam>
-    public interface IAvatarClickEventArgs<TAvatar,TVector3> 
-        where TVector3 : struct, IVector3
-        where TAvatar : class, IAvatar<TVector3>, new()
+    public interface IAvatarClickEventArgs<TAvatar>
+        where TAvatar : class, IAvatar, new()
     {
         /// <summary>
         /// Gets or sets the avatar.
@@ -54,6 +52,6 @@ namespace VpNet.Interfaces
         /// <value>
         /// The world hit coordinates
         /// </value>
-        TVector3 WorldHit { get; set; }
+        Vector3 WorldHit { get; set; }
     }
 }

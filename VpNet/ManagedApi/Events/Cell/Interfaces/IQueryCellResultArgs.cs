@@ -29,9 +29,8 @@ namespace VpNet.Interfaces
     /// Query Cell result event arguments templated interface specifications.
     /// </summary>
     /// <typeparam name="TVpObject">The type of the vp object.</typeparam>
-    /// <typeparam name="TVector3">The type of the vector3.</typeparam>
-    public interface IQueryCellResultArgs<TVpObject,TVector3> where TVpObject : class, IVpObject<TVector3>, new()
-        where TVector3 : struct, IVector3
+    public interface IQueryCellResultArgs<TVpObject>
+        where TVpObject : class, IVpObject, new()
     {
         /// <summary>
         /// Gets or sets the vp object.

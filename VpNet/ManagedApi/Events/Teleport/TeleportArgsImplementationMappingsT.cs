@@ -35,10 +35,9 @@ namespace VpNet
     /// </summary>
     [Serializable]
     [XmlRoot("OnTeleport", Namespace = Global.XmlNsEvent)]
-    public class TeleportEventArgsT<TTeleport,TWorld,TAvatar,TVector3> : BaseTeleportEventArgs<TTeleport,TWorld,TAvatar,TVector3>
+    public class TeleportEventArgsT<TTeleport,TWorld,TAvatar> : BaseTeleportEventArgs<TTeleport,TWorld,TAvatar>
         where TWorld : class, IWorld, new()
-        where TVector3 : struct, IVector3
-        where TAvatar : class, IAvatar<TVector3>, new()
-        where TTeleport : class, ITeleport<TWorld, TAvatar, TVector3>, new()
+        where TAvatar : class, IAvatar, new()
+        where TTeleport : class, ITeleport<TWorld, TAvatar>, new()
     {}
 }

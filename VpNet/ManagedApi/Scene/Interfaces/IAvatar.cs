@@ -31,9 +31,7 @@ namespace VpNet.Interfaces
     /// <summary>
     /// Avatar templated interface specifications.
     /// </summary>
-    /// <typeparam name="TVector3">The type of the vector3.</typeparam>
-    public interface IAvatar<TVector3>
-        where TVector3 : struct, IVector3
+    public interface IAvatar
     {
         [XmlAttribute]
         DateTime LastChanged { get; set; }
@@ -74,14 +72,14 @@ namespace VpNet.Interfaces
         /// <value>
         /// The position.
         /// </value>
-        TVector3 Position { get; set; }
+        Vector3 Position { get; set; }
         /// <summary>
         /// Gets or sets the rotation.
         /// </summary>
         /// <value>
         /// The rotation im Pitch, Yaw, Roll (Roll is currently not supported in Vp)
         /// </value>
-        TVector3 Rotation { get; set; }
+        Vector3 Rotation { get; set; }
 
         bool IsBot { get; }
     }

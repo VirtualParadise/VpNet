@@ -30,11 +30,9 @@ namespace VpNet.Interfaces
     /// </summary>
     /// <typeparam name="TResult">The type of the result.</typeparam>
     /// <typeparam name="TVpObject">The type of the vp object.</typeparam>
-    /// <typeparam name="TVector3">The type of the vector3.</typeparam>
-    public interface IObjectChangeCallbackArgs<TResult, TVpObject,TVector3>
+    public interface IObjectChangeCallbackArgs<TResult, TVpObject>
         where TResult : class, IRc, new()
-        where TVector3 : struct, IVector3
-        where TVpObject : class, IVpObject<TVector3>, new()
+        where TVpObject : class, IVpObject, new()
         
     {
         /// <summary>

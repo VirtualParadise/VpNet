@@ -33,9 +33,9 @@ namespace VpNet
     /// </summary>
     [Serializable]
     [XmlRoot("OnQueryCellResult", Namespace = Global.XmlNsEvent)]
-    public partial class QueryCellResultArgs : Abstract.QueryCellResultArgs<VpObject<Vector3>,Vector3>
+    public partial class QueryCellResultArgs : Abstract.QueryCellResultArgs<VpObject>
     {
-        public QueryCellResultArgs(VpObject<Vector3> vpObject) : base(vpObject)
+        public QueryCellResultArgs(VpObject vpObject) : base(vpObject)
         {
         }
 

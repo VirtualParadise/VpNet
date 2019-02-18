@@ -29,10 +29,9 @@ using VpNet.Interfaces;
 namespace VpNet.Abstract
 {
     [Serializable]
-    public abstract class BaseObjectBumpArgs<TAvatar, TVpObject, TVector3> : TimedEventArgs, IObjectBumpArgs<TAvatar, TVpObject, TVector3>
-        where TVector3 : struct, IVector3
-        where TAvatar : class, IAvatar<TVector3>, new()
-        where TVpObject : class, IVpObject<TVector3>, new()
+    public abstract class BaseObjectBumpArgs<TAvatar, TVpObject> : TimedEventArgs, IObjectBumpArgs<TAvatar, TVpObject>
+        where TAvatar : class, IAvatar, new()
+        where TVpObject : class, IVpObject, new()
     {
         public TVpObject VpObject { get; set; }
         public TAvatar Avatar { get; set; }

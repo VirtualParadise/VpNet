@@ -30,10 +30,8 @@ namespace VpNet.Interfaces
     /// </summary>
     /// <typeparam name="TAvatar">The type of the avatar.</typeparam>
     /// <typeparam name="TChatMessage">The type of the chat message.</typeparam>
-    /// <typeparam name="TVector3">The type of the vector3.</typeparam>
-    public interface IChatMessageEventArgs<TAvatar, TChatMessage, TVector3> 
-        where TVector3 : struct, IVector3
-        where TAvatar : class, IAvatar<TVector3>, new() 
+    public interface IChatMessageEventArgs<TAvatar, TChatMessage> 
+        where TAvatar : class, IAvatar, new() 
         where TChatMessage : class, IChatMessage, new()
     {
         /// <summary>

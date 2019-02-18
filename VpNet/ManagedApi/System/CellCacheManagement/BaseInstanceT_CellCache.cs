@@ -41,7 +41,6 @@ namespace VpNet.Abstract
     /// <typeparam name="TTerrainCell">The type of the terrain cell.</typeparam>
     /// <typeparam name="TTerrainNode">The type of the terrain node.</typeparam>
     /// <typeparam name="TTerrainTile">The type of the terrain tile.</typeparam>
-    /// <typeparam name="TVector3">The type of the vector3.</typeparam>
     /// <typeparam name="TVpObject">The type of the vp object.</typeparam>
     /// <typeparam name="TWorld">The type of the world.</typeparam>
     /// <typeparam name="TCell">The type of the cell.</typeparam>
@@ -52,18 +51,18 @@ namespace VpNet.Abstract
     public abstract partial class BaseInstanceT<T,
         /* Scene Type specifications ----------------------------------------------------------------------------------------------------------------------------------------------*/
         TAvatar, TFriend, TResult, TTerrainCell, TTerrainNode,
-        TTerrainTile, TVector3, TVpObject, TWorld, TCell, TChatMessage, TTerrain, TUniverse, TTeleport,
+        TTerrainTile, TVpObject, TWorld, TCell, TChatMessage, TTerrain, TUniverse, TTeleport,
         TUserAttributes
         > :
         /* Interface specifications -----------------------------------------------------------------------------------------------------------------------------------------*/
         /* Functions */
         BaseInstanceEvents<TWorld>,
-        IAvatarFunctions<TResult, TAvatar, TVector3>,
-        IChatFunctions<TResult, TAvatar, TVector3>,
+        IAvatarFunctions<TResult, TAvatar>,
+        IChatFunctions<TResult, TAvatar>,
         IFriendFunctions<TResult, TFriend>,
-        ITeleportFunctions<TResult, TWorld, TAvatar, TVector3>,
+        ITeleportFunctions<TResult, TWorld, TAvatar>,
         ITerrainFunctions<TResult, TTerrainTile, TTerrainNode, TTerrainCell>,
-        IVpObjectFunctions<TResult, TVpObject, TVector3>,
+        IVpObjectFunctions<TResult, TVpObject>,
         IWorldFunctions<TResult, TWorld>,
         IUniverseFunctions<TResult>
         /* Constraints ----------------------------------------------------------------------------------------------------------------------------------------------------*/
@@ -76,18 +75,17 @@ namespace VpNet.Abstract
         where TTerrainTile : class, ITerrainTile<TTerrainTile, TTerrainNode, TTerrainCell>, new()
         where TResult : class, IRc, new()
         where TWorld : class, IWorld, new()
-        where TAvatar : class, IAvatar<TVector3>, new()
+        where TAvatar : class, IAvatar, new()
         where TFriend : class, IFriend, new()
-        where TVpObject : class, IVpObject<TVector3>, new()
-        where TVector3 : struct, IVector3
-        where TTeleport : class, ITeleport<TWorld, TAvatar, TVector3>, new()
+        where TVpObject : class, IVpObject, new()
+        where TTeleport : class, ITeleport<TWorld, TAvatar>, new()
         where TUserAttributes : class, IUserAttributes, new()
         where T : class, new()
     {
-        public delegate void CellRangeQueryCompletedDelegate(T sender, CellRangeQueryCompletedArgs<TVpObject,TVector3> args);
-        public delegate void CellRangeObjectChangedDelegate(T sender, ObjectChangeArgsT<TAvatar, TVpObject, TVector3> args);
-        public delegate void CellRangeObjectDeletedDelegate(T sender, ObjectDeleteArgsT<TAvatar, TVpObject, TVector3> args);
-        public delegate void CellRangeObjectCreatedDelegate(T sender, ObjectCreateArgsT<TAvatar, TVpObject, TVector3> args);
+        public delegate void CellRangeQueryCompletedDelegate(T sender, CellRangeQueryCompletedArgs<TVpObject> args);
+        public delegate void CellRangeObjectChangedDelegate(T sender, ObjectChangeArgsT<TAvatar, TVpObject> args);
+        public delegate void CellRangeObjectDeletedDelegate(T sender, ObjectDeleteArgsT<TAvatar, TVpObject> args);
+        public delegate void CellRangeObjectCreatedDelegate(T sender, ObjectCreateArgsT<TAvatar, TVpObject> args);
 
         public event CellRangeQueryCompletedDelegate OnQueryCellRangeEnd;
         public event CellRangeObjectChangedDelegate OnObjectCellRangeChange;
@@ -145,7 +143,7 @@ namespace VpNet.Abstract
             return  _cacheScanned.Exists(p => p.X == vpObject.Cell.X && p.Z == vpObject.Cell.Z);
         }
 
-        void BaseInstanceT_OnObjectCreate(T sender, ObjectCreateArgsT<TAvatar, TVpObject, TVector3> args)
+        void BaseInstanceT_OnObjectCreate(T sender, ObjectCreateArgsT<TAvatar, TVpObject> args)
         {
             if (!IsInCellCacheRange(args.VpObject))
                 return;
@@ -153,7 +151,7 @@ namespace VpNet.Abstract
 
         }
 
-        void BaseInstanceT_OnObjectDelete(T sender, ObjectDeleteArgsT<TAvatar, TVpObject, TVector3> args)
+        void BaseInstanceT_OnObjectDelete(T sender, ObjectDeleteArgsT<TAvatar, TVpObject> args)
         {
             if (!IsInCellCacheRange(args.VpObject))
                 return;
@@ -161,7 +159,7 @@ namespace VpNet.Abstract
             _objects.Remove(o);
         }
 
-        void BaseInstanceT_CellCache_OnObjectChange(T sender, ObjectChangeArgsT<TAvatar, TVpObject, TVector3> args)
+        void BaseInstanceT_CellCache_OnObjectChange(T sender, ObjectChangeArgsT<TAvatar, TVpObject> args)
         {
             lock (this)
             {
@@ -190,7 +188,7 @@ namespace VpNet.Abstract
                 {
                     _isScanning = false;
                     if (OnQueryCellRangeEnd != null)
-                        OnQueryCellRangeEnd(Implementor, new CellRangeQueryCompletedArgs<TVpObject,TVector3> { VpObjects = _objects.Copy() });
+                        OnQueryCellRangeEnd(Implementor, new CellRangeQueryCompletedArgs<TVpObject> { VpObjects = _objects.Copy() });
                 }
                 else
                 {
@@ -201,7 +199,7 @@ namespace VpNet.Abstract
             }
         }
 
-        void BaseInstanceT_CellCache_OnQueryCellResult(T sender, QueryCellResultArgsT<TVpObject, TVector3> args)
+        void BaseInstanceT_CellCache_OnQueryCellResult(T sender, QueryCellResultArgsT<TVpObject> args)
         {
             lock (this)
             {

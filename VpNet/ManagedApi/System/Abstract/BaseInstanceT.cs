@@ -50,10 +50,8 @@ namespace VpNet.Abstract
     /// <typeparam name="TTerrainCell">The type of the terrain cell.</typeparam>
     /// <typeparam name="TTerrainNode">The type of the terrain node.</typeparam>
     /// <typeparam name="TTerrainTile">The type of the terrain tile.</typeparam>
-    /// <typeparam name="TVector3">The type of the vector3.</typeparam>
     /// <typeparam name="TVpObject">The type of the vp object.</typeparam>
     /// <typeparam name="TWorld">The type of the world.</typeparam>
-    /// <typeparam name="TWorldAttributes">The type of the world attributes.</typeparam>
     /// <typeparam name="TCell">The type of the cell.</typeparam>
     /// <typeparam name="TChatMessage">The type of the chat message.</typeparam>
     /// <typeparam name="TTerrain">The type of the terrain.</typeparam>
@@ -63,18 +61,18 @@ namespace VpNet.Abstract
     public abstract partial class BaseInstanceT<T,
         /* Scene Type specifications ----------------------------------------------------------------------------------------------------------------------------------------------*/
         TAvatar, TFriend, TResult, TTerrainCell, TTerrainNode,
-        TTerrainTile, TVector3, TVpObject, TWorld, TCell,TChatMessage,TTerrain,TUniverse,TTeleport,
+        TTerrainTile, TVpObject, TWorld, TCell,TChatMessage,TTerrain,TUniverse, TTeleport,
         TUserAttributes
         > :
         /* Interface specifications -----------------------------------------------------------------------------------------------------------------------------------------*/
         /* Functions */
         BaseInstanceEvents<TWorld>,
-        IAvatarFunctions<TResult, TAvatar, TVector3>,
-        IChatFunctions<TResult, TAvatar, TVector3>,
+        IAvatarFunctions<TResult, TAvatar>,
+        IChatFunctions<TResult, TAvatar>,
         IFriendFunctions<TResult, TFriend>,
-        ITeleportFunctions<TResult, TWorld, TAvatar, TVector3>,
+        ITeleportFunctions<TResult, TWorld, TAvatar>,
         ITerrainFunctions<TResult, TTerrainTile, TTerrainNode, TTerrainCell>,
-        IVpObjectFunctions<TResult, TVpObject, TVector3>,
+        IVpObjectFunctions<TResult, TVpObject>,
         IWorldFunctions<TResult, TWorld>,
         IUniverseFunctions<TResult>
 /* Constraints ----------------------------------------------------------------------------------------------------------------------------------------------------*/
@@ -87,11 +85,10 @@ namespace VpNet.Abstract
         where TTerrainTile : class, ITerrainTile<TTerrainTile,TTerrainNode, TTerrainCell>, new()
         where TResult : class, IRc, new()
         where TWorld : class, IWorld, new()
-        where TAvatar : class, IAvatar<TVector3>, new()
+        where TAvatar : class, IAvatar, new()
         where TFriend : class, IFriend, new()
-        where TVpObject : class, IVpObject<TVector3>, new()
-        where TVector3 : struct, IVector3
-        where TTeleport : class, ITeleport<TWorld,TAvatar,TVector3>, new()
+        where TVpObject : class, IVpObject, new()
+        where TTeleport : class, ITeleport<TWorld,TAvatar>, new()
         where TUserAttributes : class, IUserAttributes, new()
         where T : class, new()
     {
@@ -119,8 +116,8 @@ namespace VpNet.Abstract
         {
             Universe = new TUniverse();
             World = new TWorld();
-            ((IAvatarFunctions<TResult, TAvatar, TVector3>) this).Avatars = new Dictionary<int, TAvatar>();
-            _avatars =  ((IAvatarFunctions<TResult, TAvatar, TVector3>) this).Avatars;
+            ((IAvatarFunctions<TResult, TAvatar>) this).Avatars = new Dictionary<int, TAvatar>();
+            _avatars =  ((IAvatarFunctions<TResult, TAvatar>) this).Avatars;
             _worlds = new Dictionary<string, TWorld>();
             _isInitialized = true;
         }
@@ -174,7 +171,7 @@ namespace VpNet.Abstract
             HasParentInstance = true;
             _instance = parentInstance._instance;
             Init();
-            _avatars = ((IAvatarFunctions<TResult, TAvatar, TVector3>) parentInstance).Avatars;
+            _avatars = ((IAvatarFunctions<TResult, TAvatar>) parentInstance).Avatars;
             Configuration = parentInstance.Configuration;
             Configuration.IsChildInstance = true;
             parentInstance.OnChatNativeEvent += OnChatNative;
@@ -456,13 +453,13 @@ namespace VpNet.Abstract
                 UserId = Functions.vp_int(_instance, Attribute.MyUserId),
                 Name = Configuration.BotName,
                 AvatarType = Functions.vp_int(_instance, Attribute.MyType),
-                Position = new TVector3
+                Position = new Vector3
                 {
                     X = Functions.vp_double(_instance, Attribute.MyX).Truncate(3),
                     Y = Functions.vp_double(_instance, Attribute.MyY).Truncate(3),
                     Z = Functions.vp_double(_instance, Attribute.MyZ).Truncate(3)
                 },
-                Rotation = new TVector3
+                Rotation = new Vector3
                 {
                     X = Functions.vp_double(_instance, Attribute.MyPitch).Truncate(3),
                     Y = Functions.vp_double(_instance, Attribute.MyYaw).Truncate(3),
@@ -558,7 +555,7 @@ namespace VpNet.Abstract
             }
         }
 
-        public TResult ClickObject(TVpObject vpObject, TAvatar avatar, TVector3 worldHit)
+        public TResult ClickObject(TVpObject vpObject, TAvatar avatar, Vector3 worldHit)
         {
             lock (this)
             {
@@ -569,7 +566,7 @@ namespace VpNet.Abstract
             }
         }
 
-        public TResult ClickObject(TVpObject vpObject, TVector3 worldHit)
+        public TResult ClickObject(TVpObject vpObject, Vector3 worldHit)
         {
             lock (this)
             {
@@ -752,7 +749,7 @@ namespace VpNet.Abstract
                 };
         }
 
-        virtual public TResult TeleportAvatar(TAvatar avatar, string world, TVector3 position, double yaw, double pitch)
+        virtual public TResult TeleportAvatar(TAvatar avatar, string world, Vector3 position, double yaw, double pitch)
         {
             return new TResult
             {
@@ -760,7 +757,7 @@ namespace VpNet.Abstract
             };
         }
 
-        virtual public TResult TeleportAvatar(int targetSession, string world, TVector3 position, double yaw, double pitch)
+        virtual public TResult TeleportAvatar(int targetSession, string world, Vector3 position, double yaw, double pitch)
         {
             return new TResult
             {
@@ -769,7 +766,7 @@ namespace VpNet.Abstract
 
         }
 
-        virtual public TResult TeleportAvatar(TAvatar avatar, string world, TVector3 position, TVector3 rotation)
+        virtual public TResult TeleportAvatar(TAvatar avatar, string world, Vector3 position, Vector3 rotation)
         {
             return new TResult
             {
@@ -778,7 +775,7 @@ namespace VpNet.Abstract
 
         }
 
-        public TResult TeleportAvatar(TAvatar avatar, TWorld world, TVector3 position, TVector3 rotation)
+        public TResult TeleportAvatar(TAvatar avatar, TWorld world, Vector3 position, Vector3 rotation)
         {
             return new TResult
             {
@@ -786,7 +783,7 @@ namespace VpNet.Abstract
             };
         }
 
-        virtual public TResult TeleportAvatar(TAvatar avatar, TVector3 position, TVector3 rotation)
+        virtual public TResult TeleportAvatar(TAvatar avatar, Vector3 position, Vector3 rotation)
         {
             return new TResult
             {
@@ -845,12 +842,12 @@ namespace VpNet.Abstract
             }
         }
 
-        public TResult UpdateAvatar(TVector3 position)
+        public TResult UpdateAvatar(Vector3 position)
         {
             return UpdateAvatar(position.X, position.Y, position.Z);
         }
 
-        public TResult UpdateAvatar(TVector3 position, TVector3 rotation)
+        public TResult UpdateAvatar(Vector3 position, Vector3 rotation)
         {
             return UpdateAvatar(position.X, position.Y, position.Z,rotation.X,rotation.Y);
         }
@@ -988,7 +985,7 @@ namespace VpNet.Abstract
         }
 
 
-        public virtual TResult JoinAccept(int requestId, string world, TVector3 location, float yaw, float pitch)
+        public virtual TResult JoinAccept(int requestId, string world, Vector3 location, float yaw, float pitch)
         {
             lock (this)
             {
@@ -1143,32 +1140,32 @@ namespace VpNet.Abstract
         }
 
         //public delegate void Event(T sender);
-        public delegate void ChatMessageDelegate(T sender, ChatMessageEventArgsT<TAvatar, TChatMessage, TVector3> args);
+        public delegate void ChatMessageDelegate(T sender, ChatMessageEventArgsT<TAvatar, TChatMessage> args);
 
-        public delegate void AvatarChangeDelegate(T sender, AvatarChangeEventArgsT<TAvatar,TVector3> args);
-        public delegate void AvatarEnterDelegate(T sender, AvatarEnterEventArgsT<TAvatar, TVector3> args);
-        public delegate void AvatarLeaveDelegate(T sender, AvatarLeaveEventArgsT<TAvatar, TVector3> args);
-        public delegate void AvatarClickDelegate(T sender, AvatarClickEventArgsT<TAvatar, TVector3> args);
+        public delegate void AvatarChangeDelegate(T sender, AvatarChangeEventArgsT<TAvatar> args);
+        public delegate void AvatarEnterDelegate(T sender, AvatarEnterEventArgsT<TAvatar> args);
+        public delegate void AvatarLeaveDelegate(T sender, AvatarLeaveEventArgsT<TAvatar> args);
+        public delegate void AvatarClickDelegate(T sender, AvatarClickEventArgsT<TAvatar> args);
 
-        public delegate void TeleportDelegate(T sender, TeleportEventArgsT<TTeleport, TWorld, TAvatar, TVector3> args);
+        public delegate void TeleportDelegate(T sender, TeleportEventArgsT<TTeleport, TWorld, TAvatar> args);
 
         public delegate void UserAttributesDelegate(T sender, UserAttributesEventArgsT<TUserAttributes> args);
 
         public delegate void WorldListEventDelegate(T sender, WorldListEventArgsT<TWorld> args);
 
-        public delegate void ObjectCreateDelegate(T sender, ObjectCreateArgsT<TAvatar, TVpObject, TVector3> args);
-        public delegate void ObjectChangeDelegate(T sender, ObjectChangeArgsT<TAvatar, TVpObject, TVector3> args);
-        public delegate void ObjectDeleteDelegate(T sender, ObjectDeleteArgsT<TAvatar, TVpObject, TVector3> args);
-        public delegate void ObjectClickDelegate(T sender, ObjectClickArgsT<TAvatar, TVpObject, TVector3> args);
-        public delegate void ObjectBumpDelegate(T sender, ObjectBumpArgsT<TAvatar, TVpObject, TVector3> args);
+        public delegate void ObjectCreateDelegate(T sender, ObjectCreateArgsT<TAvatar, TVpObject> args);
+        public delegate void ObjectChangeDelegate(T sender, ObjectChangeArgsT<TAvatar, TVpObject> args);
+        public delegate void ObjectDeleteDelegate(T sender, ObjectDeleteArgsT<TAvatar, TVpObject> args);
+        public delegate void ObjectClickDelegate(T sender, ObjectClickArgsT<TAvatar, TVpObject> args);
+        public delegate void ObjectBumpDelegate(T sender, ObjectBumpArgsT<TAvatar, TVpObject> args);
 
 
-        public delegate void ObjectCreateCallback(T sender, ObjectCreateCallbackArgsT<TResult, TVpObject, TVector3> args);
-        public delegate void ObjectChangeCallback(T sender, ObjectChangeCallbackArgsT<TResult, TVpObject, TVector3> args);
-        public delegate void ObjectDeleteCallback(T sender, ObjectDeleteCallbackArgsT<TResult, TVpObject, TVector3> args);
-        public delegate void ObjectGetCallback(T sender, ObjectGetCallbackArgsT<TResult, TVpObject, TVector3> args);
+        public delegate void ObjectCreateCallback(T sender, ObjectCreateCallbackArgsT<TResult, TVpObject> args);
+        public delegate void ObjectChangeCallback(T sender, ObjectChangeCallbackArgsT<TResult, TVpObject> args);
+        public delegate void ObjectDeleteCallback(T sender, ObjectDeleteCallbackArgsT<TResult, TVpObject> args);
+        public delegate void ObjectGetCallback(T sender, ObjectGetCallbackArgsT<TResult, TVpObject> args);
 
-        public delegate void QueryCellResultDelegate(T sender, QueryCellResultArgsT<TVpObject, TVector3> args);
+        public delegate void QueryCellResultDelegate(T sender, QueryCellResultArgsT<TVpObject> args);
         public delegate void QueryCellEndDelegate(T sender, QueryCellEndArgsT<TCell> args);
 
         public delegate void WorldSettingsChangedDelegate(T sender, WorldSettingsChangedEventArgsT<TWorld> args);
@@ -1235,7 +1232,7 @@ namespace VpNet.Abstract
                 if (OnObjectCreateCallback != null)
                 {
                     vpObject.Id = Functions.vp_int(sender, Attribute.ObjectId);
-                    OnObjectCreateCallback(Implementor, new ObjectCreateCallbackArgsT<TResult, TVpObject, TVector3> { Result = new TResult { Rc = rc }, VpObject = vpObject });
+                    OnObjectCreateCallback(Implementor, new ObjectCreateCallbackArgsT<TResult, TVpObject> { Result = new TResult { Rc = rc }, VpObject = vpObject });
                 }
             }
         }
@@ -1250,7 +1247,7 @@ namespace VpNet.Abstract
                 if (OnObjectChangeCallback != null)
                 {
                     vpObject.Id = Functions.vp_int(sender, Attribute.ObjectId);
-                    OnObjectChangeCallback(Implementor, new ObjectChangeCallbackArgsT<TResult, TVpObject, TVector3> { Result = new TResult { Rc = rc }, VpObject = vpObject });
+                    OnObjectChangeCallback(Implementor, new ObjectChangeCallbackArgsT<TResult, TVpObject> { Result = new TResult { Rc = rc }, VpObject = vpObject });
                 }
             }
         }
@@ -1264,7 +1261,7 @@ namespace VpNet.Abstract
 
                 if (OnObjectDeleteCallback != null)
                 {
-                    OnObjectDeleteCallback(Implementor, new ObjectDeleteCallbackArgsT<TResult, TVpObject, TVector3> { Result = new TResult { Rc = rc }, VpObject = vpObject });
+                    OnObjectDeleteCallback(Implementor, new ObjectDeleteCallbackArgsT<TResult, TVpObject> { Result = new TResult { Rc = rc }, VpObject = vpObject });
                 }
             }
         }
@@ -1277,7 +1274,7 @@ namespace VpNet.Abstract
                 GetVpObject(sender,out vpObject);
                 if (OnObjectGetCallback != null)
                 {
-                    OnObjectGetCallback(Implementor, new ObjectGetCallbackArgsT<TResult, TVpObject, TVector3> { Result = new TResult { Rc = rc }, VpObject = vpObject });
+                    OnObjectGetCallback(Implementor, new ObjectGetCallbackArgsT<TResult, TVpObject> { Result = new TResult { Rc = rc }, VpObject = vpObject });
                 }
             }
         }
@@ -1331,13 +1328,13 @@ namespace VpNet.Abstract
                 teleport = new TTeleport
                     {
                         Avatar = GetAvatar(Functions.vp_int(sender, Attribute.AvatarSession)),
-                        Position = new TVector3
+                        Position = new Vector3
                             {
                                 X = Functions.vp_double(sender, Attribute.TeleportX),
                                 Y = Functions.vp_double(sender, Attribute.TeleportY),
                                 Z = Functions.vp_double(sender, Attribute.TeleportZ)
                             },
-                        Rotation = new TVector3
+                        Rotation = new Vector3
                             {
                                 X = Functions.vp_double(sender, Attribute.TeleportPitch),
                                 Y = Functions.vp_double(sender, Attribute.TeleportYaw),
@@ -1347,7 +1344,7 @@ namespace VpNet.Abstract
                         World = new TWorld { Name = Functions.vp_string(sender, Attribute.TeleportWorld),State = WorldState.Unknown, UserCount=-1 }
                     };
             }
-            OnTeleport(Implementor, new TeleportEventArgsT<TTeleport, TWorld, TAvatar, TVector3>{Teleport = teleport});
+            OnTeleport(Implementor, new TeleportEventArgsT<TTeleport, TWorld, TAvatar>{Teleport = teleport});
         }
 
         private void OnGetFriendsCallbackNative(IntPtr sender, int rc, int reference)
@@ -1380,7 +1377,7 @@ namespace VpNet.Abstract
 
         private void OnChatNative(IntPtr sender)
         {
-            ChatMessageEventArgsT<TAvatar, TChatMessage, TVector3> data;
+            ChatMessageEventArgsT<TAvatar, TChatMessage> data;
             lock (this)
             {
                 if (!_avatars.ContainsKey(Functions.vp_int(sender, Attribute.AvatarSession)))
@@ -1392,7 +1389,7 @@ namespace VpNet.Abstract
                         };
                     _avatars.Add(avatar.Session, avatar);
                 }
-                data = new ChatMessageEventArgsT<TAvatar, TChatMessage, TVector3>
+                data = new ChatMessageEventArgsT<TAvatar, TChatMessage>
                 {
                     Avatar = _avatars[Functions.vp_int(sender, Attribute.AvatarSession)],
                     ChatMessage = new TChatMessage
@@ -1436,22 +1433,31 @@ namespace VpNet.Abstract
             TAvatar data;
             lock (this)
             {
-                data = new TAvatar {UserId=Functions.vp_int(sender, Attribute.UserId),
-                Name = Functions.vp_string(sender, Attribute.AvatarName),
-                Session=Functions.vp_int(sender, Attribute.AvatarSession),
-                AvatarType=Functions.vp_int(sender, Attribute.AvatarType),
-                Position=new TVector3{X=Functions.vp_double(sender, Attribute.AvatarX).Truncate(3),
-                            Y=Functions.vp_double(sender, Attribute.AvatarY).Truncate(3),
-                            Z=Functions.vp_double(sender, Attribute.AvatarZ).Truncate(3)},
-                Rotation=new TVector3{X=Functions.vp_double(sender, Attribute.AvatarPitch).Truncate(3),
-                            Y=Functions.vp_double(sender, Attribute.AvatarYaw).Truncate(3),
-                            Z=0 /* roll currently not supported*/}};
+                data = new TAvatar
+                {
+                    UserId = Functions.vp_int(sender, Attribute.UserId),
+                    Name = Functions.vp_string(sender, Attribute.AvatarName),
+                    Session = Functions.vp_int(sender, Attribute.AvatarSession),
+                    AvatarType = Functions.vp_int(sender, Attribute.AvatarType),
+                    Position = new Vector3
+                    {
+                        X = Functions.vp_double(sender, Attribute.AvatarX).Truncate(3),
+                        Y = Functions.vp_double(sender, Attribute.AvatarY).Truncate(3),
+                        Z = Functions.vp_double(sender, Attribute.AvatarZ).Truncate(3)
+                    },
+                    Rotation = new Vector3
+                    {
+                        X = Functions.vp_double(sender, Attribute.AvatarPitch).Truncate(3),
+                        Y = Functions.vp_double(sender, Attribute.AvatarYaw).Truncate(3),
+                        Z = 0 /* roll currently not supported*/
+                    }
+                };
                 if (!_avatars.ContainsKey(data.Session))
                     _avatars.Add(data.Session, data);
             }
             data.LastChanged = DateTime.UtcNow;
             if (OnAvatarEnter == null) return;
-            var args = new AvatarEnterEventArgsT<TAvatar, TVector3> {Avatar = data, Implementor = Implementor};
+            var args = new AvatarEnterEventArgsT<TAvatar> {Avatar = data, Implementor = Implementor};
             args.Initialize();
             OnAvatarEnter(Implementor, args);
         }
@@ -1462,15 +1468,25 @@ namespace VpNet.Abstract
             TAvatar data;
             lock (this)
             {
-                data = new TAvatar{UserId=_avatars[Functions.vp_int(sender, Attribute.AvatarSession)].UserId, Name=Functions.vp_string(sender, Attribute.AvatarName),
-                                  Session=Functions.vp_int(sender, Attribute.AvatarSession),
-                                  AvatarType=Functions.vp_int(sender, Attribute.AvatarType),
-                                  Position=new TVector3{X=Functions.vp_double(sender, Attribute.AvatarX).Truncate(3),
-                                  Y=Functions.vp_double(sender, Attribute.AvatarY).Truncate(3),
-                                  Z=Functions.vp_double(sender, Attribute.AvatarZ).Truncate(3)},
-               Rotation=new TVector3{X=Functions.vp_double(sender, Attribute.AvatarPitch).Truncate(3),
-                            Y=Functions.vp_double(sender, Attribute.AvatarYaw).Truncate(3),
-                            Z=0 /* roll currently not supported*/}};
+                data = new TAvatar
+                {
+                    UserId = _avatars[Functions.vp_int(sender, Attribute.AvatarSession)].UserId,
+                    Name = Functions.vp_string(sender, Attribute.AvatarName),
+                    Session = Functions.vp_int(sender, Attribute.AvatarSession),
+                    AvatarType = Functions.vp_int(sender, Attribute.AvatarType),
+                    Position = new Vector3
+                    {
+                        X = Functions.vp_double(sender, Attribute.AvatarX).Truncate(3),
+                        Y = Functions.vp_double(sender, Attribute.AvatarY).Truncate(3),
+                        Z = Functions.vp_double(sender, Attribute.AvatarZ).Truncate(3)
+                    },
+                    Rotation = new Vector3
+                    {
+                        X = Functions.vp_double(sender, Attribute.AvatarPitch).Truncate(3),
+                        Y = Functions.vp_double(sender, Attribute.AvatarYaw).Truncate(3),
+                        Z = 0 /* roll currently not supported*/
+                    }
+                };
                 // determine if the avatar actually changed.
                 old = new TAvatar().CopyFrom(_avatars[data.Session], true);
                 if (data.Position.X == old.Position.X
@@ -1485,7 +1501,7 @@ namespace VpNet.Abstract
 
             }
             if (OnAvatarChange != null)
-                OnAvatarChange(Implementor, new AvatarChangeEventArgsT<TAvatar, TVector3> { Avatar = _avatars[data.Session], AvatarPrevious = old });
+                OnAvatarChange(Implementor, new AvatarChangeEventArgsT<TAvatar> { Avatar = _avatars[data.Session], AvatarPrevious = old });
         }
 
         private void OnAvatarDeleteNative(IntPtr sender)
@@ -1498,7 +1514,7 @@ namespace VpNet.Abstract
                     data = _avatars[Functions.vp_int(sender, Attribute.AvatarSession)];
                     _avatars.Remove(data.Session);
                     if (OnAvatarLeave == null) return;
-                    OnAvatarLeave(Implementor, new AvatarLeaveEventArgsT<TAvatar, TVector3> { Avatar = data });
+                    OnAvatarLeave(Implementor, new AvatarLeaveEventArgsT<TAvatar> { Avatar = data });
                 }
                 catch
                 {
@@ -1517,11 +1533,11 @@ namespace VpNet.Abstract
                     clickedAvatar = Functions.vp_int(sender, Attribute.AvatarSession);
 
                 OnAvatarClick(Implementor,
-                    new AvatarClickEventArgsT<TAvatar, TVector3>
+                    new AvatarClickEventArgsT<TAvatar>
                     {
                         Avatar = GetAvatar(Functions.vp_int(sender, Attribute.AvatarSession)),
                         ClickedAvatar = GetAvatar(clickedAvatar),
-                        WorldHit = new TVector3
+                        WorldHit = new Vector3
                         {
                             X = Functions.vp_double(sender, Attribute.ClickHitX),
                             Y = Functions.vp_double(sender, Attribute.ClickHitY),
@@ -1536,12 +1552,12 @@ namespace VpNet.Abstract
             if (OnObjectClick == null) return;
             int session;
             int objectId;
-            TVector3 world;
+            Vector3 world;
             lock (this)
             {
                 session = Functions.vp_int(sender, Attribute.AvatarSession);
                 objectId = Functions.vp_int(sender, Attribute.ObjectId);
-                world = new TVector3
+                world = new Vector3
                     {
                         X = Functions.vp_double(sender, Attribute.ClickHitX),
                         Y = Functions.vp_double(sender, Attribute.ClickHitY),
@@ -1550,7 +1566,7 @@ namespace VpNet.Abstract
             }
             
             OnObjectClick(Implementor,
-                          new ObjectClickArgsT<TAvatar,TVpObject, TVector3>
+                          new ObjectClickArgsT<TAvatar,TVpObject>
                               {WorldHit=world, Avatar = GetAvatar(session), VpObject = new TVpObject {Id = objectId}});
         }
 
@@ -1559,7 +1575,7 @@ namespace VpNet.Abstract
             if (OnObjectBump == null) return;
             int session;
             int objectId;
-            TVector3 world;
+            Vector3 world;
             lock (this)
             {
                 session = Functions.vp_int(sender, Attribute.AvatarSession);
@@ -1567,7 +1583,7 @@ namespace VpNet.Abstract
             }
 
             OnObjectBump(Implementor,
-                          new ObjectBumpArgsT<TAvatar, TVpObject, TVector3> { BumpType = BumpType.BumpBegin, Avatar = GetAvatar(session), VpObject = new TVpObject { Id = objectId } });
+                          new ObjectBumpArgsT<TAvatar, TVpObject> { BumpType = BumpType.BumpBegin, Avatar = GetAvatar(session), VpObject = new TVpObject { Id = objectId } });
         }
 
         private void OnObjectBumpEndNative(IntPtr sender)
@@ -1575,7 +1591,7 @@ namespace VpNet.Abstract
             if (OnObjectBump == null) return;
             int session;
             int objectId;
-            TVector3 world;
+            Vector3 world;
             lock (this)
             {
                 session = Functions.vp_int(sender, Attribute.AvatarSession);
@@ -1583,7 +1599,7 @@ namespace VpNet.Abstract
             }
 
             OnObjectBump(Implementor,
-                          new ObjectBumpArgsT<TAvatar, TVpObject, TVector3> { BumpType = BumpType.BumpEnd, Avatar = GetAvatar(session), VpObject = new TVpObject { Id = objectId } });
+                          new ObjectBumpArgsT<TAvatar, TVpObject> { BumpType = BumpType.BumpEnd, Avatar = GetAvatar(session), VpObject = new TVpObject { Id = objectId } });
         }
 
         private void OnObjectDeleteNative(IntPtr sender)
@@ -1596,7 +1612,7 @@ namespace VpNet.Abstract
                 session = Functions.vp_int(sender, Attribute.AvatarSession);
                 objectId = Functions.vp_int(sender, Attribute.ObjectId);
             }
-            OnObjectDelete(Implementor, new ObjectDeleteArgsT<TAvatar, TVpObject, TVector3> { Avatar = GetAvatar(session), VpObject = new TVpObject { Id = objectId } });
+            OnObjectDelete(Implementor, new ObjectDeleteArgsT<TAvatar, TVpObject> { Avatar = GetAvatar(session), VpObject = new TVpObject { Id = objectId } });
         }
 
         private void OnObjectCreateNative(IntPtr sender)
@@ -1610,10 +1626,10 @@ namespace VpNet.Abstract
                 GetVpObject(sender, out vpObject);
             }
             if (session == 0 && OnQueryCellResult != null)
-                OnQueryCellResult(Implementor, new QueryCellResultArgsT<TVpObject, TVector3> { VpObject = vpObject });
+                OnQueryCellResult(Implementor, new QueryCellResultArgsT<TVpObject> { VpObject = vpObject });
             else
                 if (OnObjectCreate != null)
-                OnObjectCreate(Implementor, new ObjectCreateArgsT<TAvatar, TVpObject, TVector3> { Avatar = GetAvatar(session), VpObject = vpObject });
+                OnObjectCreate(Implementor, new ObjectCreateArgsT<TAvatar, TVpObject> { Avatar = GetAvatar(session), VpObject = vpObject });
         }
 
 
@@ -1674,7 +1690,7 @@ namespace VpNet.Abstract
                 Model = Functions.vp_string(sender, Attribute.ObjectModel),
                 Data = Functions.GetData(sender, Attributes.ObjectData),
 
-                Rotation = new TVector3
+                Rotation = new Vector3
                 {
                     X = Functions.vp_double(sender, Attribute.ObjectRotationX),
                     Y = Functions.vp_double(sender, Attribute.ObjectRotationY),
@@ -1686,7 +1702,7 @@ namespace VpNet.Abstract
                         Functions.vp_int(sender, Attribute.ObjectTime)),
                 ObjectType = Functions.vp_int(sender, Attribute.ObjectType),
                 Owner = Functions.vp_int(sender, Attribute.ObjectUserId),
-                Position = new TVector3
+                Position = new Vector3
                 {
                     X = Functions.vp_double(sender, Attribute.ObjectX),
                     Y = Functions.vp_double(sender, Attribute.ObjectY),
@@ -1706,7 +1722,7 @@ namespace VpNet.Abstract
                 GetVpObject(sender,out vpObject);
                 sessionId = Functions.vp_int(sender, Attribute.AvatarSession);
             }
-            OnObjectChange(Implementor, new ObjectChangeArgsT<TAvatar, TVpObject, TVector3> { Avatar = GetAvatar(sessionId), VpObject = vpObject });
+            OnObjectChange(Implementor, new ObjectChangeArgsT<TAvatar, TVpObject> { Avatar = GetAvatar(sessionId), VpObject = vpObject });
         }
 
         private void OnQueryCellEndNative(IntPtr sender)
@@ -1924,9 +1940,9 @@ namespace VpNet.Abstract
 
         #endregion
 
-        #region Implementation of IAvatarFunctions<out TResult,TAvatar,in TVector3>
+        #region Implementation of IAvatarFunctions<out TResult,TAvatar,in Vector3>
 
-        Dictionary<int, TAvatar> IAvatarFunctions<TResult, TAvatar, TVector3>.Avatars { get; set; }
+        Dictionary<int, TAvatar> IAvatarFunctions<TResult, TAvatar>.Avatars { get; set; }
 
         #endregion
     }

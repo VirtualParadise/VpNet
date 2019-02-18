@@ -32,28 +32,25 @@ namespace VpNet
 {
     [Serializable]
     [XmlRoot("Instance", Namespace = Global.XmlNsInstance)]
-    public class Instance<TResult, TVector3, TAvatar, TVpObject> : BaseInstanceT<Instance<TResult, TVector3,TAvatar, TVpObject>,
+    public class Instance<TResult, TAvatar, TVpObject> : BaseInstanceT<Instance<TResult, TAvatar, TVpObject>,
         TAvatar,
         Friend,
         TResult,
         TerrainCell,
         TerrainNode,
         TerrainTile,
-        TVector3,
         TVpObject,
         World,
         Cell,
         ChatMessage,
         Terrain,
         Universe,
-        Teleport<World,TAvatar,TVector3>,
+        Teleport<World, TAvatar>,
         UserAttributes
         >
-        
-        where TVector3 : struct, IVector3
         where TResult : class, IRc, new()
-        where TAvatar : class, IAvatar<TVector3>, new()
-        where TVpObject : class, IVpObject<TVector3>, new()
+        where TAvatar : class, IAvatar, new()
+        where TVpObject : class, IVpObject, new()
     {
         public Instance()
         {

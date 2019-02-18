@@ -31,10 +31,9 @@ namespace VpNet.Abstract
 {
     [Serializable]
     [XmlRoot("vpObject", Namespace = Global.XmlNsScene)]
-    public abstract class BaseVpObject<TVector3> : IVpObject<TVector3>
-        where TVector3 : struct, IVector3
+    public abstract class BaseVpObject : IVpObject
     {
-        private TVector3 _position;
+        private Vector3 _position;
         private Cell _cell;
 
         [XmlAttribute]
@@ -44,7 +43,7 @@ namespace VpNet.Abstract
         [XmlAttribute]
         public int Owner { get; set; }
 
-        public TVector3 Position
+        public Vector3 Position
         {
             get { return _position; }
             set
@@ -53,7 +52,7 @@ namespace VpNet.Abstract
                 _position = value;
             }
         }
-        public TVector3 Rotation { get; set; }
+        public Vector3 Rotation { get; set; }
         [XmlAttribute]
         public double Angle { get; set; }
         [XmlAttribute]
@@ -69,7 +68,7 @@ namespace VpNet.Abstract
         [XmlIgnore]
         public int ReferenceNumber { get; set; }
 
-        protected BaseVpObject(int id, int objectType, DateTime time, int owner, TVector3 position, TVector3 rotation, double angle, string action, string description, string model, byte[] data)
+        protected BaseVpObject(int id, int objectType, DateTime time, int owner, Vector3 position, Vector3 rotation, double angle, string action, string description, string model, byte[] data)
         {
             Id = id;
             ObjectType = objectType;

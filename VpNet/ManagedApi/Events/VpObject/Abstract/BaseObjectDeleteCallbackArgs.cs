@@ -29,10 +29,9 @@ using VpNet.Interfaces;
 namespace VpNet.Abstract
 {
     [Serializable]
-    public abstract class BaseObjectDeleteCallbackArgs<TResult, TVpObject, TVector3> : TimedEventArgs, IObjectDeleteCallbackArgs<TResult, TVpObject, TVector3>
+    public abstract class BaseObjectDeleteCallbackArgs<TResult, TVpObject> : TimedEventArgs, IObjectDeleteCallbackArgs<TResult, TVpObject>
         where TResult : class, IRc, new()
-        where TVector3 : struct, IVector3
-        where TVpObject : class, IVpObject<TVector3>, new()
+        where TVpObject : class, IVpObject, new()
     {
         public TVpObject VpObject { get; set; }
         public TResult Result { get; set; }

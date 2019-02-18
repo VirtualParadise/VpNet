@@ -31,10 +31,9 @@ namespace VpNet
 {
     [Serializable]
     [XmlRoot("Teleport", Namespace = Global.XmlNsScene)]
-    public class Teleport<TWorld,TAvatar,TVector3> : Abstract.BaseTeleport<TWorld,TAvatar,TVector3>
+    public class Teleport<TWorld,TAvatar> : Abstract.BaseTeleport<TWorld,TAvatar>
         where TWorld : class, IWorld, new()
-        where TVector3 : struct, IVector3
-        where TAvatar : class, IAvatar<TVector3>, new()
+        where TAvatar : class, IAvatar, new()
     {
         public Teleport(){} 
     }

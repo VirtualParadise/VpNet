@@ -30,10 +30,8 @@ namespace VpNet.Interfaces
     /// <summary>
     /// VpObject templated interface specifications.
     /// </summary>
-    /// <typeparam name="TVector3">The type of the vector3.</typeparam>
     [XmlRoot("vpObject", Namespace = Global.XmlNsScene)]
-    public interface IVpObject<TVector3>
-        where TVector3 : struct, IVector3
+    public interface IVpObject
     {
         [XmlAttribute]
         int Id { get; set; }
@@ -44,8 +42,8 @@ namespace VpNet.Interfaces
         [XmlAttribute]
         int Owner { get; set; }
 
-        TVector3 Position { get; set; }
-        TVector3 Rotation { get; set; }
+        Vector3 Position { get; set; }
+        Vector3 Rotation { get; set; }
 
         [XmlAttribute]
         double Angle { get; set; }

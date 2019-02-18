@@ -33,5 +33,5 @@ namespace VpNet
     /// </summary>
     [Serializable]
     [XmlRoot("OnTeleport", Namespace = Global.XmlNsEvent)]
-    public class TeleportEventArgs : Abstract.BaseTeleportEventArgs<Teleport<World,Avatar<Vector3>,Vector3>, World, Avatar<Vector3>,Vector3>{}
+    public class TeleportEventArgs : Abstract.BaseTeleportEventArgs<Teleport<World, Avatar>, World, Avatar> { }
 }

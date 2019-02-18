@@ -30,11 +30,9 @@ namespace VpNet.Interfaces
     /// </summary>
     /// <typeparam name="TRc">The type of the result code object.</typeparam>
     /// <typeparam name="TAvatar">The type of the avatar.</typeparam>
-    /// <typeparam name="TVector3">The type of vector3.</typeparam>
-    public interface IAvatarFunctions<out TRc, TAvatar, TVector3>
+    public interface IAvatarFunctions<out TRc, TAvatar>
         where TRc : class, IRc, new()
-        where TAvatar : class, IAvatar<TVector3>,new()
-        where TVector3 : struct, IVector3
+        where TAvatar : class, IAvatar,new()
     {
         /// <summary>
         /// Gets or sets the Avatars
@@ -57,14 +55,14 @@ namespace VpNet.Interfaces
         /// </summary>
         /// <param name="position">The position.</param>
         /// <returns>Result object</returns>
-        TRc UpdateAvatar(TVector3 position);
+        TRc UpdateAvatar(Vector3 position);
         /// <summary>
         /// Announce your bot at a given location.
         /// </summary>
         /// <param name="position">The position.</param>
         /// <param name="rotation">The rotation.</param>
         /// <returns></returns>
-        TRc UpdateAvatar(TVector3 position, TVector3 rotation);
+        TRc UpdateAvatar(Vector3 position, Vector3 rotation);
         /// <summary>
         /// Send an avatar click event to other users in the world
         /// </summary>

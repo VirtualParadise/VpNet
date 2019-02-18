@@ -27,11 +27,10 @@ using VpNet.Interfaces;
 
 namespace VpNet.Abstract
 {
-    public abstract class BaseTeleportEventArgs<TTeleport, TWorld, TAvatar, TVector3> : TimedEventArgs, ITeleportEventArgs<TTeleport, TWorld, TAvatar, TVector3>
+    public abstract class BaseTeleportEventArgs<TTeleport, TWorld, TAvatar> : TimedEventArgs, ITeleportEventArgs<TTeleport, TWorld, TAvatar>
         where TWorld : class, IWorld, new()
-        where TVector3 : struct, IVector3
-        where TAvatar : class, IAvatar<TVector3>, new()
-        where TTeleport : class, ITeleport<TWorld,TAvatar,TVector3>, new()
+        where TAvatar : class, IAvatar, new()
+        where TTeleport : class, ITeleport<TWorld,TAvatar>, new()
     {
         public TTeleport Teleport { get; set; }
 

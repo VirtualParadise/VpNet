@@ -30,11 +30,9 @@ namespace VpNet.Interfaces
     /// </summary>
     /// <typeparam name="TWorld">The type of the world.</typeparam>
     /// <typeparam name="TAvatar">The type of the avatar.</typeparam>
-    /// <typeparam name="TVector3">The type of the vector3.</typeparam>
-    public interface ITeleport<TWorld, TAvatar,TVector3>
+    public interface ITeleport<TWorld, TAvatar>
         where TWorld : class, IWorld, new()
-        where TVector3 : struct, IVector3
-        where TAvatar : class, IAvatar<TVector3>,new()
+        where TAvatar : class, IAvatar,new()
     {
         /// <summary>
         /// Gets or sets the world.
@@ -56,13 +54,13 @@ namespace VpNet.Interfaces
         /// <value>
         /// The position.
         /// </value>
-        TVector3 Position { get; set; }
+        Vector3 Position { get; set; }
         /// <summary>
         /// Gets or sets the rotation.
         /// </summary>
         /// <value>
         /// The rotation.
         /// </value>
-        TVector3 Rotation { get; set; }
+        Vector3 Rotation { get; set; }
     }
 }

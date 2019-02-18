@@ -25,10 +25,9 @@ ____   ___.__         __               .__    __________                        
 
 namespace VpNet.Interfaces
 {
-    public interface IVpObjectFunctions<out TRc, in TVpObject,TVector3> 
+    public interface IVpObjectFunctions<out TRc, in TVpObject> 
         where TRc : class, IRc, new()
-        where TVector3 : struct, IVector3
-        where TVpObject: class, IVpObject<TVector3>, new()
+        where TVpObject: class, IVpObject, new()
     {
         TRc ChangeObject(TVpObject vpObject);
         TRc LoadObject(TVpObject vpObject);

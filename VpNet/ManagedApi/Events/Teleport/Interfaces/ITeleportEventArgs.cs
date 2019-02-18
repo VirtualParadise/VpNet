@@ -31,12 +31,10 @@ namespace VpNet.Interfaces
     /// <typeparam name="TTeleport">The type of the teleport.</typeparam>
     /// <typeparam name="TWorld">The type of the world.</typeparam>
     /// <typeparam name="TAvatar">The type of the avatar.</typeparam>
-    /// <typeparam name="TVector3">The type of the vector3.</typeparam>
-    public interface ITeleportEventArgs<TTeleport, TWorld, TAvatar,TVector3>
+    public interface ITeleportEventArgs<TTeleport, TWorld, TAvatar>
         where TWorld : class, IWorld, new()
-        where TVector3 : struct, IVector3
-        where TAvatar : class, IAvatar<TVector3>,  new()
-        where TTeleport : class, ITeleport<TWorld, TAvatar, TVector3>, new()
+        where TAvatar : class, IAvatar,  new()
+        where TTeleport : class, ITeleport<TWorld, TAvatar>, new()
     {
         /// <summary>
         /// Gets or sets the teleport.

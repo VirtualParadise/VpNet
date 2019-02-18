@@ -30,9 +30,8 @@ using VpNet.Interfaces;
 namespace VpNet.Abstract
 {
     [Serializable]
-    public abstract class BaseAvatarEnterEventArgs<TAvatar, TVector3> : TimedEventArgs, IAvatarEnterEventArgs<TAvatar, TVector3>
-        where TVector3 : struct, IVector3
-        where TAvatar : class, IAvatar<TVector3>, new()
+    public abstract class BaseAvatarEnterEventArgs<TAvatar> : TimedEventArgs, IAvatarEnterEventArgs<TAvatar>
+        where TAvatar : class, IAvatar, new()
     {
         virtual public TAvatar Avatar { get; set; }
 

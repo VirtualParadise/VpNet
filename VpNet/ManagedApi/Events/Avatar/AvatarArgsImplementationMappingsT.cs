@@ -32,42 +32,34 @@ namespace VpNet
     /// Templated Event Arguments implementation.
     /// </summary>
     /// <typeparam name="TAvatar">The type of the avatar.</typeparam>
-    /// <typeparam name="TVector3">The type of the vector3.</typeparam>
     [XmlRoot("OnAvatarChange", Namespace = Global.XmlNsEvent)]
-    public class AvatarChangeEventArgsT<TAvatar,TVector3> : Abstract.BaseAvatarChangeEventArgs<TAvatar,TVector3>
-       where TVector3 : struct, IVector3
-       where TAvatar : class, IAvatar<TVector3>, new()
+    public class AvatarChangeEventArgsT<TAvatar> : Abstract.BaseAvatarChangeEventArgs<TAvatar>
+       where TAvatar : class, IAvatar, new()
     { }
 
     /// <summary>
     /// Templated Event Arguments implementation
     /// </summary>
     /// <typeparam name="TAvatar">The type of the avatar.</typeparam>
-    /// <typeparam name="TVector3">The type of the vector3.</typeparam>
     [XmlRoot("OnAvatarEnter", Namespace = Global.XmlNsEvent)]
-    public class AvatarEnterEventArgsT<TAvatar,TVector3> : Abstract.BaseAvatarEnterEventArgs<TAvatar,TVector3>
-       where TVector3 : struct, IVector3
-       where TAvatar : class, IAvatar<TVector3>, new()
+    public class AvatarEnterEventArgsT<TAvatar> : Abstract.BaseAvatarEnterEventArgs<TAvatar>
+       where TAvatar : class, IAvatar, new()
     { }
     /// <summary>
     /// Templated Event Arguments implementation
     /// </summary>
     /// <typeparam name="TAvatar">The type of the avatar.</typeparam>
-    /// <typeparam name="TVector3">The type of the vector3.</typeparam>
     [XmlRoot("OnAvatarLeave", Namespace = Global.XmlNsEvent)]
-    public class AvatarLeaveEventArgsT<TAvatar, TVector3> : Abstract.BaseAvatarLeaveEventArgs<TAvatar, TVector3>
-       where TVector3 : struct, IVector3
-       where TAvatar : class, IAvatar<TVector3>, new()
+    public class AvatarLeaveEventArgsT<TAvatar> : Abstract.BaseAvatarLeaveEventArgs<TAvatar>
+       where TAvatar : class, IAvatar, new()
     { }
     /// <summary>
     /// Templated Event Arguments implementation
     /// </summary>
     /// <typeparam name="TAvatar">The type of the avatar.</typeparam>
-    /// <typeparam name="TVector3">The type of the vector3.</typeparam>
     [XmlRoot("OnAvatarClick", Namespace = Global.XmlNsEvent)]
-    public class AvatarClickEventArgsT<TAvatar, TVector3> : Abstract.BaseAvatarClickEventArgs<TAvatar, TVector3>
-        where TVector3 : struct, IVector3
-        where TAvatar : class, IAvatar<TVector3>, new()
+    public class AvatarClickEventArgsT<TAvatar> : Abstract.BaseAvatarClickEventArgs<TAvatar>
+        where TAvatar : class, IAvatar, new()
     { }
 
     [XmlRoot("OnJoin", Namespace = Global.XmlNsEvent)]

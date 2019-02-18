@@ -29,10 +29,9 @@ using VpNet.Interfaces;
 namespace VpNet.Abstract
 {
     [Serializable]
-    public abstract class BaseChatMessageEventArgs<TAvatar, TChatMessage, TVector3> : TimedEventArgs, 
-        IChatMessageEventArgs<TAvatar, TChatMessage, TVector3> 
-        where TVector3 : struct, IVector3
-        where TAvatar : class, IAvatar<TVector3>,new()
+    public abstract class BaseChatMessageEventArgs<TAvatar, TChatMessage> : TimedEventArgs, 
+        IChatMessageEventArgs<TAvatar, TChatMessage>
+        where TAvatar : class, IAvatar,new()
         where TChatMessage : class, IChatMessage,new()
     {
         public TAvatar Avatar { get; set; }

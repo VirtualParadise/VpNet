@@ -31,9 +31,8 @@ using VpNet.Interfaces;
 namespace VpNet
 {
     [XmlRoot("CellRangeQuery",Namespace=Global.XmlNsEvent)]
-    public class CellRangeQueryCompletedArgs<TVpObject,TVector3> : EventArgs 
-        where TVector3 : struct, IVector3
-        where TVpObject: class, IVpObject<TVector3>, new()
+    public class CellRangeQueryCompletedArgs<TVpObject> : EventArgs 
+        where TVpObject: class, IVpObject, new()
     {
         [XmlArray("VpObjects")]
         [XmlArrayItem("VpObject")]
