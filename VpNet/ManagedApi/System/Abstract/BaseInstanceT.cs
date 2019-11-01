@@ -1,16 +1,16 @@
 ﻿#region Copyright notice
 /*
-____   ___.__         __               .__    __________                        .__.__                
-\   \ /   |__________/  |_ __ _______  |  |   \______   _____ ____________    __| _|__| ______ ____   
- \   Y   /|  \_  __ \   __|  |  \__  \ |  |    |     ___\__  \\_  __ \__  \  / __ ||  |/  ____/ __ \  
-  \     / |  ||  | \/|  | |  |  // __ \|  |__  |    |    / __ \|  | \// __ \/ /_/ ||  |\___ \\  ___/  
-   \___/  |__||__|   |__| |____/(____  |____/  |____|   (____  |__|  (____  \____ ||__/____  >\___  > 
-                                     \/                      \/           \/     \/        \/     \/  
+____   ___.__         __               .__    __________                        .__.__
+\   \ /   |__________/  |_ __ _______  |  |   \______   _____ ____________    __| _|__| ______ ____
+ \   Y   /|  \_  __ \   __|  |  \__  \ |  |    |     ___\__  \\_  __ \__  \  / __ ||  |/  ____/ __ \
+  \     / |  ||  | \/|  | |  |  // __ \|  |__  |    |    / __ \|  | \// __ \/ /_/ ||  |\___ \\  ___/
+   \___/  |__||__|   |__| |____/(____  |____/  |____|   (____  |__|  (____  \____ ||__/____  >\___  >
+                                     \/                      \/           \/     \/        \/     \/
     This file is part of VPNET Version 1.0
 
     Copyright (c) 2012-2016 CUBE3 (Cit:36)
 
-    VPNET is free software: you can redistribute it and/or modify it under the terms of the 
+    VPNET is free software: you can redistribute it and/or modify it under the terms of the
     GNU Lesser General Public License (LGPL) as published by the Free Software Foundation, either
     version 2.1 of the License, or (at your option) any later version.
 
@@ -19,7 +19,7 @@ ____   ___.__         __               .__    __________                        
     for more details.
 
     You should have received a copy of the GNU Lesser General Public License (LGPL) along with VPNET.
-    If not, see <http://www.gnu.org/licenses/>. 
+    If not, see <http://www.gnu.org/licenses/>.
 */
 #endregion
 
@@ -95,7 +95,7 @@ namespace VpNet.Abstract
         bool _isInitialized;
 
         public OpCacheProvider ModelCacheProvider { get; internal set; }
-  
+
         private readonly Dictionary<int, TVpObject> _objectReferences = new Dictionary<int, TVpObject>();
 
         private Dictionary<int, TAvatar> _avatars;
@@ -158,6 +158,7 @@ namespace VpNet.Abstract
             OnObjectChangeCallbackNativeEvent += OnObjectChangeCallbackNative;
             OnObjectDeleteCallbackNativeEvent += OnObjectDeleteCallbackNative;
             OnObjectGetCallbackNativeEvent += OnObjectGetCallbackNative;
+            this.OnObjectLoadCallbackNativeEvent += this.OnObjectLoadCallbackNative;
 
             OnFriendAddCallbackNativeEvent += OnFriendAddCallbackNative;
             OnFriendDeleteCallbackNativeEvent += OnFriendDeleteCallbackNative;
@@ -186,7 +187,7 @@ namespace VpNet.Abstract
             parentInstance.OnObjectCreateNativeEvent += OnObjectCreateNative;
             parentInstance.OnObjectClickNativeEvent += OnObjectClickNative;
             parentInstance.OnObjectBumpNativeEvent += OnObjectBumpNative;
-            parentInstance.OnObjectBumpEndNativeEvent += OnObjectBumpEndNative; 
+            parentInstance.OnObjectBumpEndNativeEvent += OnObjectBumpEndNative;
             parentInstance.OnObjectDeleteNativeEvent += OnObjectDeleteNative;
             parentInstance.OnQueryCellEndNativeEvent += OnQueryCellEndNative;
             parentInstance.OnUniverseDisconnectNativeEvent += OnUniverseDisconnectNative;
@@ -254,6 +255,7 @@ namespace VpNet.Abstract
             SetNativeCallback(Callbacks.ObjectChange, OnObjectChangeCallbackNative1);
             SetNativeCallback(Callbacks.ObjectDelete, OnObjectDeleteCallbackNative1);
             SetNativeCallback(Callbacks.ObjectGet, OnObjectGetCallbackNative1);
+            SetNativeCallback(Callbacks.ObjectLoad, this.OnObjectLoadCallbackNative1);
             SetNativeCallback(Callbacks.FriendAdd, OnFriendAddCallbackNative1);
             SetNativeCallback(Callbacks.FriendDelete, OnFriendDeleteCallbackNative1);
             SetNativeCallback(Callbacks.GetFriends, OnGetFriendsCallbackNative1);
@@ -1123,7 +1125,7 @@ namespace VpNet.Abstract
         private readonly Dictionary<Events, EventDelegate> _nativeEvents = new Dictionary<Events, EventDelegate>();
         private readonly Dictionary<Callbacks, CallbackDelegate> _nativeCallbacks = new Dictionary<Callbacks, CallbackDelegate>();
 
-      
+
 
 
 
@@ -1164,6 +1166,7 @@ namespace VpNet.Abstract
         public delegate void ObjectChangeCallback(T sender, ObjectChangeCallbackArgsT<TResult, TVpObject> args);
         public delegate void ObjectDeleteCallback(T sender, ObjectDeleteCallbackArgsT<TResult, TVpObject> args);
         public delegate void ObjectGetCallback(T sender, ObjectGetCallbackArgsT<TResult, TVpObject> args);
+        public delegate void ObjectLoadCallback(T sender, ObjectLoadCallbackArgsT<TResult, TVpObject> args);
 
         public delegate void QueryCellResultDelegate(T sender, QueryCellResultArgsT<TVpObject> args);
         public delegate void QueryCellEndDelegate(T sender, QueryCellEndArgsT<TCell> args);
@@ -1197,7 +1200,8 @@ namespace VpNet.Abstract
         public event ObjectCreateCallback OnObjectCreateCallback;
         public event ObjectDeleteCallback OnObjectDeleteCallback;
         public event ObjectChangeCallback OnObjectChangeCallback;
-        public event ObjectGetCallback OnObjectGetCallback; 
+        public event ObjectGetCallback OnObjectGetCallback;
+        public event ObjectLoadCallback OnObjectLoadCallback;
 
 
         public event WorldListEventDelegate OnWorldList;
@@ -1279,7 +1283,19 @@ namespace VpNet.Abstract
             }
         }
 
-        private void OnObjectLoadCallbackNative(IntPtr sender, int rc, int reference) { /* todo: implement this */ }
+        private void OnObjectLoadCallbackNative(IntPtr sender, int rc, int reference)
+        {
+            lock (this)
+            {
+                var vpObject = _objectReferences[reference];
+                _objectReferences.Remove(reference);
+                if (OnObjectLoadCallback != null)
+                {
+                    vpObject.Id = Functions.vp_int(sender, Attribute.ObjectId);
+                    OnObjectLoadCallback(Implementor, new ObjectLoadCallbackArgsT<TResult, TVpObject> { Result = new TResult { Rc = rc }, VpObject = vpObject });
+                }
+            }
+        }
         private void OnLoginCallbackNative(IntPtr sender, int rc, int reference) { /* todo: implement this */  }
         private void OnEnterCallbackNative(IntPtr sender, int rc, int reference) { /* todo: implement this */  }
         private void OnJoinCallbackNative(IntPtr sender, int rc, int reference) { /* todo: implement this */  }
@@ -1518,7 +1534,7 @@ namespace VpNet.Abstract
                 }
                 catch
                 {
-                    
+
                 }
             }
         }
@@ -1564,7 +1580,7 @@ namespace VpNet.Abstract
                         Z = Functions.vp_double(sender, Attribute.ClickHitZ)
                     };
             }
-            
+
             OnObjectClick(Implementor,
                           new ObjectClickArgsT<TAvatar,TVpObject>
                               {WorldHit=world, Avatar = GetAvatar(session), VpObject = new TVpObject {Id = objectId}});
@@ -1637,7 +1653,7 @@ namespace VpNet.Abstract
         public List<TAvatar> Avatars()
         {
             return _avatars.Values.ToList();
-        } 
+        }
 
         [Obsolete("Objects are not firewalled anymore, so commits are not needed.")]
         public void Commit(TAvatar avatar)
@@ -1654,7 +1670,7 @@ namespace VpNet.Abstract
             //    _avatars[avatar.Session] = cache;
             //}
         }
-    
+
         public TAvatar GetAvatar(int session)
         {
             if (_avatars.ContainsKey(session))
@@ -1927,11 +1943,11 @@ namespace VpNet.Abstract
         override internal event CallbackDelegate OnObjectChangeCallbackNativeEvent;
         override internal event CallbackDelegate OnObjectDeleteCallbackNativeEvent;
         override internal event CallbackDelegate OnObjectGetCallbackNativeEvent;
+        override internal event CallbackDelegate OnObjectLoadCallbackNativeEvent;
         override internal event CallbackDelegate OnFriendAddCallbackNativeEvent;
         override internal event CallbackDelegate OnFriendDeleteCallbackNativeEvent;
         override internal event CallbackDelegate OnGetFriendsCallbackNativeEvent;
 
-        override internal event CallbackDelegate OnObjectLoadCallbackNativeEvent;
         override internal event CallbackDelegate OnJoinCallbackNativeEvent;
         override internal event CallbackDelegate OnWorldPermissionUserSetCallbackNativeEvent;
         override internal event CallbackDelegate OnWorldPermissionSessionSetCallbackNativeEvent;
