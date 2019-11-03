@@ -3,32 +3,26 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <RootNamespace>VpNet</RootNamespace>
     <AssemblyName>VpNet</AssemblyName>
-    <GenerateAssemblyConfigurationAttribute>false</GenerateAssemblyConfigurationAttribute>
-    <GenerateAssemblyDescriptionAttribute>false</GenerateAssemblyDescriptionAttribute>
-    <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
-    <GenerateAssemblyTitleAttribute>false</GenerateAssemblyTitleAttribute>
-    <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
-    <GenerateAssemblyFileVersionAttribute>false</GenerateAssemblyFileVersionAttribute>
-    <GenerateAssemblyVersionAttribute>false</GenerateAssemblyVersionAttribute>
-  </PropertyGroup>
-  <PropertyGroup>
-    <SignAssembly>true</SignAssembly>
-  </PropertyGroup>
-  <PropertyGroup>
-    <AssemblyOriginatorKeyFile>VpNet.snk</AssemblyOriginatorKeyFile>
+    
+    <Title>Virtual Paradise .NET SDK</Title>
+    <Authors>Sjef van Leeuwen, Edwin Rijkee</Authors>
+    <PackageLicenseExpression>LGPL-2.1-or-later</PackageLicenseExpression>
+    <Description>
+      VpNet wraps the VPSDK C library for .NET (Core and Framework). It provides a managed abstraction layer to write so called "bots" for the Virtual Paradise 3D Virtual Reality Environment (see: http://www.virtualparadise.org).
+
+      These bots can interact with the user, their chats and 3D objects in the world.
+
+      Ultimately it allows you to create rich media networked applications such as 3D VR Games directly from the .NET (Core, Framework and Mono) platform.
+    </Description>
+    <PackageProjectUrl>https://github.com/VirtualParadise/VpNet</PackageProjectUrl>
+    <PackageIconUrl>http://edwin-share.virtualparadise.org/2017/05/vpsdkbutton.png</PackageIconUrl>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="..\AssemblyVersion.cs">
-      <Link>Properties\AssemblyVersion.cs</Link>
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>AssemblyVersion.tt</DependentUpon>
-    </Compile>
+    <PackageReference Include="GitVersionTask" Version="5.1.1">
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="..\AssemblyVersion.tt">
-      <Link>Properties\AssemblyVersion.tt</Link>
-      <Generator>TextTemplatingFileGenerator</Generator>
-    </Content>
+    <Folder Include="Properties\" />
   </ItemGroup>
 </Project>
