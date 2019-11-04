@@ -26,35 +26,13 @@ ____   ___.__         __               .__    __________                        
 using System;
 using System.Runtime.InteropServices;
 using System.Xml.Serialization;
-using VpNet.Interfaces;
 
 namespace VpNet
 {
     [Serializable]
     [StructLayout(LayoutKind.Sequential)]
-    public struct Vector3 : IEquatable<Vector3>, IVector3
+    public struct Vector3 : IEquatable<Vector3>
     {
-        [XmlAttribute]
-        double IVector3.X
-        {
-            get { return X; }
-            set { X = value; }
-        }
-
-        [XmlAttribute]
-        double IVector3.Y
-        {
-            get { return Y; }
-            set { Y = value; }
-        }
-
-        [XmlAttribute]
-        double IVector3.Z
-        {
-            get { return Z; }
-            set { Z = value; }
-        }
-
         [XmlAttribute]
         public double X;
         [XmlAttribute]
