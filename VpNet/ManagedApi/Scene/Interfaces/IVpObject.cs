@@ -63,9 +63,6 @@ namespace VpNet.Interfaces
         byte[] Data { get; set; }
 
         [XmlIgnore]
-        int ReferenceNumber { get; set; }
-
-        [XmlIgnore]
         ICell Cell { get; }
     }
 }

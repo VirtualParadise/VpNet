@@ -23,16 +23,18 @@ ____   ___.__         __               .__    __________                        
 */
 #endregion
 
+using System.Threading.Tasks;
+
 namespace VpNet.Interfaces
 {
     public interface IVpObjectFunctions<out TRc, in TVpObject> 
         where TRc : class, IRc, new()
         where TVpObject: class, IVpObject, new()
     {
-        TRc ChangeObject(TVpObject vpObject);
-        TRc LoadObject(TVpObject vpObject);
-        TRc AddObject(TVpObject vpObject);
-        TRc DeleteObject(TVpObject vpObject);
+        Task ChangeObjectAsync(TVpObject vpObject);
+        Task<int> LoadObjectAsync(TVpObject vpObject);
+        Task<int> AddObjectAsync(TVpObject vpObject);
+        Task DeleteObjectAsync(TVpObject vpObject);
         TRc QueryCell(int cellX, int cellZ);
         TRc ClickObject(TVpObject vpObject);
         TRc ClickObject(int objectId);

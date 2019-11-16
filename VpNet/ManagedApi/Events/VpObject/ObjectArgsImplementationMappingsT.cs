@@ -39,14 +39,6 @@ namespace VpNet
     /// <summary>
     /// Default Event Arguments implementation mapping. You can define your own mappings when implementing VpNet.Abstract.BaseInstanceT
     /// </summary>
-    [XmlRoot("OnObjectChangeCallback", Namespace = Global.XmlNsEvent)]
-    public class ObjectChangeCallbackArgsT<TResult, TVpObject> : Abstract.BaseObjectChangeCallbackArgs<TResult, TVpObject>
-        where TResult : class, IRc, new()
-        where TVpObject : class, IVpObject, new()
-    { }
-    /// <summary>
-    /// Default Event Arguments implementation mapping. You can define your own mappings when implementing VpNet.Abstract.BaseInstanceT
-    /// </summary>
     [XmlRoot("OnObjectClick", Namespace = Global.XmlNsEvent)]
     public class ObjectClickArgsT<TAvatar, TVpObject> : Abstract.BaseObjectClickArgs<TAvatar, TVpObject>
         where TAvatar : class, IAvatar, new()
@@ -63,41 +55,9 @@ namespace VpNet
     /// <summary>
     /// Default Event Arguments implementation mapping. You can define your own mappings when implementing VpNet.Abstract.BaseInstanceT
     /// </summary>
-    [XmlRoot("OnObjectCreateCallback", Namespace = Global.XmlNsEvent)]
-    public class ObjectCreateCallbackArgsT<TResult, TVpObject> : Abstract.BaseObjectCreateCallbackArgs<TResult, TVpObject>
-        where TResult : class, IRc, new()
-        where TVpObject : class, IVpObject, new()
-    { }
-    /// <summary>
-    /// Default Event Arguments implementation mapping. You can define your own mappings when implementing VpNet.Abstract.BaseInstanceT
-    /// </summary>
     [XmlRoot("OnObjectDelete", Namespace = Global.XmlNsEvent)]
     public class ObjectDeleteArgsT<TAvatar, TVpObject> : Abstract.BaseObjectDeleteArgs<TAvatar, TVpObject>
         where TAvatar : class, IAvatar, new()
-        where TVpObject : class, IVpObject, new()
-    { }
-    /// <summary>
-    /// Default Event Arguments implementation mapping. You can define your own mappings when implementing VpNet.Abstract.BaseInstanceT
-    /// </summary>
-    [XmlRoot("OnObjectDeleteCallback", Namespace = Global.XmlNsEvent)]
-    public class ObjectDeleteCallbackArgsT<TResult, TVpObject> : Abstract.BaseObjectDeleteCallbackArgs<TResult, TVpObject>
-        where TResult : class, IRc, new()
-        where TVpObject : class, IVpObject, new()
-    { }
-    /// <summary>
-    /// Default Event Arguments implementation mapping. You can define your own mappings when implementing VpNet.Abstract.BaseInstanceT
-    /// </summary>
-    [XmlRoot("OnObjectGetCallback", Namespace = Global.XmlNsEvent)]
-    public class ObjectGetCallbackArgsT<TResult, TVpObject> : Abstract.BaseObjectGetCallbackArgs<TResult, TVpObject>
-        where TResult : class, IRc, new()
-        where TVpObject : class, IVpObject, new()
-    { }
-    /// <summary>
-    /// Default Event Arguments implementation mapping. You can define your own mappings when implementing VpNet.Abstract.BaseInstanceT
-    /// </summary>
-    [XmlRoot("OnObjectLoadCallback", Namespace = Global.XmlNsEvent)]
-    public class ObjectLoadCallbackArgsT<TResult, TVpObject> : Abstract.BaseObjectLoadCallbackArgs<TResult, TVpObject>
-        where TResult : class, IRc, new()
         where TVpObject : class, IVpObject, new()
     { }
     /// <summary>

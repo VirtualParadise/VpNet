@@ -96,7 +96,7 @@ namespace VpNet.Abstract
 
         public OpCacheProvider ModelCacheProvider { get; internal set; }
 
-        private readonly Dictionary<int, TVpObject> _objectReferences = new Dictionary<int, TVpObject>();
+        private readonly Dictionary<int, TaskCompletionSource<object>> _objectCompletionSources = new Dictionary<int, TaskCompletionSource<object>>();
 
         private Dictionary<int, TAvatar> _avatars;
 
@@ -259,7 +259,6 @@ namespace VpNet.Abstract
             SetNativeCallback(Callbacks.FriendAdd, OnFriendAddCallbackNative1);
             SetNativeCallback(Callbacks.FriendDelete, OnFriendDeleteCallbackNative1);
             SetNativeCallback(Callbacks.GetFriends, OnGetFriendsCallbackNative1);
-            //SetNativeCallback(Callbacks.ObjectLoad, OnObjectLoadCallbackNative1);
             SetNativeCallback(Callbacks.Login, OnLoginCallbackNative1);
             SetNativeCallback(Callbacks.Enter, OnEnterCallbackNativeEvent1);
             //SetNativeCallback(Callbacks.Join, OnJoinCallbackNativeEvent1);
@@ -343,6 +342,24 @@ namespace VpNet.Abstract
             } catch (Exception e)
             {
                 cs.SetException(e);
+            }
+        }
+
+        private void SetCompletionResult(int referenceNumber, int rc, object result)
+        {
+            var tcs = _objectCompletionSources[referenceNumber];
+            SetCompletionResult(tcs, rc, result);
+        }
+
+        private static void SetCompletionResult(TaskCompletionSource<object> tcs, int rc, object result)
+        {
+            if (rc != 0)
+            {
+                tcs.SetException(new VpException((ReasonCode)rc));
+            }
+            else
+            {
+                tcs.SetResult(result);
             }
         }
 
@@ -613,31 +630,33 @@ namespace VpNet.Abstract
             }
         }
 
-        virtual public TResult DeleteObject(TVpObject vpObject)
+        virtual public Task DeleteObjectAsync(TVpObject vpObject)
         {
-            int rc;
             var referenceNumber = ObjectReferenceCounter.GetNextReference();
+            var tcs = new TaskCompletionSource<object>();
             lock (this)
             {
-                _objectReferences.Add(referenceNumber, vpObject);
+                _objectCompletionSources.Add(referenceNumber, tcs);
                 Functions.vp_int_set(_instance, Attribute.ReferenceNumber, referenceNumber);
-                rc = Functions.vp_object_delete(_instance,vpObject.Id);
+
+                int rc = Functions.vp_object_delete(_instance,vpObject.Id);
+                if (rc != 0)
+                {
+                    _objectCompletionSources.Remove(referenceNumber);
+                    throw new VpException((ReasonCode)rc);
+                }
             }
-            if (rc != 0)
-            {
-                _objectReferences.Remove(referenceNumber);
-            }
-            return new TResult {Rc = rc};
+
+            return tcs.Task;
         }
 
-        virtual public TResult LoadObject(TVpObject vpObject)
+        virtual public async Task<int> LoadObjectAsync(TVpObject vpObject)
         {
-            int rc;
             var referenceNumber = ObjectReferenceCounter.GetNextReference();
+            var tcs = new TaskCompletionSource<object>();
             lock (this)
             {
-                vpObject.ReferenceNumber = referenceNumber; // calculated a unqiue id for you.
-                _objectReferences.Add(referenceNumber, vpObject);
+                _objectCompletionSources.Add(referenceNumber, tcs);
                 Functions.vp_int_set(_instance, Attribute.ReferenceNumber, referenceNumber);
                 Functions.vp_int_set(_instance, Attribute.ObjectId, vpObject.Id);
                 Functions.vp_string_set(_instance, Attribute.ObjectAction, vpObject.Action);
@@ -654,23 +673,28 @@ namespace VpNet.Abstract
                 Functions.vp_int_set(_instance, Attribute.ObjectType, vpObject.ObjectType);
                 Functions.vp_int_set(_instance, Attribute.ObjectUserId, vpObject.Owner);
                 Functions.vp_int_set(_instance, Attribute.ObjectTime, (vpObject.Time - new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc)).Seconds);
-                rc = Functions.vp_object_load(_instance);
+
+                int rc = Functions.vp_object_load(_instance);
+                if (rc != 0)
+                {
+                    _objectCompletionSources.Remove(referenceNumber);
+                    throw new VpException((ReasonCode)rc);
+                }
             }
-            if (rc != 0)
-            {
-                _objectReferences.Remove(referenceNumber);
-            }
-            return new TResult {Rc = rc};
+
+            var id = (int)await tcs.Task.ConfigureAwait(false);
+            vpObject.Id = id;
+
+            return id;
         }
 
-        virtual public TResult AddObject(TVpObject vpObject)
+        virtual public async Task<int> AddObjectAsync(TVpObject vpObject)
         {
-            int rc;
             var referenceNumber = ObjectReferenceCounter.GetNextReference();
+            var tcs = new TaskCompletionSource<object>();
             lock (this)
             {
-                vpObject.ReferenceNumber = referenceNumber; // calculated a unqiue id for you.
-                _objectReferences.Add(referenceNumber, vpObject);
+                _objectCompletionSources.Add(referenceNumber, tcs);
                 Functions.vp_int_set(_instance, Attribute.ReferenceNumber, referenceNumber);
                 Functions.vp_int_set(_instance, Attribute.ObjectId, vpObject.Id);
                 Functions.vp_string_set(_instance, Attribute.ObjectAction, vpObject.Action);
@@ -685,22 +709,28 @@ namespace VpNet.Abstract
                 Functions.vp_double_set(_instance, Attribute.ObjectZ, vpObject.Position.Z);
                 Functions.vp_double_set(_instance, Attribute.ObjectRotationAngle, vpObject.Angle);
                 Functions.vp_int_set(_instance, Attribute.ObjectType, vpObject.ObjectType);
-                rc = Functions.vp_object_add(_instance);
+
+                int rc = Functions.vp_object_add(_instance);
+                if (rc != 0)
+                {
+                    _objectCompletionSources.Remove(referenceNumber);
+                    throw new VpException((ReasonCode)rc);
+                }
             }
-            if (rc != 0)
-            {
-                _objectReferences.Remove(referenceNumber);
-            }
-            return new TResult {Rc = rc};
+
+            var id = (int)await tcs.Task.ConfigureAwait(false);
+            vpObject.Id = id;
+
+            return id;
         }
 
-        virtual public TResult ChangeObject(TVpObject vpObject)
+        virtual public Task ChangeObjectAsync(TVpObject vpObject)
         {
-            int rc;
             var referenceNumber = ObjectReferenceCounter.GetNextReference();
+            var tcs = new TaskCompletionSource<object>();
             lock (this)
             {
-                _objectReferences.Add(referenceNumber, vpObject);
+                _objectCompletionSources.Add(referenceNumber, tcs);
                 Functions.vp_int_set(_instance, Attribute.ReferenceNumber, referenceNumber);
                 Functions.vp_int_set(_instance, Attribute.ObjectId, vpObject.Id);
                 Functions.vp_string_set(_instance, Attribute.ObjectAction, vpObject.Action);
@@ -714,21 +744,37 @@ namespace VpNet.Abstract
                 Functions.vp_double_set(_instance, Attribute.ObjectZ, vpObject.Position.Z);
                 Functions.vp_double_set(_instance, Attribute.ObjectRotationAngle, vpObject.Angle);
                 Functions.vp_int_set(_instance, Attribute.ObjectType, vpObject.ObjectType);
-                rc = Functions.vp_object_change(_instance);
+
+                int rc = Functions.vp_object_change(_instance);
+                if (rc != 0)
+                {
+                    _objectCompletionSources.Remove(referenceNumber);
+                    throw new VpException((ReasonCode)rc);
+                }
             }
-            if (rc != 0)
-            {
-                _objectReferences.Remove(referenceNumber);
-            }
-            return new TResult {Rc = rc};
+
+
+            return tcs.Task;
         }
 
-        virtual public TResult GetObject(int id)
+        virtual public async Task<TVpObject> GetObjectAsync(int id)
         {
+            var referenceNumber = ObjectReferenceCounter.GetNextReference();
+            var tcs = new TaskCompletionSource<object>();
             lock (this)
             {
-                return new TResult {Rc= Functions.vp_object_get(_instance, id)};
+                _objectCompletionSources.Add(referenceNumber, tcs);
+                Functions.vp_int_set(_instance, Attribute.ReferenceNumber, referenceNumber);
+                var rc = Functions.vp_object_get(_instance, id);
+                if (rc != 0)
+                {
+                    _objectCompletionSources.Remove(referenceNumber);
+                    throw new VpException((ReasonCode)rc);
+                }
             }
+
+            var obj = (TVpObject)await tcs.Task.ConfigureAwait(false);
+            return obj;
         }
 
         #endregion
@@ -1161,13 +1207,6 @@ namespace VpNet.Abstract
         public delegate void ObjectClickDelegate(T sender, ObjectClickArgsT<TAvatar, TVpObject> args);
         public delegate void ObjectBumpDelegate(T sender, ObjectBumpArgsT<TAvatar, TVpObject> args);
 
-
-        public delegate void ObjectCreateCallback(T sender, ObjectCreateCallbackArgsT<TResult, TVpObject> args);
-        public delegate void ObjectChangeCallback(T sender, ObjectChangeCallbackArgsT<TResult, TVpObject> args);
-        public delegate void ObjectDeleteCallback(T sender, ObjectDeleteCallbackArgsT<TResult, TVpObject> args);
-        public delegate void ObjectGetCallback(T sender, ObjectGetCallbackArgsT<TResult, TVpObject> args);
-        public delegate void ObjectLoadCallback(T sender, ObjectLoadCallbackArgsT<TResult, TVpObject> args);
-
         public delegate void QueryCellResultDelegate(T sender, QueryCellResultArgsT<TVpObject> args);
         public delegate void QueryCellEndDelegate(T sender, QueryCellEndArgsT<TCell> args);
 
@@ -1197,12 +1236,6 @@ namespace VpNet.Abstract
         public event ObjectClickDelegate OnObjectClick;
         public event ObjectBumpDelegate OnObjectBump;
 
-        public event ObjectCreateCallback OnObjectCreateCallback;
-        public event ObjectDeleteCallback OnObjectDeleteCallback;
-        public event ObjectChangeCallback OnObjectChangeCallback;
-        public event ObjectGetCallback OnObjectGetCallback;
-        public event ObjectLoadCallback OnObjectLoadCallback;
-
 
         public event WorldListEventDelegate OnWorldList;
         public event WorldSettingsChangedDelegate OnWorldSettingsChanged;
@@ -1231,13 +1264,7 @@ namespace VpNet.Abstract
         {
             lock (this)
             {
-                var vpObject = _objectReferences[reference];
-                _objectReferences.Remove(reference);
-                if (OnObjectCreateCallback != null)
-                {
-                    vpObject.Id = Functions.vp_int(sender, Attribute.ObjectId);
-                    OnObjectCreateCallback(Implementor, new ObjectCreateCallbackArgsT<TResult, TVpObject> { Result = new TResult { Rc = rc }, VpObject = vpObject });
-                }
+                SetCompletionResult(reference, rc, Functions.vp_int(sender, Attribute.ObjectId));
             }
         }
 
@@ -1245,14 +1272,7 @@ namespace VpNet.Abstract
         {
             lock (this)
             {
-                var vpObject = _objectReferences[reference];
-                _objectReferences.Remove(reference);
-
-                if (OnObjectChangeCallback != null)
-                {
-                    vpObject.Id = Functions.vp_int(sender, Attribute.ObjectId);
-                    OnObjectChangeCallback(Implementor, new ObjectChangeCallbackArgsT<TResult, TVpObject> { Result = new TResult { Rc = rc }, VpObject = vpObject });
-                }
+                SetCompletionResult(reference, rc, null);
             }
         }
 
@@ -1260,13 +1280,7 @@ namespace VpNet.Abstract
         {
             lock (this)
             {
-                var vpObject = _objectReferences[reference];
-                _objectReferences.Remove(reference);
-
-                if (OnObjectDeleteCallback != null)
-                {
-                    OnObjectDeleteCallback(Implementor, new ObjectDeleteCallbackArgsT<TResult, TVpObject> { Result = new TResult { Rc = rc }, VpObject = vpObject });
-                }
+                SetCompletionResult(reference, rc, null);
             }
         }
 
@@ -1275,11 +1289,9 @@ namespace VpNet.Abstract
             lock (this)
             {
                 TVpObject vpObject;
-                GetVpObject(sender,out vpObject);
-                if (OnObjectGetCallback != null)
-                {
-                    OnObjectGetCallback(Implementor, new ObjectGetCallbackArgsT<TResult, TVpObject> { Result = new TResult { Rc = rc }, VpObject = vpObject });
-                }
+                GetVpObject(sender, out vpObject);
+
+                SetCompletionResult(reference, rc, vpObject);
             }
         }
 
@@ -1287,25 +1299,9 @@ namespace VpNet.Abstract
         {
             lock (this)
             {
-                var vpObject = _objectReferences[reference];
-                _objectReferences.Remove(reference);
-                if (OnObjectLoadCallback != null)
-                {
-                    vpObject.Id = Functions.vp_int(sender, Attribute.ObjectId);
-                    OnObjectLoadCallback(Implementor, new ObjectLoadCallbackArgsT<TResult, TVpObject> { Result = new TResult { Rc = rc }, VpObject = vpObject });
-                }
+                SetCompletionResult(reference, rc, Functions.vp_int(sender, Attribute.ObjectId));
             }
         }
-        private void OnLoginCallbackNative(IntPtr sender, int rc, int reference) { /* todo: implement this */  }
-        private void OnEnterCallbackNative(IntPtr sender, int rc, int reference) { /* todo: implement this */  }
-        private void OnJoinCallbackNative(IntPtr sender, int rc, int reference) { /* todo: implement this */  }
-        private void OnConnectUniverseCallbackNative(IntPtr sender, int rc, int reference) {
-            SetCompletionResultFromRc(ConnectCompletionSource, rc);
-        }
-        private void OnWorldPermissionUserSetCallbackNative(IntPtr sender, int rc, int reference) { /* todo: implement this */  }
-        private void OnWorldPermissionSessionSetCallbackNative(IntPtr sender, int rc, int reference) { /* todo: implement this */  }
-        private void OnWorldSettingsSetCallbackNative(IntPtr sender, int rc, int reference) { /* todo: implement this */  }
-
         #endregion
 
         #region Event handlers
@@ -1837,7 +1833,6 @@ namespace VpNet.Abstract
                 OnAvatarLeave = null;
                 OnObjectCreate = null;
                 OnObjectChange = null;
-                OnObjectChangeCallback = null;
                 OnObjectDelete = null;
                 OnObjectClick = null;
                 OnObjectBump = null;
