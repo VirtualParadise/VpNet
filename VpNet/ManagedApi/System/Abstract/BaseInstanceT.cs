@@ -672,7 +672,7 @@ namespace VpNet.Abstract
                 Functions.vp_double_set(_instance, Attribute.ObjectRotationAngle, vpObject.Angle);
                 Functions.vp_int_set(_instance, Attribute.ObjectType, vpObject.ObjectType);
                 Functions.vp_int_set(_instance, Attribute.ObjectUserId, vpObject.Owner);
-                Functions.vp_int_set(_instance, Attribute.ObjectTime, (vpObject.Time - new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc)).Seconds);
+                Functions.vp_int_set(_instance, Attribute.ObjectTime, (int)new DateTimeOffset(vpObject.Time).ToUnixTimeSeconds());
 
                 int rc = Functions.vp_object_load(_instance);
                 if (rc != 0)
@@ -1317,14 +1317,10 @@ namespace VpNet.Abstract
                           {
                               Email = Functions.vp_string(sender, Attributes.UserEmail),
                               Id = Functions.vp_int(sender, Attributes.UserId),
-                              LastLogin =
-                                  new DateTime(1970, 1, 1, 0, 0, 0).AddSeconds(Functions.vp_int(sender,
-                                                                                                Attribute.UserLastLogin)),
+                              LastLogin = DateTimeOffset.FromUnixTimeSeconds(Functions.vp_int(sender, Attribute.UserLastLogin)).UtcDateTime,
                               Name = Functions.vp_string(sender, Attributes.UserName),
                               OnlineTime = new TimeSpan(0, 0, 0, Functions.vp_int(sender, Attribute.UserOnlineTime)),
-                              RegistrationDate =
-                                  new DateTime(1970, 1, 1, 0, 0, 0).AddSeconds(Functions.vp_int(sender,
-                                                                                                Attribute.UserRegistrationTime))
+                              RegistrationDate = DateTimeOffset.FromUnixTimeSeconds(Functions.vp_int(sender, Attribute.UserRegistrationTime)).UtcDateTime
                           };
             }
             OnUserAttributes(Implementor,new UserAttributesEventArgsT<TUserAttributes>(){UserAttributes = att});
@@ -1709,9 +1705,7 @@ namespace VpNet.Abstract
                     Z = Functions.vp_double(sender, Attribute.ObjectRotationZ)
                 },
 
-                Time =
-                    new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc).AddSeconds(
-                        Functions.vp_int(sender, Attribute.ObjectTime)),
+                Time = DateTimeOffset.FromUnixTimeSeconds(Functions.vp_int(sender, Attribute.ObjectTime)).UtcDateTime,
                 ObjectType = Functions.vp_int(sender, Attribute.ObjectType),
                 Owner = Functions.vp_int(sender, Attribute.ObjectUserId),
                 Position = new Vector3
