@@ -30,25 +30,24 @@ using VpNet.Interfaces;
 
 namespace VpNet
 {
-    [Serializable] 
+    [Serializable]
     [XmlRoot("Instance", Namespace = Global.XmlNsInstance)]
-    public class Instance<TResult> : BaseInstanceT<Instance<TResult>,
-        Avatar, 
-        Friend, 
-        TResult, 
-        TerrainCell, 
-        TerrainNode, 
+    public class Instance<TAvatar> : BaseInstanceT<Instance<TAvatar>,
+        TAvatar,
+        Friend,
+        TerrainCell,
+        TerrainNode,
         TerrainTile,
-        VpObject, 
-        World, 
+        VpObject,
+        World,
         Cell,
         ChatMessage,
         Terrain,
         Universe,
-        Teleport<World, Avatar>, 
+        Teleport<World, TAvatar>,
         UserAttributes
         >
-         where TResult : class, IRc, new()
+        where TAvatar : class, IAvatar, new()
     {
         public Instance()
         {
@@ -66,6 +65,5 @@ namespace VpNet
         {
             Implementor = this;
         }
-
     }
 }

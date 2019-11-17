@@ -28,11 +28,9 @@ namespace VpNet.Interfaces
     /// <summary>
     /// Avatar Teleport Functions
     /// </summary>
-    /// <typeparam name="TRc">The type of the rc.</typeparam>
     /// <typeparam name="TWorld">The type of the world.</typeparam>
     /// <typeparam name="TAvatar">The type of the avatar.</typeparam>
-    public interface ITeleportFunctions<out TRc, in TWorld, in TAvatar>
-        where TRc : class, IRc, new()
+    public interface ITeleportFunctions<in TWorld, in TAvatar>
         where TAvatar: class, IAvatar, new()
     {
         /// <summary>
@@ -46,7 +44,7 @@ namespace VpNet.Interfaces
         /// <param name="yaw">The yaw.</param>
         /// <param name="pitch">The pitch.</param>
         /// <returns></returns>
-        TRc TeleportAvatar(TAvatar avatar, string world, double x, double y, double z, double yaw, double pitch);
+        void TeleportAvatar(TAvatar avatar, string world, double x, double y, double z, double yaw, double pitch);
         /// <summary>
         /// Teleports the avatar.
         /// </summary>
@@ -56,7 +54,7 @@ namespace VpNet.Interfaces
         /// <param name="yaw">The yaw.</param>
         /// <param name="pitch">The pitch.</param>
         /// <returns></returns>
-        TRc TeleportAvatar(TAvatar avatar, string world, Vector3 position, double yaw, double pitch);
+        void TeleportAvatar(TAvatar avatar, string world, Vector3 position, double yaw, double pitch);
         /// <summary>
         /// Teleports the avatar.
         /// </summary>
@@ -68,7 +66,7 @@ namespace VpNet.Interfaces
         /// <param name="yaw">The yaw.</param>
         /// <param name="pitch">The pitch.</param>
         /// <returns></returns>
-        TRc TeleportAvatar(int targetSession, string world, double x, double y, double z, double yaw, double pitch);
+        void TeleportAvatar(int targetSession, string world, double x, double y, double z, double yaw, double pitch);
         /// <summary>
         /// Teleports the avatar.
         /// </summary>
@@ -78,7 +76,7 @@ namespace VpNet.Interfaces
         /// <param name="yaw">The yaw.</param>
         /// <param name="pitch">The pitch.</param>
         /// <returns></returns>
-        TRc TeleportAvatar(int targetSession, string world, Vector3 position, double yaw, double pitch);
+        void TeleportAvatar(int targetSession, string world, Vector3 position, double yaw, double pitch);
         /// <summary>
         /// Teleports the avatar.
         /// </summary>
@@ -87,7 +85,7 @@ namespace VpNet.Interfaces
         /// <param name="position">The position.</param>
         /// <param name="rotation">The rotation.</param>
         /// <returns></returns>
-        TRc TeleportAvatar(TAvatar avatar, string world, Vector3 position, Vector3 rotation);
+        void TeleportAvatar(TAvatar avatar, string world, Vector3 position, Vector3 rotation);
         /// <summary>
         /// Teleports the avatar.
         /// </summary>
@@ -96,7 +94,7 @@ namespace VpNet.Interfaces
         /// <param name="position">The position.</param>
         /// <param name="rotation">The rotation.</param>
         /// <returns></returns>
-        TRc TeleportAvatar(TAvatar avatar, TWorld world, Vector3 position, Vector3 rotation);
+        void TeleportAvatar(TAvatar avatar, TWorld world, Vector3 position, Vector3 rotation);
         /// <summary>
         /// Teleports the avatar within the current world.
         /// </summary>
@@ -104,12 +102,12 @@ namespace VpNet.Interfaces
         /// <param name="position">The position.</param>
         /// <param name="rotation">The rotation.</param>
         /// <returns></returns>
-        TRc TeleportAvatar(TAvatar avatar, Vector3 position, Vector3 rotation);
+        void TeleportAvatar(TAvatar avatar, Vector3 position, Vector3 rotation);
         /// <summary>
         /// Teleports the avatar within the current world b previously having changed the avatar position and rotation properties
         /// </summary>
         /// <param name="avatar">The avatar.</param>
         /// <returns></returns>
-        TRc TeleportAvatar(TAvatar avatar);
+        void TeleportAvatar(TAvatar avatar);
     }
 }

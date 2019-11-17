@@ -50,21 +50,21 @@ namespace VpNet.Abstract
     /// <typeparam name="TTeleport">The type of the teleport.</typeparam>
     public abstract partial class BaseInstanceT<T,
         /* Scene Type specifications ----------------------------------------------------------------------------------------------------------------------------------------------*/
-        TAvatar, TFriend, TResult, TTerrainCell, TTerrainNode,
+        TAvatar, TFriend, TTerrainCell, TTerrainNode,
         TTerrainTile, TVpObject, TWorld, TCell, TChatMessage, TTerrain, TUniverse, TTeleport,
         TUserAttributes
         > :
         /* Interface specifications -----------------------------------------------------------------------------------------------------------------------------------------*/
         /* Functions */
         BaseInstanceEvents<TWorld>,
-        IAvatarFunctions<TResult, TAvatar>,
-        IChatFunctions<TResult, TAvatar>,
-        IFriendFunctions<TResult, TFriend>,
-        ITeleportFunctions<TResult, TWorld, TAvatar>,
-        ITerrainFunctions<TResult, TTerrainTile, TTerrainNode, TTerrainCell>,
-        IVpObjectFunctions<TResult, TVpObject>,
-        IWorldFunctions<TResult, TWorld>,
-        IUniverseFunctions<TResult>
+        IAvatarFunctions<TAvatar>,
+        IChatFunctions<TAvatar>,
+        IFriendFunctions<TFriend>,
+        ITeleportFunctions<TWorld, TAvatar>,
+        ITerrainFunctions<TTerrainTile, TTerrainNode, TTerrainCell>,
+        IVpObjectFunctions<TVpObject>,
+        IWorldFunctions<TWorld>,
+        IUniverseFunctions
         /* Constraints ----------------------------------------------------------------------------------------------------------------------------------------------------*/
         where TUniverse : class, IUniverse, new()
         where TTerrain : class, ITerrain, new()
@@ -73,7 +73,6 @@ namespace VpNet.Abstract
         where TTerrainCell : class, ITerrainCell, new()
         where TTerrainNode : class, ITerrainNode<TTerrainTile, TTerrainNode, TTerrainCell>, new()
         where TTerrainTile : class, ITerrainTile<TTerrainTile, TTerrainNode, TTerrainCell>, new()
-        where TResult : class, IRc, new()
         where TWorld : class, IWorld, new()
         where TAvatar : class, IAvatar, new()
         where TFriend : class, IFriend, new()

@@ -44,7 +44,7 @@ namespace VpNet.Abstract
     /// <typeparam name="T">Type of the abstract implementation</typeparam>
     /// <typeparam name="TAvatar">The type of the avatar.</typeparam>
     /// <typeparam name="TFriend">The type of the friend.</typeparam>
-    /// <typeparam name="TResult">The type of the result.</typeparam>
+    /// <typeparam name="void">The type of the result.</typeparam>
     /// <typeparam name="TTerrainCell">The type of the terrain cell.</typeparam>
     /// <typeparam name="TTerrainNode">The type of the terrain node.</typeparam>
     /// <typeparam name="TTerrainTile">The type of the terrain tile.</typeparam>
@@ -58,22 +58,22 @@ namespace VpNet.Abstract
     [Serializable]
     public abstract partial class BaseInstanceT<T,
         /* Scene Type specifications ----------------------------------------------------------------------------------------------------------------------------------------------*/
-        TAvatar, TFriend, TResult, TTerrainCell, TTerrainNode,
+        TAvatar, TFriend, TTerrainCell, TTerrainNode,
         TTerrainTile, TVpObject, TWorld, TCell,TChatMessage,TTerrain,TUniverse, TTeleport,
         TUserAttributes
         > :
         /* Interface specifications -----------------------------------------------------------------------------------------------------------------------------------------*/
         /* Functions */
         BaseInstanceEvents<TWorld>,
-        IAvatarFunctions<TResult, TAvatar>,
-        IChatFunctions<TResult, TAvatar>,
-        IFriendFunctions<TResult, TFriend>,
-        ITeleportFunctions<TResult, TWorld, TAvatar>,
-        ITerrainFunctions<TResult, TTerrainTile, TTerrainNode, TTerrainCell>,
-        IVpObjectFunctions<TResult, TVpObject>,
-        IWorldFunctions<TResult, TWorld>,
-        IUniverseFunctions<TResult>
-/* Constraints ----------------------------------------------------------------------------------------------------------------------------------------------------*/
+        IAvatarFunctions<TAvatar>,
+        IChatFunctions<TAvatar>,
+        IFriendFunctions<TFriend>,
+        ITeleportFunctions<TWorld, TAvatar>,
+        ITerrainFunctions<TTerrainTile, TTerrainNode, TTerrainCell>,
+        IVpObjectFunctions<TVpObject>,
+        IWorldFunctions<TWorld>,
+        IUniverseFunctions
+        /* Constraints ----------------------------------------------------------------------------------------------------------------------------------------------------*/
         where TUniverse : class, IUniverse, new()
         where TTerrain : class, ITerrain, new()
         where TCell : class, ICell, new()
@@ -81,7 +81,6 @@ namespace VpNet.Abstract
         where TTerrainCell : class, ITerrainCell, new()
         where TTerrainNode : class, ITerrainNode<TTerrainTile,TTerrainNode,TTerrainCell>, new()
         where TTerrainTile : class, ITerrainTile<TTerrainTile,TTerrainNode, TTerrainCell>, new()
-        where TResult : class, IRc, new()
         where TWorld : class, IWorld, new()
         where TAvatar : class, IAvatar, new()
         where TFriend : class, IFriend, new()
@@ -106,16 +105,16 @@ namespace VpNet.Abstract
         private TWorld World { get; set; }
         private NetConfig netConfig;
         private GCHandle instanceHandle;
-        private TaskCompletionSource<TResult> ConnectCompletionSource;
-        private TaskCompletionSource<TResult> LoginCompletionSource;
-        private TaskCompletionSource<TResult> EnterCompletionSource;
+        private TaskCompletionSource<object> ConnectCompletionSource;
+        private TaskCompletionSource<object> LoginCompletionSource;
+        private TaskCompletionSource<object> EnterCompletionSource;
 
         internal void Init()
         {
             Universe = new TUniverse();
             World = new TWorld();
-            ((IAvatarFunctions<TResult, TAvatar>) this).Avatars = new Dictionary<int, TAvatar>();
-            _avatars =  ((IAvatarFunctions<TResult, TAvatar>) this).Avatars;
+            ((IAvatarFunctions<TAvatar>) this).Avatars = new Dictionary<int, TAvatar>();
+            _avatars =  ((IAvatarFunctions<TAvatar>) this).Avatars;
             _worlds = new Dictionary<string, TWorld>();
             _isInitialized = true;
         }
@@ -170,7 +169,7 @@ namespace VpNet.Abstract
             HasParentInstance = true;
             _instance = parentInstance._instance;
             Init();
-            _avatars = ((IAvatarFunctions<TResult, TAvatar>) parentInstance).Avatars;
+            _avatars = ((IAvatarFunctions<TAvatar>) parentInstance).Avatars;
             Configuration = parentInstance.Configuration;
             Configuration.IsChildInstance = true;
             parentInstance.OnChatNativeEvent += OnChatNative;
@@ -284,14 +283,14 @@ namespace VpNet.Abstract
         {
             lock (this)
             {
-                SetCompletionResultFromRc(LoginCompletionSource, rc);
+                SetCompletionResult(LoginCompletionSource, rc, null);
             }
         }
         internal void OnEnterCallbackNativeEvent1(IntPtr instance, int rc, int reference)
         {
             lock (this)
             {
-                SetCompletionResultFromRc(EnterCompletionSource, rc);
+                SetCompletionResult(EnterCompletionSource, rc, null);
             }
         }
         internal void OnJoinCallbackNativeEvent1(IntPtr instance, int rc, int reference) { lock (this) { OnJoinCallbackNativeEvent(instance, rc, reference); } }
@@ -299,7 +298,7 @@ namespace VpNet.Abstract
         {
             lock (this)
             {
-                SetCompletionResultFromRc(ConnectCompletionSource, rc);
+                SetCompletionResult(ConnectCompletionSource, rc, null);
             }
         }
         internal void OnWorldPermissionUserSetCallbackNative1(IntPtr instance, int rc, int reference) { lock (this) { OnWorldPermissionUserSetCallbackNativeEvent(instance, rc, reference); } }
@@ -331,18 +330,6 @@ namespace VpNet.Abstract
 
         #region Methods
 
-        private void SetCompletionResultFromRc(TaskCompletionSource<TResult> cs, int rc)
-        {
-            try
-            {
-                var result = new TResult { Rc = rc };
-                cs.SetResult(result);
-            } catch (Exception e)
-            {
-                cs.SetException(e);
-            }
-        }
-
         private void SetCompletionResult(int referenceNumber, int rc, object result)
         {
             var tcs = _objectCompletionSources[referenceNumber];
@@ -361,38 +348,46 @@ namespace VpNet.Abstract
             }
         }
 
+        private static void CheckReasonCode(int rc)
+        {
+            if (rc != 0)
+            {
+                throw new VpException((ReasonCode)rc);
+            }
+        }
+
         #region IUniverseFunctions Implementations
 
-        virtual public Task<TResult> ConnectAsync(string host = "universe.virtualparadise.org", ushort port = 57000)
+        virtual public Task ConnectAsync(string host = "universe.virtualparadise.org", ushort port = 57000)
         {
             Universe.Host = host;
             Universe.Port = port;
 
             lock (this)
             {
-                ConnectCompletionSource = new TaskCompletionSource<TResult>();
+                ConnectCompletionSource = new TaskCompletionSource<object>();
                 var rc = Functions.vp_connect_universe(_instance, host, port);
                 if (rc != 0)
                 {
-                    SetCompletionResultFromRc(ConnectCompletionSource, rc);
+                    return Task.FromException(new VpException((ReasonCode)rc));
                 }
                 return ConnectCompletionSource.Task;
             }
         }
 
-        virtual public async Task<TResult> LoginAndEnterAsync(bool announceAvatar = true)
+        virtual public async Task LoginAndEnterAsync(bool announceAvatar = true)
         {
             await ConnectAsync();
             await LoginAsync();
             if (announceAvatar)
             {
                 await EnterAsync();
-                return UpdateAvatar();
+                UpdateAvatar();
             }
-            return await EnterAsync();
+            await EnterAsync();
         }
 
-        virtual public async Task<TResult> LoginAsync()
+        virtual public async Task LoginAsync()
         {
             if (Configuration == null ||
                 string.IsNullOrEmpty(Configuration.BotName) ||
@@ -402,10 +397,11 @@ namespace VpNet.Abstract
             {
                 throw new ArgumentException("Can't login because of Incomplete login configuration.");
             }
-            return await LoginAsync(Configuration.UserName, Configuration.Password, Configuration.BotName);
+
+            await LoginAsync(Configuration.UserName, Configuration.Password, Configuration.BotName);
         }
 
-        virtual public Task<TResult> LoginAsync(string username, string password, string botname)
+        virtual public Task LoginAsync(string username, string password, string botname)
         {
             lock (this)
             {
@@ -413,11 +409,11 @@ namespace VpNet.Abstract
                 Configuration.UserName = username;
                 Configuration.Password = password;
 
-                LoginCompletionSource = new TaskCompletionSource<TResult>();
+                LoginCompletionSource = new TaskCompletionSource<object>();
                 var rc = Functions.vp_login(_instance, username, password, botname);
                 if (rc != 0)
                 {
-                    return Task.FromResult(new TResult { Rc = rc });
+                    return Task.FromException(new VpException((ReasonCode)rc));
                 }
 
                 return LoginCompletionSource.Task;
@@ -428,35 +424,34 @@ namespace VpNet.Abstract
 
         #region IWorldFunctions Implementations
         [Obsolete("No longer necessary for network IO to occur")]
-        virtual public TResult Wait(int milliseconds = 10)
+        virtual public void Wait(int milliseconds = 10)
         {
             Thread.Sleep(milliseconds);
-            return new TResult { Rc = 0 };
         }
 
-        virtual public Task<TResult> EnterAsync(string worldname)
+        virtual public Task EnterAsync(string worldname)
         {
             return EnterAsync(new TWorld { Name = worldname });
         }
 
-        virtual public Task<TResult> EnterAsync()
+        virtual public Task EnterAsync()
         {
             if (Configuration == null || Configuration.World == null || string.IsNullOrEmpty(Configuration.World.Name))
                 throw new ArgumentException("Can't login because of Incomplete instance world configuration.");
             return EnterAsync(Configuration.World);
         }
 
-        virtual public Task<TResult> EnterAsync(TWorld world)
+        virtual public Task EnterAsync(TWorld world)
         {
             lock (this)
             {
                 Configuration.World = world;
 
-                EnterCompletionSource = new TaskCompletionSource<TResult>();
+                EnterCompletionSource = new TaskCompletionSource<object>();
                 var rc = Functions.vp_enter(_instance, world.Name);
                 if (rc != 0)
                 {
-                    return Task.FromResult(new TResult { Rc = rc });
+                    return Task.FromException(new VpException((ReasonCode)rc));
                 }
 
                 return EnterCompletionSource.Task;
@@ -489,16 +484,15 @@ namespace VpNet.Abstract
         /// <summary>
         /// Leave the current world
         /// </summary>
-        virtual public TResult Leave()
+        virtual public void Leave()
         {
             lock (this)
             {
-                var result = new TResult {Rc = Functions.vp_leave(_instance)};
-                if (result.Rc == 0 && OnWorldLeave !=null)
+                CheckReasonCode(Functions.vp_leave(_instance));
+                if (OnWorldLeave !=null)
                 {
                     OnWorldLeave(Implementor,new WorldLeaveEventArgsT<TWorld> {World = Configuration.World});
                 }
-                return result;
             }
         }
 
@@ -512,11 +506,11 @@ namespace VpNet.Abstract
                 OnUniverseDisconnect(Implementor, new UniverseDisconnectEventArgsT<TUniverse> { Universe = Universe,DisconnectType = VpNet.DisconnectType.UserDisconnected  });
         }
 
-        virtual public TResult ListWorlds()
+        virtual public void ListWorlds()
         {
             lock (this)
             {
-                return new TResult {Rc = Functions.vp_world_list(_instance, 0)};
+                CheckReasonCode(Functions.vp_world_list(_instance, 0));
             }
         }
 
@@ -524,19 +518,19 @@ namespace VpNet.Abstract
 
         #region IQueryCellFunctions Implementation
 
-        virtual public TResult QueryCell(int cellX, int cellZ)
+        virtual public void QueryCell(int cellX, int cellZ)
         {
             lock (this)
             {
-                return new TResult { Rc = Functions.vp_query_cell(_instance, cellX, cellZ) };
+                CheckReasonCode(Functions.vp_query_cell(_instance, cellX, cellZ));
             }
         }
 
-        virtual public TResult QueryCell(int cellX, int cellZ, int revision)
+        virtual public void QueryCell(int cellX, int cellZ, int revision)
         {
             lock (this)
             {
-                return new TResult { Rc = Functions.vp_query_cell_revision(_instance, cellX, cellZ,revision) };
+                CheckReasonCode(Functions.vp_query_cell_revision(_instance, cellX, cellZ, revision));
             }
         }
 
@@ -544,87 +538,68 @@ namespace VpNet.Abstract
 
         #region IVpObjectFunctions implementations
 
-        public TResult ClickObject(TVpObject vpObject)
+        public void ClickObject(TVpObject vpObject)
         {
             lock (this)
             {
-                return ClickObject(vpObject.Id);
+                ClickObject(vpObject.Id);
             }
         }
 
-        public TResult ClickObject(int objectId)
+        public void ClickObject(int objectId)
         {
             lock (this)
             {
-               // Functions.vp_int_set(_instance, Attributes.ObjectId,objectId);
-                return new TResult
-                {
-                    Rc = Functions.vp_object_click(_instance, objectId,0,0,0,0)
-                };
+                CheckReasonCode(Functions.vp_object_click(_instance, objectId, 0, 0, 0, 0));
             }
         }
 
-        public TResult ClickObject(TVpObject vpObject, TAvatar avatar)
+        public void ClickObject(TVpObject vpObject, TAvatar avatar)
         {
             lock (this)
             {
-                return ClickObject(vpObject.Id, avatar.Session);
+                ClickObject(vpObject.Id, avatar.Session);
             }
         }
 
-        public TResult ClickObject(TVpObject vpObject, TAvatar avatar, Vector3 worldHit)
+        public void ClickObject(TVpObject vpObject, TAvatar avatar, Vector3 worldHit)
         {
             lock (this)
             {
-                return new TResult
-                {
-                    Rc = Functions.vp_object_click(_instance, vpObject.Id, avatar.Session, (float)worldHit.X, (float)worldHit.Y, (float)worldHit.Z)
-                };
+                CheckReasonCode(Functions.vp_object_click(_instance, vpObject.Id, avatar.Session, (float)worldHit.X, (float)worldHit.Y, (float)worldHit.Z));
             }
         }
 
-        public TResult ClickObject(TVpObject vpObject, Vector3 worldHit)
+        public void ClickObject(TVpObject vpObject, Vector3 worldHit)
         {
             lock (this)
             {
-                return new TResult
-                {
-                    Rc = Functions.vp_object_click(_instance, vpObject.Id, 0, (float)worldHit.X, (float)worldHit.Y, (float)worldHit.Z)
-                };
+                CheckReasonCode(Functions.vp_object_click(_instance, vpObject.Id, 0, (float)worldHit.X, (float)worldHit.Y, (float)worldHit.Z));
             }
         }
 
-        public TResult ClickObject(int objectId,int toSession, double worldHitX, double worldHitY, double worldHitZ)
+        public void ClickObject(int objectId,int toSession, double worldHitX, double worldHitY, double worldHitZ)
         {
             lock (this)
             {
-                return new TResult
-                {
-                    Rc = Functions.vp_object_click(_instance, objectId, toSession, (float)worldHitX, (float)worldHitY, (float)worldHitZ)
-                };
+                CheckReasonCode(Functions.vp_object_click(_instance, objectId, toSession, (float)worldHitX, (float)worldHitY, (float)worldHitZ));
             }
         }
 
-        public TResult ClickObject(int objectId, double worldHitX, double worldHitY, double worldHitZ)
+        public void ClickObject(int objectId, double worldHitX, double worldHitY, double worldHitZ)
         {
             lock (this)
             {
-                return new TResult
-                {
-                    Rc = Functions.vp_object_click(_instance, objectId, 0, (float)worldHitX, (float)worldHitY, (float)worldHitZ)
-                };
+                CheckReasonCode(Functions.vp_object_click(_instance, objectId, 0, (float)worldHitX, (float)worldHitY, (float)worldHitZ));
             }
         }
 
 
-        public TResult ClickObject(int objectId, int toSession)
+        public void ClickObject(int objectId, int toSession)
         {
             lock (this)
             {
-                return new TResult
-                {
-                    Rc = Functions.vp_object_click(_instance,objectId,toSession,0,0,0)
-                };
+                CheckReasonCode(Functions.vp_object_click(_instance, objectId, toSession, 0, 0, 0));
             }
         }
 
@@ -779,99 +754,75 @@ namespace VpNet.Abstract
 
         #region ITeleportFunctions Implementations
 
-        virtual public TResult TeleportAvatar(TAvatar avatar, string world, double x, double y, double z, double yaw, double pitch)
+        virtual public void TeleportAvatar(TAvatar avatar, string world, double x, double y, double z, double yaw, double pitch)
         {
-            return new TResult
-                {
-                    Rc = Functions.vp_teleport_avatar(_instance, avatar.Session, world, (float)x, (float)y, (float)z, (float)yaw, (float)pitch)
-                };
+            CheckReasonCode(Functions.vp_teleport_avatar(_instance, avatar.Session, world, (float)x, (float)y, (float)z, (float)yaw, (float)pitch));
         }
 
-        virtual public TResult TeleportAvatar(int targetSession, string world, double x, double y, double z, double yaw, double pitch)
+        virtual public void TeleportAvatar(int targetSession, string world, double x, double y, double z, double yaw, double pitch)
         {
-            return new TResult
-                {
-                    Rc = Functions.vp_teleport_avatar(_instance, targetSession, world, (float)x, (float)y, (float)z, (float)yaw, (float)pitch)
-                };
+            CheckReasonCode(Functions.vp_teleport_avatar(_instance, targetSession, world, (float)x, (float)y, (float)z, (float)yaw, (float)pitch));
         }
 
-        virtual public TResult TeleportAvatar(TAvatar avatar, string world, Vector3 position, double yaw, double pitch)
+        virtual public void TeleportAvatar(TAvatar avatar, string world, Vector3 position, double yaw, double pitch)
         {
-            return new TResult
-            {
-                Rc = Functions.vp_teleport_avatar(_instance, avatar.Session, world, (float)position.X, (float)position.Y, (float)position.Z, (float)yaw, (float)pitch)
-            };
+            CheckReasonCode(Functions.vp_teleport_avatar(_instance, avatar.Session, world, (float)position.X, (float)position.Y, (float)position.Z, (float)yaw, (float)pitch));
         }
 
-        virtual public TResult TeleportAvatar(int targetSession, string world, Vector3 position, double yaw, double pitch)
+        virtual public void TeleportAvatar(int targetSession, string world, Vector3 position, double yaw, double pitch)
         {
-            return new TResult
-            {
-                Rc = Functions.vp_teleport_avatar(_instance, targetSession, world, (float)position.X, (float)position.Y, (float)position.Z, (float)yaw, (float)pitch)
-            };
+            CheckReasonCode(Functions.vp_teleport_avatar(_instance, targetSession, world, (float)position.X, (float)position.Y, (float)position.Z, (float)yaw, (float)pitch));
 
         }
 
-        virtual public TResult TeleportAvatar(TAvatar avatar, string world, Vector3 position, Vector3 rotation)
+        virtual public void TeleportAvatar(TAvatar avatar, string world, Vector3 position, Vector3 rotation)
         {
-            return new TResult
-            {
-                Rc = Functions.vp_teleport_avatar(_instance, avatar.Session, world, (float)position.X, (float)position.Y, (float)position.Z, (float)rotation.Y, (float)rotation.X)
-            };
+            CheckReasonCode(Functions.vp_teleport_avatar(_instance, avatar.Session, world, (float)position.X,
+                                                         (float)position.Y, (float)position.Z, (float)rotation.Y,
+                                                         (float)rotation.X));
 
         }
 
-        public TResult TeleportAvatar(TAvatar avatar, TWorld world, Vector3 position, Vector3 rotation)
+        public void TeleportAvatar(TAvatar avatar, TWorld world, Vector3 position, Vector3 rotation)
         {
-            return new TResult
-            {
-                Rc = Functions.vp_teleport_avatar(_instance, avatar.Session, world.Name, (float)position.X, (float)position.Y, (float)position.Z, (float)rotation.Y, (float)rotation.X)
-            };
+            CheckReasonCode(Functions.vp_teleport_avatar(_instance, avatar.Session, world.Name, (float)position.X,
+                                                         (float)position.Y, (float)position.Z, (float)rotation.Y,
+                                                         (float)rotation.X));
         }
 
-        virtual public TResult TeleportAvatar(TAvatar avatar, Vector3 position, Vector3 rotation)
+        virtual public void TeleportAvatar(TAvatar avatar, Vector3 position, Vector3 rotation)
         {
-            return new TResult
-            {
-                Rc = Functions.vp_teleport_avatar(_instance, avatar.Session, string.Empty, (float)position.X, (float)position.Y, (float)position.Z, (float)rotation.Y, (float)rotation.X)
-            };
+            CheckReasonCode(Functions.vp_teleport_avatar(_instance, avatar.Session, string.Empty, (float)position.X,
+                                                         (float)position.Y, (float)position.Z, (float)rotation.Y,
+                                                         (float)rotation.X));
         }
 
-        virtual public TResult TeleportAvatar(TAvatar avatar)
+        virtual public void TeleportAvatar(TAvatar avatar)
         {
-            return new TResult
-            {
-                Rc = Functions.vp_teleport_avatar(_instance, avatar.Session, string.Empty, (float)avatar.Position.X, (float)avatar.Position.Y, (float)avatar.Position.Z, (float)avatar.Rotation.Y, (float)avatar.Rotation.X)
-            };
+            CheckReasonCode(Functions.vp_teleport_avatar(_instance, avatar.Session, string.Empty, (float)avatar.Position.X, (float)avatar.Position.Y, (float)avatar.Position.Z, (float)avatar.Rotation.Y, (float)avatar.Rotation.X));
         }
 
         #endregion
 
         #region IAvatarFunctions Implementations.
 
-        virtual public TResult GetUserProfile(int userId)
+        virtual public void GetUserProfile(int userId)
         {
-            return new TResult
-            {
-                Rc = Functions.vp_user_attributes_by_id(_instance, userId)
-            };
+            CheckReasonCode(Functions.vp_user_attributes_by_id(_instance, userId));
         }
 
         [Obsolete]
-        virtual public TResult GetUserProfile(string userName)
+        virtual public void GetUserProfile(string userName)
         {
-            return new TResult
-            {
-                Rc = Functions.vp_user_attributes_by_name(_instance,userName)
-            };
+            CheckReasonCode(Functions.vp_user_attributes_by_name(_instance, userName));
         }
 
-        virtual public TResult GetUserProfile(TAvatar profile)
+        virtual public void GetUserProfile(TAvatar profile)
         {
-            return GetUserProfile(profile.UserId);
+            GetUserProfile(profile.UserId);
         }
 
-        virtual public TResult UpdateAvatar(double x = 0.0f, double y = 0.0f, double z = 0.0f,double yaw = 0.0f, double pitch = 0.0f)
+        virtual public void UpdateAvatar(double x = 0.0f, double y = 0.0f, double z = 0.0f,double yaw = 0.0f, double pitch = 0.0f)
         {
             lock (this)
             {
@@ -880,178 +831,175 @@ namespace VpNet.Abstract
                 Functions.vp_double_set(_instance, FloatAttribute.MyZ, z);
                 Functions.vp_double_set(_instance, FloatAttribute.MyYaw, yaw);
                 Functions.vp_double_set(_instance, FloatAttribute.MyPitch, pitch);
-                return new TResult
-                {
-                    Rc = Functions.vp_state_change(_instance)
-                };
+                CheckReasonCode(Functions.vp_state_change(_instance));
 
             }
         }
 
-        public TResult UpdateAvatar(Vector3 position)
+        public void UpdateAvatar(Vector3 position)
         {
-            return UpdateAvatar(position.X, position.Y, position.Z);
+            UpdateAvatar(position.X, position.Y, position.Z);
         }
 
-        public TResult UpdateAvatar(Vector3 position, Vector3 rotation)
+        public void UpdateAvatar(Vector3 position, Vector3 rotation)
         {
-            return UpdateAvatar(position.X, position.Y, position.Z,rotation.X,rotation.Y);
+            UpdateAvatar(position.X, position.Y, position.Z, rotation.X, rotation.Y);
         }
 
-        public TResult AvatarClick(int session)
+        public void AvatarClick(int session)
         {
-            return new TResult {Rc = Functions.vp_avatar_click(_instance,session)};
+            CheckReasonCode(Functions.vp_avatar_click(_instance, session));
         }
 
-        public TResult AvatarClick(TAvatar avatar)
+        public void AvatarClick(TAvatar avatar)
         {
-            return new TResult { Rc = Functions.vp_avatar_click(_instance, avatar.Session) };
+            CheckReasonCode(Functions.vp_avatar_click(_instance, avatar.Session));
         }
 
         #endregion
 
         #region IChatFunctions Implementations
 
-        virtual public TResult Say(string message)
+        virtual public void Say(string message)
         {
             lock (this)
             {
-                return new TResult {Rc = Functions.vp_say(_instance, message)};
+                CheckReasonCode(Functions.vp_say(_instance, message));
             }
         }
 
-        virtual public TResult Say(string format, params object[] arg)
+        virtual public void Say(string format, params object[] arg)
         {
             lock (this)
             {
-                return new TResult { Rc = Functions.vp_say(_instance, string.Format(format,arg)) };
+                CheckReasonCode(Functions.vp_say(_instance, string.Format(format, arg)));
             }
         }
 
-        public TResult ConsoleMessage(int targetSession, string name, string message, TextEffectTypes effects = (TextEffectTypes) 0, byte red = 0, byte green = 0, byte blue = 0)
+        public void ConsoleMessage(int targetSession, string name, string message, TextEffectTypes effects = (TextEffectTypes) 0, byte red = 0, byte green = 0, byte blue = 0)
         {
-            return new TResult { Rc = Functions.vp_console_message(_instance, targetSession, name, message, (int)effects, red, green, blue) };
+            CheckReasonCode(Functions.vp_console_message(_instance, targetSession, name, message, (int)effects, red, green, blue));
         }
 
-        public TResult ConsoleMessage(TAvatar avatar, string name, string message, Color color, TextEffectTypes effects = (TextEffectTypes) 0)
+        public void ConsoleMessage(TAvatar avatar, string name, string message, Color color, TextEffectTypes effects = (TextEffectTypes) 0)
         {
             if (color == null)
                 color = new Color();
-            return new TResult { Rc = Functions.vp_console_message(_instance, avatar.Session, name, message, (int)effects, color.R, color.G, color.B) };
+            CheckReasonCode(Functions.vp_console_message(_instance, avatar.Session, name, message, (int)effects, color.R, color.G, color.B));
         }
 
-        public TResult ConsoleMessage(int targetSession, string name, string message, Color color, TextEffectTypes effects = (TextEffectTypes) 0)
+        public void ConsoleMessage(int targetSession, string name, string message, Color color, TextEffectTypes effects = (TextEffectTypes) 0)
         {
             if (color == null)
                 color = new Color();
-            return new TResult { Rc = Functions.vp_console_message(_instance, targetSession, name, message, (int)effects, color.R, color.G, color.B) };
+            CheckReasonCode(Functions.vp_console_message(_instance, targetSession, name, message, (int)effects, color.R, color.G, color.B));
         }
 
-        public TResult ConsoleMessage(string name, string message, Color color, TextEffectTypes effects = (TextEffectTypes) 0)
+        public void ConsoleMessage(string name, string message, Color color, TextEffectTypes effects = (TextEffectTypes)0)
         {
             if (color == null)
                 color = new Color();
-            return new TResult { Rc = Functions.vp_console_message(_instance, 0, name, message, (int)effects, color.R, color.G, color.B) };
+            CheckReasonCode(Functions.vp_console_message(_instance, 0, name, message, (int)effects, color.R, color.G, color.B));
         }
 
-        public TResult ConsoleMessage(string message, Color color, TextEffectTypes effects = (TextEffectTypes) 0)
+        public void ConsoleMessage(string message, Color color, TextEffectTypes effects = (TextEffectTypes)0)
         {
             if (color == null)
                 color = new Color();
-            return new TResult { Rc = Functions.vp_console_message(_instance, 0, string.Empty, message, (int)effects, color.R, color.G, color.B) };
+            CheckReasonCode(Functions.vp_console_message(_instance, 0, string.Empty, message, (int)effects, color.R, color.G, color.B));
         }
 
-        public TResult ConsoleMessage(string message)
+        public void ConsoleMessage(string message)
         {
-            return new TResult { Rc = Functions.vp_console_message(_instance, 0, string.Empty, message, 0, 0, 0, 0) };
+            CheckReasonCode(Functions.vp_console_message(_instance, 0, string.Empty, message, 0, 0, 0, 0));
         }
 
-        virtual public TResult ConsoleMessage(TAvatar avatar, string name, string message, TextEffectTypes effects = 0, byte red = 0, byte green = 0, byte blue = 0)
+        virtual public void ConsoleMessage(TAvatar avatar, string name, string message, TextEffectTypes effects = 0, byte red = 0, byte green = 0, byte blue = 0)
         {
-            return new TResult { Rc = Functions.vp_console_message(_instance, avatar.Session, name, message, (int)effects, red, green, blue) };
+            CheckReasonCode(Functions.vp_console_message(_instance, avatar.Session, name, message, (int)effects, red, green, blue));
         }
 
-        virtual public TResult UrlSendOverlay(TAvatar avatar, string url)
+        virtual public void UrlSendOverlay(TAvatar avatar, string url)
         {
-            return new TResult { Rc = Functions.vp_url_send(_instance, avatar.Session, url, (int)UrlTarget.UrlTargetOverlay) };
+            CheckReasonCode(Functions.vp_url_send(_instance, avatar.Session, url, (int)UrlTarget.UrlTargetOverlay));
         }
 
-        virtual public TResult UrlSendOverlay(TAvatar avatar, Uri url)
+        virtual public void UrlSendOverlay(TAvatar avatar, Uri url)
         {
-            return new TResult { Rc = Functions.vp_url_send(_instance, avatar.Session, url.AbsoluteUri, (int)UrlTarget.UrlTargetOverlay) };
+            CheckReasonCode(Functions.vp_url_send(_instance, avatar.Session, url.AbsoluteUri, (int)UrlTarget.UrlTargetOverlay));
         }
 
-        virtual public TResult UrlSendOverlay(int avatarSession, string url)
+        virtual public void UrlSendOverlay(int avatarSession, string url)
         {
-            return new TResult { Rc = Functions.vp_url_send(_instance, avatarSession, url, (int)UrlTarget.UrlTargetOverlay) };
+            CheckReasonCode(Functions.vp_url_send(_instance, avatarSession, url, (int)UrlTarget.UrlTargetOverlay));
         }
 
-        virtual public TResult UrlSendOverlay(int avatarSession, Uri url)
+        virtual public void UrlSendOverlay(int avatarSession, Uri url)
         {
-            return new TResult { Rc = Functions.vp_url_send(_instance, avatarSession, url.AbsoluteUri, (int)UrlTarget.UrlTargetOverlay) };
+            CheckReasonCode(Functions.vp_url_send(_instance, avatarSession, url.AbsoluteUri, (int)UrlTarget.UrlTargetOverlay));
         }
 
-        virtual public TResult UrlSend(TAvatar avatar, string url)
+        virtual public void UrlSend(TAvatar avatar, string url)
         {
-            return new TResult { Rc = Functions.vp_url_send(_instance, avatar.Session, url, (int)UrlTarget.UrlTargetBrowser) };
+            CheckReasonCode(Functions.vp_url_send(_instance, avatar.Session, url, (int)UrlTarget.UrlTargetBrowser));
         }
 
-        virtual public TResult UrlSend(TAvatar avatar, Uri url)
+        virtual public void UrlSend(TAvatar avatar, Uri url)
         {
-            return new TResult { Rc = Functions.vp_url_send(_instance, avatar.Session, url.AbsoluteUri, (int)UrlTarget.UrlTargetBrowser) };
+            CheckReasonCode(Functions.vp_url_send(_instance, avatar.Session, url.AbsoluteUri, (int)UrlTarget.UrlTargetBrowser));
         }
 
-        virtual public TResult UrlSend(int avatarSession, string url)
+        virtual public void UrlSend(int avatarSession, string url)
         {
-            return new TResult { Rc = Functions.vp_url_send(_instance, avatarSession, url, (int)UrlTarget.UrlTargetBrowser) };
+            CheckReasonCode(Functions.vp_url_send(_instance, avatarSession, url, (int)UrlTarget.UrlTargetBrowser));
         }
 
-        virtual public TResult UrlSend(int avatarSession, Uri url)
+        virtual public void UrlSend(int avatarSession, Uri url)
         {
-            return new TResult { Rc = Functions.vp_url_send(_instance, avatarSession, url.AbsoluteUri, (int)UrlTarget.UrlTargetBrowser) };
+            CheckReasonCode(Functions.vp_url_send(_instance, avatarSession, url.AbsoluteUri, (int)UrlTarget.UrlTargetBrowser));
         }
 
         #endregion
 
         #region IJoinFunctions Implementations
-        public virtual TResult Join(TAvatar avatar)
+        public virtual void Join(TAvatar avatar)
         {
             lock (this)
             {
-                return new TResult { Rc = Functions.vp_join(_instance, avatar.UserId) };
+                CheckReasonCode(Functions.vp_join(_instance, avatar.UserId));
             }
         }
 
-        public virtual TResult Join(int userId)
+        public virtual void Join(int userId)
         {
             lock (this)
             {
-                return new TResult { Rc = Functions.vp_join(_instance, userId) };
+                CheckReasonCode(Functions.vp_join(_instance, userId));
             }
         }
 
 
-        public virtual TResult JoinAccept(int requestId, string world, Vector3 location, float yaw, float pitch)
+        public virtual void JoinAccept(int requestId, string world, Vector3 location, float yaw, float pitch)
         {
             lock (this)
             {
-                return new TResult { Rc = Functions.vp_join_accept(_instance, requestId, world,location.X,location.Y,location.Z,yaw,pitch) };
+                CheckReasonCode(Functions.vp_join_accept(_instance, requestId, world,location.X,location.Y,location.Z,yaw,pitch));
             }
         }
 
-        public virtual TResult JoinAccept(int requestId, string world, double x, double y, double z, float yaw, float pitch)
+        public virtual void JoinAccept(int requestId, string world, double x, double y, double z, float yaw, float pitch)
         {
             lock (this)
             {
-                return new TResult { Rc = Functions.vp_join_accept(_instance, requestId, world, x, y, z, yaw, pitch) };
+                CheckReasonCode(Functions.vp_join_accept(_instance, requestId, world, x, y, z, yaw, pitch));
             }
         }
 
-        public virtual TResult JoinDecline(int requestId)
+        public virtual void JoinDecline(int requestId)
         {
             lock (this)
             {
-                return new TResult { Rc = Functions.vp_join_decline(_instance, requestId) };
+                CheckReasonCode(Functions.vp_join_decline(_instance, requestId));
             }
         }
 
@@ -1059,84 +1007,84 @@ namespace VpNet.Abstract
 
         #region  IWorldPermissionFunctions Implementations
 
-        public virtual TResult WorldPermissionUser(string permission, int userId, int enable)
+        public virtual void WorldPermissionUser(string permission, int userId, int enable)
         {
             lock (this)
             {
-                return new TResult { Rc = Functions.vp_world_permission_user_set(_instance, permission, userId, enable) };
+                CheckReasonCode(Functions.vp_world_permission_user_set(_instance, permission, userId, enable));
             }
         }
 
-        public virtual TResult WorldPermissionUserEnable(WorldPermissions permission, TAvatar avatar)
+        public virtual void WorldPermissionUserEnable(WorldPermissions permission, TAvatar avatar)
         {
             lock (this)
             {
-                return new TResult { Rc = Functions.vp_world_permission_user_set(_instance, Enum.GetName(typeof(WorldPermissions), permission),avatar.UserId,1) };
+                CheckReasonCode(Functions.vp_world_permission_user_set(_instance, Enum.GetName(typeof(WorldPermissions), permission),avatar.UserId,1));
             }
         }
 
-        public virtual TResult WorldPermissionUserEnable(WorldPermissions permission, int userId)
+        public virtual void WorldPermissionUserEnable(WorldPermissions permission, int userId)
         {
             lock (this)
             {
-                return new TResult { Rc = Functions.vp_world_permission_user_set(_instance, Enum.GetName(typeof(WorldPermissions), permission), userId, 1) };
+                CheckReasonCode(Functions.vp_world_permission_user_set(_instance, Enum.GetName(typeof(WorldPermissions), permission), userId, 1));
             }
         }
 
-        public virtual TResult WorldPermissionUserDisable(WorldPermissions permission, TAvatar avatar)
+        public virtual void WorldPermissionUserDisable(WorldPermissions permission, TAvatar avatar)
         {
             lock (this)
             {
-                return new TResult { Rc = Functions.vp_world_permission_user_set(_instance, Enum.GetName(typeof(WorldPermissions), permission), avatar.UserId, 0) };
+                CheckReasonCode(Functions.vp_world_permission_user_set(_instance, Enum.GetName(typeof(WorldPermissions), permission), avatar.UserId, 0));
             }
         }
 
-        public virtual TResult WorldPermissionUserDisable(WorldPermissions permission, int userId)
+        public virtual void WorldPermissionUserDisable(WorldPermissions permission, int userId)
         {
             lock (this)
             {
-                return new TResult { Rc = Functions.vp_world_permission_user_set(_instance, Enum.GetName(typeof(WorldPermissions), permission), userId, 0) };
+                CheckReasonCode(Functions.vp_world_permission_user_set(_instance, Enum.GetName(typeof(WorldPermissions), permission), userId, 0));
             }
         }
 
-        public virtual TResult WorldPermissionSession(string permission, int sessionId, int enable)
+        public virtual void WorldPermissionSession(string permission, int sessionId, int enable)
         {
             lock (this)
             {
-                return new TResult { Rc = Functions.vp_world_permission_session_set(_instance, permission, sessionId, enable) };
+                CheckReasonCode(Functions.vp_world_permission_session_set(_instance, permission, sessionId, enable));
             }
         }
 
-        public virtual TResult WorldPermissionSessionEnable(WorldPermissions permission, TAvatar avatar)
+        public virtual void WorldPermissionSessionEnable(WorldPermissions permission, TAvatar avatar)
         {
             lock (this)
             {
-                return new TResult { Rc = Functions.vp_world_permission_user_set(_instance, Enum.GetName(typeof(WorldPermissions), permission), avatar.Session, 1) };
+                CheckReasonCode(Functions.vp_world_permission_user_set(_instance, Enum.GetName(typeof(WorldPermissions), permission), avatar.Session, 1));
             }
         }
 
-        public virtual TResult WorldPermissionSessionEnable(WorldPermissions permission, int session)
+        public virtual void WorldPermissionSessionEnable(WorldPermissions permission, int session)
         {
             lock (this)
             {
-                return new TResult { Rc = Functions.vp_world_permission_user_set(_instance, Enum.GetName(typeof(WorldPermissions), permission), session, 1) };
+                CheckReasonCode(Functions.vp_world_permission_user_set(_instance, Enum.GetName(typeof(WorldPermissions), permission), session, 1));
             }
         }
 
 
-        public virtual TResult WorldPermissionSessionDisable(WorldPermissions permission, TAvatar avatar)
+        public virtual void WorldPermissionSessionDisable(WorldPermissions permission, TAvatar avatar)
         {
             lock (this)
             {
-                return new TResult { Rc = Functions.vp_world_permission_user_set(_instance, Enum.GetName(typeof(WorldPermissions), permission), avatar.Session, 0) };
+                CheckReasonCode(Functions.vp_world_permission_user_set(_instance, Enum.GetName(typeof(WorldPermissions), permission), avatar.Session, 0));
             }
         }
 
-        public virtual TResult WorldPermissionSessionDisable(WorldPermissions permission, int session)
+        public virtual void WorldPermissionSessionDisable(WorldPermissions permission, int session)
         {
             lock (this)
             {
-                return new TResult { Rc = Functions.vp_world_permission_user_set(_instance, Enum.GetName(typeof(WorldPermissions), permission), session, 0) };
+                CheckReasonCode(Functions.vp_world_permission_user_set(_instance, Enum.GetName(typeof(WorldPermissions), permission), session, 0));
             }
         }
 
@@ -1144,19 +1092,19 @@ namespace VpNet.Abstract
 
         #region IWorldSettingsFunctions Implementations
 
-        public virtual TResult WorldSettingSession(string setting, string value, TAvatar toAvatar)
+        public virtual void WorldSettingSession(string setting, string value, TAvatar toAvatar)
         {
             lock (this)
             {
-                return new TResult { Rc = Functions.vp_world_setting_set(_instance, setting, value, toAvatar.Session) };
+                CheckReasonCode(Functions.vp_world_setting_set(_instance, setting, value, toAvatar.Session));
             }
         }
 
-        public virtual TResult WorldSettingSession(string setting, string value, int  toSession)
+        public virtual void WorldSettingSession(string setting, string value, int  toSession)
         {
             lock (this)
             {
-                return new TResult { Rc = Functions.vp_world_setting_set(_instance, setting, value, toSession) };
+                CheckReasonCode(Functions.vp_world_setting_set(_instance, setting, value, toSession));
             }
         }
 
@@ -1409,8 +1357,14 @@ namespace VpNet.Abstract
                 OperatingSystem os = Environment.OSVersion;
 
                 if (data.ChatMessage.Message == string.Format("{0} version", Configuration.BotName) && !HasParentInstance )
+                {
+                    Version assemblyVersion = Assembly.GetAssembly(typeof(Functions)).GetName().Version;
+
                     ConsoleMessage(data.Avatar, "VPNET",
-                        string.Format("Version {0} running on {1}", Assembly.GetAssembly(typeof (RcDefault)).GetName().Version,os.VersionString),TextEffectTypes.Bold,0,0,127);
+                        $"Version {assemblyVersion} running on {os.VersionString}", 
+                        TextEffectTypes.Bold, 0, 0, 127);
+                }
+
                 if (OnChatMessage == null) return;
                 if (data.ChatMessage.Type == ChatMessageTypes.Console)
                 {
@@ -1863,43 +1817,43 @@ namespace VpNet.Abstract
 
         #region Friend Functions
 
-        public TResult GetFriends()
+        public void GetFriends()
         {
-            return new TResult {Rc = Functions.vp_friends_get(_instance)};
+            CheckReasonCode(Functions.vp_friends_get(_instance));
         }
 
-        public TResult AddFriendByName(TFriend friend)
+        public void AddFriendByName(TFriend friend)
         {
-            return new TResult { Rc = Functions.vp_friend_add_by_name(_instance,friend.Name) };
+            CheckReasonCode(Functions.vp_friend_add_by_name(_instance,friend.Name));
         }
 
-        public TResult AddFriendByName(string name)
+        public void AddFriendByName(string name)
         {
-            return new TResult { Rc = Functions.vp_friend_add_by_name(_instance, name) };
+            CheckReasonCode(Functions.vp_friend_add_by_name(_instance, name));
         }
 
-        public TResult DeleteFriendById(int friendId)
+        public void DeleteFriendById(int friendId)
         {
-            return new TResult { Rc = Functions.vp_friend_delete(_instance,friendId) };
+            CheckReasonCode(Functions.vp_friend_delete(_instance,friendId));
         }
 
-        public TResult DeleteFriendById(TFriend friend)
+        public void DeleteFriendById(TFriend friend)
         {
-            return new TResult { Rc = Functions.vp_friend_delete(_instance, friend.Id) };
+            CheckReasonCode(Functions.vp_friend_delete(_instance, friend.Id));
         }
 
         #endregion
 
         #region ITerrainFunctions Implementation
 
-        public TResult TerrianQuery(int tileX, int tileZ, int[,] nodes)
+        public void TerrianQuery(int tileX, int tileZ, int[,] nodes)
         {
-            return new TResult { Rc = Functions.vp_terrain_query(_instance, tileX,tileZ,nodes) };
+            CheckReasonCode(Functions.vp_terrain_query(_instance, tileX,tileZ,nodes));
         }
 
-        public TResult SetTerrainNode(int tileX, int tileZ, int nodeX, int nodeZ, TerrainCell[,] cells)
+        public void SetTerrainNode(int tileX, int tileZ, int nodeX, int nodeZ, TerrainCell[,] cells)
         {
-            return new TResult { Rc = Functions.vp_terrain_node_set(_instance, tileX, tileZ, nodeX, nodeZ, cells) };
+            CheckReasonCode(Functions.vp_terrain_node_set(_instance, tileX, tileZ, nodeX, nodeZ, cells));
 
         }
 
@@ -1943,9 +1897,9 @@ namespace VpNet.Abstract
 
         #endregion
 
-        #region Implementation of IAvatarFunctions<out TResult,TAvatar,in Vector3>
+        #region Implementation of IAvatarFunctions<out void,TAvatar,in Vector3>
 
-        Dictionary<int, TAvatar> IAvatarFunctions<TResult, TAvatar>.Avatars { get; set; }
+        Dictionary<int, TAvatar> IAvatarFunctions<TAvatar>.Avatars { get; set; }
 
         #endregion
     }

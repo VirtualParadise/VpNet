@@ -27,19 +27,18 @@ using System.Threading.Tasks;
 
 namespace VpNet.Interfaces
 {
-    public interface IWorldFunctions<TRc, in TWorld> 
-        where TRc: class, IRc, new()
+    public interface IWorldFunctions<in TWorld> 
         where TWorld : class, IWorld, new()
     {
-        TRc Wait(int milliseconds=0);
-        Task<TRc> EnterAsync(TWorld world);
-        Task<TRc> EnterAsync(string world);
+        void Wait(int milliseconds=0);
+        Task EnterAsync(TWorld world);
+        Task EnterAsync(string world);
         /// <summary>
         /// Enter world using instance configuration.
         /// </summary>
         /// <returns></returns>
-        Task<TRc> EnterAsync();
-        TRc ListWorlds();
-        TRc Leave();
+        Task EnterAsync();
+        void ListWorlds();
+        void Leave();
     }
 }

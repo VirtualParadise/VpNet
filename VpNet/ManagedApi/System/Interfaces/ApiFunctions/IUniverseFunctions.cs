@@ -27,21 +27,18 @@ using System.Threading.Tasks;
 
 namespace VpNet.Interfaces
 {
-    public interface IUniverseFunctions<TResult>
-        where TResult : class, IRc, new()
+    public interface IUniverseFunctions
     {
-        Task<TResult> ConnectAsync(string host = "universe.virtualparadise.org", ushort port = 57000);
-        Task<TResult> LoginAsync(string username, string password, string botname);
+        Task ConnectAsync(string host = "universe.virtualparadise.org", ushort port = 57000);
+        Task LoginAsync(string username, string password, string botname);
         /// <summary>
         /// Logs in the user, using the preloaded instance configuration.
         /// </summary>
-        /// <returns></returns>
-        Task<TResult> LoginAsync();
+        Task LoginAsync();
         /// <summary>
         /// Logs in to the universe and automatically enters the world using the preloaded instance configiguration.
         /// </summary>
         /// <param name="isAnnounceAvatar">if set to <c>true</c> [is announce avatar] then the avatar is updated on the given position as specified within the instance configuration. If the position is not specified, the avatar will appear at Ground Zero.</param>
-        /// <returns></returns>
-        Task<TResult> LoginAndEnterAsync(bool isAnnounceAvatar = true);
+        Task LoginAndEnterAsync(bool isAnnounceAvatar = true);
     }
 }

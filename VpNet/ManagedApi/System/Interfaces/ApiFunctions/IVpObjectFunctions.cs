@@ -27,16 +27,15 @@ using System.Threading.Tasks;
 
 namespace VpNet.Interfaces
 {
-    public interface IVpObjectFunctions<out TRc, in TVpObject> 
-        where TRc : class, IRc, new()
+    public interface IVpObjectFunctions<in TVpObject> 
         where TVpObject: class, IVpObject, new()
     {
         Task ChangeObjectAsync(TVpObject vpObject);
         Task<int> LoadObjectAsync(TVpObject vpObject);
         Task<int> AddObjectAsync(TVpObject vpObject);
         Task DeleteObjectAsync(TVpObject vpObject);
-        TRc QueryCell(int cellX, int cellZ);
-        TRc ClickObject(TVpObject vpObject);
-        TRc ClickObject(int objectId);
+        void QueryCell(int cellX, int cellZ);
+        void ClickObject(TVpObject vpObject);
+        void ClickObject(int objectId);
     }
 }

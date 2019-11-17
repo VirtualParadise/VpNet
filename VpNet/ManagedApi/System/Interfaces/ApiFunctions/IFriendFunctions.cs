@@ -25,14 +25,13 @@ ____   ___.__         __               .__    __________                        
 
 namespace VpNet.Interfaces
 {
-    public interface IFriendFunctions<out TRc, in TFriend>
-        where TRc : class, IRc, new()
+    public interface IFriendFunctions<in TFriend>
         where TFriend : class, IFriend, new()
     {
-        TRc GetFriends();
-        TRc AddFriendByName(TFriend friend);
-        TRc AddFriendByName(string name);
-        TRc DeleteFriendById(int friendId);
-        TRc DeleteFriendById(TFriend friend);
+        void GetFriends();
+        void AddFriendByName(TFriend friend);
+        void AddFriendByName(string name);
+        void DeleteFriendById(int friendId);
+        void DeleteFriendById(TFriend friend);
     }
 }

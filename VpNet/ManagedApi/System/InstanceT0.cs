@@ -35,7 +35,6 @@ namespace VpNet
     public class Instance : BaseInstanceT<Instance,
         Avatar, 
         Friend, 
-        RcDefault, 
         TerrainCell, 
         TerrainNode, 
         TerrainTile,

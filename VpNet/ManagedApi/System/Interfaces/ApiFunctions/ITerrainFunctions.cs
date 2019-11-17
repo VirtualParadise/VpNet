@@ -25,8 +25,7 @@ ____   ___.__         __               .__    __________                        
 
 namespace VpNet.Interfaces
 {
-    public interface ITerrainFunctions<out TRc, in TTerrainTile,TTerrainNode,TTerrainCell>
-        where TRc : class, IRc, new()
+    public interface ITerrainFunctions<in TTerrainTile,TTerrainNode,TTerrainCell>
         where TTerrainCell : class, ITerrainCell, new()
         where TTerrainNode : class, ITerrainNode<TTerrainTile,TTerrainNode,TTerrainCell>, new()
         where TTerrainTile : class, ITerrainTile<TTerrainTile,TTerrainNode,TTerrainCell>, new()
@@ -38,7 +37,7 @@ namespace VpNet.Interfaces
         /// <param name="tileZ">The tile Z.</param>
         /// <param name="revision">The revision.</param>
         /// <returns></returns>
-        TRc TerrianQuery(int tileX, int tileZ, int[,] revision);
+        void TerrianQuery(int tileX, int tileZ, int[,] revision);
         /// <summary>
         /// Sets the terrain node.
         /// </summary>
@@ -48,6 +47,6 @@ namespace VpNet.Interfaces
         /// <param name="nodeZ">Y node of the tile.</param>
         /// <param name="cells">The cells in the tile.</param>
         /// <returns></returns>
-        TRc SetTerrainNode(int tileX, int tileZ, int nodeX, int nodeZ, TerrainCell[,] cells);
+        void SetTerrainNode(int tileX, int tileZ, int nodeX, int nodeZ, TerrainCell[,] cells);
     }
 }

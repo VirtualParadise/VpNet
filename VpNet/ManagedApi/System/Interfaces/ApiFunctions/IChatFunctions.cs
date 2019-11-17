@@ -25,20 +25,19 @@ ____   ___.__         __               .__    __________                        
 
 namespace VpNet.Interfaces
 {
-    public interface IChatFunctions<out TRc, in TAvatar> 
-        where TRc : class, IRc, new()
+    public interface IChatFunctions<in TAvatar> 
         where TAvatar : class, IAvatar, new()
         
     {
-        TRc Say(string message);
-        TRc Say(string format, params object[] arg);
+        void Say(string message);
+        void Say(string format, params object[] arg);
 
-        TRc ConsoleMessage(TAvatar targetAvatar, string name, string message, TextEffectTypes effects = 0, byte red = 0, byte green = 0, byte blue = 0);
-        TRc ConsoleMessage(int targetSession, string name, string message, TextEffectTypes effects = 0, byte red = 0, byte green = 0, byte blue = 0);
-        TRc ConsoleMessage(TAvatar targetAvatar, string name, string message, Color color, TextEffectTypes effects = 0);
-        TRc ConsoleMessage(int targetSession, string name, string message, Color color, TextEffectTypes effects = 0);
-        TRc ConsoleMessage(string name, string message, Color color, TextEffectTypes effects = 0);
-        TRc ConsoleMessage(string message, Color color, TextEffectTypes effects = 0);
-        TRc ConsoleMessage(string message);
+        void ConsoleMessage(TAvatar targetAvatar, string name, string message, TextEffectTypes effects = 0, byte red = 0, byte green = 0, byte blue = 0);
+        void ConsoleMessage(int targetSession, string name, string message, TextEffectTypes effects = 0, byte red = 0, byte green = 0, byte blue = 0);
+        void ConsoleMessage(TAvatar targetAvatar, string name, string message, Color color, TextEffectTypes effects = 0);
+        void ConsoleMessage(int targetSession, string name, string message, Color color, TextEffectTypes effects = 0);
+        void ConsoleMessage(string name, string message, Color color, TextEffectTypes effects = 0);
+        void ConsoleMessage(string message, Color color, TextEffectTypes effects = 0);
+        void ConsoleMessage(string message);
     }
 }

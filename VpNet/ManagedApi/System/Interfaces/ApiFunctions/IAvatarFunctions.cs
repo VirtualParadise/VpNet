@@ -30,8 +30,7 @@ namespace VpNet.Interfaces
     /// </summary>
     /// <typeparam name="TRc">The type of the result code object.</typeparam>
     /// <typeparam name="TAvatar">The type of the avatar.</typeparam>
-    public interface IAvatarFunctions<out TRc, TAvatar>
-        where TRc : class, IRc, new()
+    public interface IAvatarFunctions<TAvatar>
         where TAvatar : class, IAvatar,new()
     {
         /// <summary>
@@ -49,34 +48,34 @@ namespace VpNet.Interfaces
         /// <param name="yaw">Yaw.</param>
         /// <param name="pitch">Pitch.</param>
         /// <returns>Result object</returns>
-        TRc UpdateAvatar(double x = 0.0f, double y = 0.0f, double z = 0.0f, double yaw = 0.0f, double pitch = 0.0f);
+        void UpdateAvatar(double x = 0.0f, double y = 0.0f, double z = 0.0f, double yaw = 0.0f, double pitch = 0.0f);
         /// <summary>
         /// Announce your bot at a given location with default pitch and yaw.
         /// </summary>
         /// <param name="position">The position.</param>
         /// <returns>Result object</returns>
-        TRc UpdateAvatar(Vector3 position);
+        void UpdateAvatar(Vector3 position);
         /// <summary>
         /// Announce your bot at a given location.
         /// </summary>
         /// <param name="position">The position.</param>
         /// <param name="rotation">The rotation.</param>
         /// <returns></returns>
-        TRc UpdateAvatar(Vector3 position, Vector3 rotation);
+        void UpdateAvatar(Vector3 position, Vector3 rotation);
         /// <summary>
         /// Send an avatar click event to other users in the world
         /// </summary>
         /// <param name="session">The session id of the clicked avatar.</param>
         /// <returns>Zero when successful, otherwise nonzero.</returns>
-        TRc AvatarClick(int session);
+        void AvatarClick(int session);
         /// <summary>
         /// Send an avatar click event to other users in the world
         /// </summary>
         /// <param name="avatar">The avatar object containing the session id.</param>
         /// <returns>Zero when successful, otherwise nonzero.</returns>
-        TRc AvatarClick(TAvatar avatar);
-        TRc GetUserProfile(int user);
-        TRc GetUserProfile(TAvatar avatar);
-        TRc GetUserProfile(string userName);
+        void AvatarClick(TAvatar avatar);
+        void GetUserProfile(int user);
+        void GetUserProfile(TAvatar avatar);
+        void GetUserProfile(string userName);
     }
 }
