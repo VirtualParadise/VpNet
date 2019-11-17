@@ -33,7 +33,6 @@ using System.Threading.Tasks;
 using VpNet.Cache;
 using VpNet.Extensions;
 using VpNet.Interfaces;
-using VpNet.ManagedApi.Extensions;
 using VpNet.ManagedApi.System;
 using VpNet.NativeApi;
 using Attribute = VpNet.NativeApi.Attributes;
@@ -474,14 +473,14 @@ namespace VpNet.Abstract
                 AvatarType = Functions.vp_int(_instance, Attribute.MyType),
                 Position = new Vector3
                 {
-                    X = Functions.vp_double(_instance, Attribute.MyX).Truncate(3),
-                    Y = Functions.vp_double(_instance, Attribute.MyY).Truncate(3),
-                    Z = Functions.vp_double(_instance, Attribute.MyZ).Truncate(3)
+                    X = Functions.vp_double(_instance, Attribute.MyX),
+                    Y = Functions.vp_double(_instance, Attribute.MyY),
+                    Z = Functions.vp_double(_instance, Attribute.MyZ)
                 },
                 Rotation = new Vector3
                 {
-                    X = Functions.vp_double(_instance, Attribute.MyPitch).Truncate(3),
-                    Y = Functions.vp_double(_instance, Attribute.MyYaw).Truncate(3),
+                    X = Functions.vp_double(_instance, Attribute.MyPitch),
+                    Y = Functions.vp_double(_instance, Attribute.MyYaw),
                     Z = 0 /* roll currently not supported*/
                 },
                 LastChanged = DateTime.Now
@@ -1449,14 +1448,14 @@ namespace VpNet.Abstract
                     AvatarType = Functions.vp_int(sender, Attribute.AvatarType),
                     Position = new Vector3
                     {
-                        X = Functions.vp_double(sender, Attribute.AvatarX).Truncate(3),
-                        Y = Functions.vp_double(sender, Attribute.AvatarY).Truncate(3),
-                        Z = Functions.vp_double(sender, Attribute.AvatarZ).Truncate(3)
+                        X = Functions.vp_double(sender, Attribute.AvatarX),
+                        Y = Functions.vp_double(sender, Attribute.AvatarY),
+                        Z = Functions.vp_double(sender, Attribute.AvatarZ)
                     },
                     Rotation = new Vector3
                     {
-                        X = Functions.vp_double(sender, Attribute.AvatarPitch).Truncate(3),
-                        Y = Functions.vp_double(sender, Attribute.AvatarYaw).Truncate(3),
+                        X = Functions.vp_double(sender, Attribute.AvatarPitch),
+                        Y = Functions.vp_double(sender, Attribute.AvatarYaw),
                         Z = 0 /* roll currently not supported*/
                     }
                 };
@@ -1484,14 +1483,14 @@ namespace VpNet.Abstract
                     AvatarType = Functions.vp_int(sender, Attribute.AvatarType),
                     Position = new Vector3
                     {
-                        X = Functions.vp_double(sender, Attribute.AvatarX).Truncate(3),
-                        Y = Functions.vp_double(sender, Attribute.AvatarY).Truncate(3),
-                        Z = Functions.vp_double(sender, Attribute.AvatarZ).Truncate(3)
+                        X = Functions.vp_double(sender, Attribute.AvatarX),
+                        Y = Functions.vp_double(sender, Attribute.AvatarY),
+                        Z = Functions.vp_double(sender, Attribute.AvatarZ)
                     },
                     Rotation = new Vector3
                     {
-                        X = Functions.vp_double(sender, Attribute.AvatarPitch).Truncate(3),
-                        Y = Functions.vp_double(sender, Attribute.AvatarYaw).Truncate(3),
+                        X = Functions.vp_double(sender, Attribute.AvatarPitch),
+                        Y = Functions.vp_double(sender, Attribute.AvatarYaw),
                         Z = 0 /* roll currently not supported*/
                     }
                 };
