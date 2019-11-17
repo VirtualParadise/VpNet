@@ -754,52 +754,53 @@ namespace VpNet.Abstract
 
         #region ITeleportFunctions Implementations
 
-        virtual public void TeleportAvatar(TAvatar avatar, string world, double x, double y, double z, double yaw, double pitch)
-        {
-            CheckReasonCode(Functions.vp_teleport_avatar(_instance, avatar.Session, world, (float)x, (float)y, (float)z, (float)yaw, (float)pitch));
-        }
-
         virtual public void TeleportAvatar(int targetSession, string world, double x, double y, double z, double yaw, double pitch)
         {
-            CheckReasonCode(Functions.vp_teleport_avatar(_instance, targetSession, world, (float)x, (float)y, (float)z, (float)yaw, (float)pitch));
+            lock (this)
+            {
+                CheckReasonCode(Functions.vp_teleport_avatar(_instance, targetSession, world, (float)x, (float)y,
+                                                             (float)z, (float)yaw, (float)pitch));
+            }
+        }
+
+        virtual public void TeleportAvatar(TAvatar avatar, string world, double x, double y, double z, double yaw, double pitch)
+        {
+            TeleportAvatar(avatar.Session, world, (float)x, (float)y, (float)z, (float)yaw, (float)pitch);
         }
 
         virtual public void TeleportAvatar(TAvatar avatar, string world, Vector3 position, double yaw, double pitch)
         {
-            CheckReasonCode(Functions.vp_teleport_avatar(_instance, avatar.Session, world, (float)position.X, (float)position.Y, (float)position.Z, (float)yaw, (float)pitch));
+            TeleportAvatar(avatar.Session, world, (float)position.X, (float)position.Y, (float)position.Z, (float)yaw, (float)pitch);
         }
 
         virtual public void TeleportAvatar(int targetSession, string world, Vector3 position, double yaw, double pitch)
         {
-            CheckReasonCode(Functions.vp_teleport_avatar(_instance, targetSession, world, (float)position.X, (float)position.Y, (float)position.Z, (float)yaw, (float)pitch));
+            TeleportAvatar(targetSession, world, (float)position.X, (float)position.Y, (float)position.Z, (float)yaw, (float)pitch);
 
         }
 
         virtual public void TeleportAvatar(TAvatar avatar, string world, Vector3 position, Vector3 rotation)
         {
-            CheckReasonCode(Functions.vp_teleport_avatar(_instance, avatar.Session, world, (float)position.X,
-                                                         (float)position.Y, (float)position.Z, (float)rotation.Y,
-                                                         (float)rotation.X));
-
+            TeleportAvatar(avatar.Session, world, (float)position.X, (float)position.Y, (float)position.Z,
+                           (float)rotation.Y, (float)rotation.X);
         }
 
         public void TeleportAvatar(TAvatar avatar, TWorld world, Vector3 position, Vector3 rotation)
         {
-            CheckReasonCode(Functions.vp_teleport_avatar(_instance, avatar.Session, world.Name, (float)position.X,
-                                                         (float)position.Y, (float)position.Z, (float)rotation.Y,
-                                                         (float)rotation.X));
+            TeleportAvatar(avatar.Session, world.Name, (float)position.X, (float)position.Y, (float)position.Z,
+                           (float)rotation.Y, (float)rotation.X);
         }
 
         virtual public void TeleportAvatar(TAvatar avatar, Vector3 position, Vector3 rotation)
         {
-            CheckReasonCode(Functions.vp_teleport_avatar(_instance, avatar.Session, string.Empty, (float)position.X,
-                                                         (float)position.Y, (float)position.Z, (float)rotation.Y,
-                                                         (float)rotation.X));
+            TeleportAvatar(avatar.Session, string.Empty, (float)position.X, (float)position.Y, (float)position.Z,
+                           (float)rotation.Y, (float)rotation.X);
         }
 
         virtual public void TeleportAvatar(TAvatar avatar)
         {
-            CheckReasonCode(Functions.vp_teleport_avatar(_instance, avatar.Session, string.Empty, (float)avatar.Position.X, (float)avatar.Position.Y, (float)avatar.Position.Z, (float)avatar.Rotation.Y, (float)avatar.Rotation.X));
+            TeleportAvatar(avatar.Session, string.Empty, (float)avatar.Position.X, (float)avatar.Position.Y,
+                           (float)avatar.Position.Z, (float)avatar.Rotation.Y, (float)avatar.Rotation.X);
         }
 
         #endregion
@@ -808,13 +809,19 @@ namespace VpNet.Abstract
 
         virtual public void GetUserProfile(int userId)
         {
-            CheckReasonCode(Functions.vp_user_attributes_by_id(_instance, userId));
+            lock (this)
+            {
+                CheckReasonCode(Functions.vp_user_attributes_by_id(_instance, userId));
+            }
         }
 
         [Obsolete]
         virtual public void GetUserProfile(string userName)
         {
-            CheckReasonCode(Functions.vp_user_attributes_by_name(_instance, userName));
+            lock (this)
+            {
+                CheckReasonCode(Functions.vp_user_attributes_by_name(_instance, userName));
+            }
         }
 
         virtual public void GetUserProfile(TAvatar profile)
@@ -848,12 +855,15 @@ namespace VpNet.Abstract
 
         public void AvatarClick(int session)
         {
-            CheckReasonCode(Functions.vp_avatar_click(_instance, session));
+            lock (this)
+            {
+                CheckReasonCode(Functions.vp_avatar_click(_instance, session));
+            }
         }
 
         public void AvatarClick(TAvatar avatar)
         {
-            CheckReasonCode(Functions.vp_avatar_click(_instance, avatar.Session));
+            AvatarClick(avatar.Session);
         }
 
         #endregion
@@ -878,85 +888,90 @@ namespace VpNet.Abstract
 
         public void ConsoleMessage(int targetSession, string name, string message, TextEffectTypes effects = (TextEffectTypes) 0, byte red = 0, byte green = 0, byte blue = 0)
         {
-            CheckReasonCode(Functions.vp_console_message(_instance, targetSession, name, message, (int)effects, red, green, blue));
+            lock (this)
+            {
+                CheckReasonCode(Functions.vp_console_message(_instance, targetSession, name, message, (int)effects, red, green, blue));
+            }
         }
 
         public void ConsoleMessage(TAvatar avatar, string name, string message, Color color, TextEffectTypes effects = (TextEffectTypes) 0)
         {
-            if (color == null)
-                color = new Color();
-            CheckReasonCode(Functions.vp_console_message(_instance, avatar.Session, name, message, (int)effects, color.R, color.G, color.B));
+            color = color ?? new Color();
+            ConsoleMessage(avatar.Session, name, message, effects, color.R, color.G, color.B);
         }
 
         public void ConsoleMessage(int targetSession, string name, string message, Color color, TextEffectTypes effects = (TextEffectTypes) 0)
         {
-            if (color == null)
-                color = new Color();
-            CheckReasonCode(Functions.vp_console_message(_instance, targetSession, name, message, (int)effects, color.R, color.G, color.B));
+            color = color ?? new Color();
+            ConsoleMessage(targetSession, name, message, effects, color.R, color.G, color.B);
         }
 
         public void ConsoleMessage(string name, string message, Color color, TextEffectTypes effects = (TextEffectTypes)0)
         {
-            if (color == null)
-                color = new Color();
-            CheckReasonCode(Functions.vp_console_message(_instance, 0, name, message, (int)effects, color.R, color.G, color.B));
+            color = color ?? new Color();
+            ConsoleMessage(0, name, message, effects, color.R, color.G, color.B);
         }
 
         public void ConsoleMessage(string message, Color color, TextEffectTypes effects = (TextEffectTypes)0)
         {
-            if (color == null)
-                color = new Color();
-            CheckReasonCode(Functions.vp_console_message(_instance, 0, string.Empty, message, (int)effects, color.R, color.G, color.B));
+            color = color ?? new Color();
+            ConsoleMessage(0, string.Empty, message, effects, color.R, color.G, color.B);
         }
 
         public void ConsoleMessage(string message)
         {
-            CheckReasonCode(Functions.vp_console_message(_instance, 0, string.Empty, message, 0, 0, 0, 0));
+            ConsoleMessage(0, string.Empty, message, 0, 0, 0, 0);
         }
 
         virtual public void ConsoleMessage(TAvatar avatar, string name, string message, TextEffectTypes effects = 0, byte red = 0, byte green = 0, byte blue = 0)
         {
-            CheckReasonCode(Functions.vp_console_message(_instance, avatar.Session, name, message, (int)effects, red, green, blue));
+            ConsoleMessage(avatar.Session, name, message, effects, red, green, blue);
         }
 
         virtual public void UrlSendOverlay(TAvatar avatar, string url)
         {
-            CheckReasonCode(Functions.vp_url_send(_instance, avatar.Session, url, (int)UrlTarget.UrlTargetOverlay));
+            UrlSendOverlay(avatar.Session, url);
         }
 
         virtual public void UrlSendOverlay(TAvatar avatar, Uri url)
         {
-            CheckReasonCode(Functions.vp_url_send(_instance, avatar.Session, url.AbsoluteUri, (int)UrlTarget.UrlTargetOverlay));
+            UrlSendOverlay(avatar.Session, url.AbsoluteUri);
         }
 
         virtual public void UrlSendOverlay(int avatarSession, string url)
         {
-            CheckReasonCode(Functions.vp_url_send(_instance, avatarSession, url, (int)UrlTarget.UrlTargetOverlay));
+            lock (this)
+            {
+                CheckReasonCode(Functions.vp_url_send(_instance, avatarSession, url, (int)UrlTarget.UrlTargetOverlay));
+            }
         }
 
         virtual public void UrlSendOverlay(int avatarSession, Uri url)
         {
-            CheckReasonCode(Functions.vp_url_send(_instance, avatarSession, url.AbsoluteUri, (int)UrlTarget.UrlTargetOverlay));
+            UrlSendOverlay(avatarSession, url.AbsoluteUri);
         }
 
         virtual public void UrlSend(TAvatar avatar, string url)
         {
-            CheckReasonCode(Functions.vp_url_send(_instance, avatar.Session, url, (int)UrlTarget.UrlTargetBrowser));
+            UrlSend(avatar.Session, url);
         }
 
         virtual public void UrlSend(TAvatar avatar, Uri url)
         {
-            CheckReasonCode(Functions.vp_url_send(_instance, avatar.Session, url.AbsoluteUri, (int)UrlTarget.UrlTargetBrowser));
+            UrlSend(avatar.Session, url.AbsoluteUri);
         }
 
         virtual public void UrlSend(int avatarSession, string url)
         {
-            CheckReasonCode(Functions.vp_url_send(_instance, avatarSession, url, (int)UrlTarget.UrlTargetBrowser));
+            lock (this)
+            {
+                CheckReasonCode(Functions.vp_url_send(_instance, avatarSession, url, (int)UrlTarget.UrlTargetBrowser));
+            }
         }
 
         virtual public void UrlSend(int avatarSession, Uri url)
         {
-            CheckReasonCode(Functions.vp_url_send(_instance, avatarSession, url.AbsoluteUri, (int)UrlTarget.UrlTargetBrowser));
+            UrlSend(avatarSession, url.AbsoluteUri);
         }
 
         #endregion
@@ -1819,27 +1834,42 @@ namespace VpNet.Abstract
 
         public void GetFriends()
         {
-            CheckReasonCode(Functions.vp_friends_get(_instance));
+            lock (this)
+            {
+                CheckReasonCode(Functions.vp_friends_get(_instance));
+            }
         }
 
         public void AddFriendByName(TFriend friend)
         {
-            CheckReasonCode(Functions.vp_friend_add_by_name(_instance,friend.Name));
+            lock (this)
+            {
+                CheckReasonCode(Functions.vp_friend_add_by_name(_instance, friend.Name));
+            }
         }
 
         public void AddFriendByName(string name)
         {
-            CheckReasonCode(Functions.vp_friend_add_by_name(_instance, name));
+            lock (this)
+            {
+                CheckReasonCode(Functions.vp_friend_add_by_name(_instance, name));
+            }
         }
 
         public void DeleteFriendById(int friendId)
         {
-            CheckReasonCode(Functions.vp_friend_delete(_instance,friendId));
+            lock (this)
+            {
+                CheckReasonCode(Functions.vp_friend_delete(_instance, friendId));
+            }
         }
 
         public void DeleteFriendById(TFriend friend)
         {
-            CheckReasonCode(Functions.vp_friend_delete(_instance, friend.Id));
+            lock (this)
+            {
+                CheckReasonCode(Functions.vp_friend_delete(_instance, friend.Id));
+            }
         }
 
         #endregion
@@ -1848,13 +1878,18 @@ namespace VpNet.Abstract
 
         public void TerrianQuery(int tileX, int tileZ, int[,] nodes)
         {
-            CheckReasonCode(Functions.vp_terrain_query(_instance, tileX,tileZ,nodes));
+            lock (this)
+            {
+                CheckReasonCode(Functions.vp_terrain_query(_instance, tileX, tileZ, nodes));
+            }
         }
 
         public void SetTerrainNode(int tileX, int tileZ, int nodeX, int nodeZ, TerrainCell[,] cells)
         {
-            CheckReasonCode(Functions.vp_terrain_node_set(_instance, tileX, tileZ, nodeX, nodeZ, cells));
-
+            lock (this)
+            {
+                CheckReasonCode(Functions.vp_terrain_node_set(_instance, tileX, tileZ, nodeX, nodeZ, cells));
+            }
         }
 
         #endregion
