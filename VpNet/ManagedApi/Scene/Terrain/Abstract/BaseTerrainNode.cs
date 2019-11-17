@@ -50,12 +50,12 @@ namespace VpNet.Abstract
         /// <summary>
         /// Creates a terrain node from an instances' attributes and byte array
         /// </summary>
-        protected BaseTerrainNode(IntPtr pointer)
+        protected BaseTerrainNode(IntPtr instanceHandle)
         {
-            X        = Functions.vp_int(pointer, Attributes.TerrainNodeX);
-            Z        = Functions.vp_int(pointer, Attributes.TerrainNodeZ);
-            Revision = Functions.vp_int(pointer, Attributes.TerrainNodeRevision);
-            var data = Functions.GetData(pointer, Attributes.TerrainNodeData);
+            X = Functions.vp_int(instanceHandle, IntegerAttribute.TerrainNodeX);
+            Z = Functions.vp_int(instanceHandle, IntegerAttribute.TerrainNodeZ);
+            Revision = Functions.vp_int(instanceHandle, IntegerAttribute.TerrainNodeRevision);
+            var data = Functions.GetData(instanceHandle, DataAttribute.TerrainNodeData);
             Cells    = DataConverters.NodeDataTo2DArray<TTerrainCell>(data);
         }
 

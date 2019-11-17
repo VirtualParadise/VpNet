@@ -80,37 +80,37 @@ namespace VpNet.NativeApi
         public static extern int vp_state_change(IntPtr instance);
         
         [DllImport("vpsdk", CallingConvention = CallingConvention.Cdecl)]
-        public static extern int vp_int(IntPtr instance, [MarshalAs(UnmanagedType.I4)]Attributes name);
+        public static extern int vp_int(IntPtr instance, [MarshalAs(UnmanagedType.I4)]IntegerAttribute name);
 
         [DllImport("vpsdk", CallingConvention = CallingConvention.Cdecl)]
-        public static extern float vp_float(IntPtr instance, [MarshalAs(UnmanagedType.I4)]Attributes name);
+        public static extern float vp_float(IntPtr instance, [MarshalAs(UnmanagedType.I4)]FloatAttribute name);
         
         [DllImport("vpsdk", CallingConvention = CallingConvention.Cdecl)]
-        public static extern double vp_double(IntPtr instance, [MarshalAs(UnmanagedType.I4)]Attributes name);
+        public static extern double vp_double(IntPtr instance, [MarshalAs(UnmanagedType.I4)]FloatAttribute name);
 
         [DllImport("vpsdk", CallingConvention = CallingConvention.Cdecl)]
         [return: MarshalAs(UnmanagedType.CustomMarshaler, MarshalTypeRef = typeof(Utf8StringToManaged))]
-        public static extern string vp_string(IntPtr instance, [MarshalAs(UnmanagedType.I4)]Attributes name);
+        public static extern string vp_string(IntPtr instance, [MarshalAs(UnmanagedType.I4)]StringAttribute name);
         
         [DllImport("vpsdk", CallingConvention = CallingConvention.Cdecl)]
-        public static extern IntPtr vp_data(IntPtr instance, [MarshalAs(UnmanagedType.I4)]Attributes name, out int length);
+        public static extern IntPtr vp_data(IntPtr instance, [MarshalAs(UnmanagedType.I4)]DataAttribute name, out int length);
              
         [DllImport("vpsdk", CallingConvention = CallingConvention.Cdecl)]
-        public static extern int vp_int_set(IntPtr instance, [MarshalAs(UnmanagedType.I4)]Attributes name, int value);
+        public static extern int vp_int_set(IntPtr instance, [MarshalAs(UnmanagedType.I4)]IntegerAttribute name, int value);
 
         [DllImport("vpsdk", CallingConvention = CallingConvention.Cdecl)]
-        public static extern int vp_float_set(IntPtr instance, [MarshalAs(UnmanagedType.I4)]Attributes name, float value);
+        public static extern int vp_float_set(IntPtr instance, [MarshalAs(UnmanagedType.I4)]FloatAttribute name, float value);
 
         [DllImport("vpsdk", CallingConvention = CallingConvention.Cdecl)]
-        public static extern int vp_double_set(IntPtr instance, [MarshalAs(UnmanagedType.I4)]Attributes name, double value);
+        public static extern int vp_double_set(IntPtr instance, [MarshalAs(UnmanagedType.I4)]FloatAttribute name, double value);
 
         [DllImport("vpsdk", CallingConvention = CallingConvention.Cdecl)]
         public static extern void vp_string_set(IntPtr instance, 
-            [MarshalAs(UnmanagedType.I4)] Attributes name,
+            [MarshalAs(UnmanagedType.I4)] StringAttribute name,
             [MarshalAs(UnmanagedType.CustomMarshaler, MarshalTypeRef = typeof(Utf8StringToNative))] string value);
         
         [DllImport("vpsdk", CallingConvention = CallingConvention.Cdecl)]
-        public static extern int vp_data_set(IntPtr instance, [MarshalAs(UnmanagedType.I4)]Attributes name, int length, byte[] data);
+        public static extern int vp_data_set(IntPtr instance, [MarshalAs(UnmanagedType.I4)]DataAttribute name, int length, byte[] data);
         
         [DllImport("vpsdk", CallingConvention = CallingConvention.Cdecl)]
         public static extern int vp_query_cell(IntPtr instance, int x, int z);
@@ -155,7 +155,7 @@ namespace VpNet.NativeApi
         [DllImport("vpsdk", CallingConvention = CallingConvention.Cdecl)]
         public static extern int vp_friend_delete(IntPtr instance, int friendUserId);
 
-        public static byte[] GetData(IntPtr instance, Attributes attribute)
+        public static byte[] GetData(IntPtr instance, DataAttribute attribute)
         {
             int length;
             var ptr = vp_data(instance, attribute, out length);
@@ -164,7 +164,7 @@ namespace VpNet.NativeApi
             return result;
         }
 
-        public static void SetData(IntPtr instance, Attributes attribute, byte[] data)
+        public static void SetData(IntPtr instance, DataAttribute attribute, byte[] data)
         {
             vp_data_set(instance, attribute, data != null ? data.Length : 0, data);
         }
