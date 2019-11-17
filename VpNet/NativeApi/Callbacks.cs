@@ -27,9 +27,6 @@ namespace VpNet.NativeApi
 {
     internal enum Callbacks
     {
-        /**
- *  The attribute #VP_OBJECT_ID is set to the object ID of the new object
- */
         ObjectAdd,
         ObjectChange,
         ObjectDelete,
@@ -47,6 +44,6 @@ namespace VpNet.NativeApi
         WorldPermissionUserSet,
         WorldPermissionSessionSet,
         WorldSettingSet,
-        HighestCallback
+        Invite
     }
 }

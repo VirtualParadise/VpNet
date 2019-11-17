@@ -137,10 +137,13 @@ namespace VpNet.NativeApi
         /// <summary>
         /// The verifciation failed
         /// </summary>
-        VerifciationFailed = 25,
+        VerificationFailed = 25,
         /// <summary>
         /// The no such session
         /// </summary>
-        NoSuchSession = 26
+        NoSuchSession = 26,
+        NotSupported = 27,
+        InviteDeclined = 28,
+        OutOfBounds = 29
     }
 }

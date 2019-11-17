@@ -200,6 +200,14 @@ namespace VpNet.NativeApi
         /// </summary>
         JoinId,
         /// <summary>
+        /// The invitation identifier
+        /// </summary>
+        InviteId,
+        /// <summary>
+        /// User ID of the user who send the invitation
+        /// </summary>
+        InviteUserId,
+        /// <summary>
         /// Integer attribute highest
         /// </summary>
         IntegerAttributeHighest,
@@ -336,6 +344,26 @@ namespace VpNet.NativeApi
         /// </summary>
         JoinPitch,
         /// <summary>
+        /// Invitation X position
+        /// </summary>
+        InviteX,
+        /// <summary>
+        /// Invitation Y position
+        /// </summary>
+        InviteY,
+        /// <summary>
+        /// Invitation Z position
+        /// </summary>
+        InviteZ,
+        /// <summary>
+        /// Invitation yaw
+        /// </summary>
+        InviteYaw,
+        /// <summary>
+        /// Invitation pitch
+        /// </summary>
+        InvitePitch,
+        /// <summary>
         /// double attribute highest
         /// </summary>
         doubleAttributeHighest,
@@ -408,6 +436,30 @@ namespace VpNet.NativeApi
         /// </summary>
         StartWorld,
         /// <summary>
+        /// Name of the user who sent the invitation
+        /// </summary>
+        InviteName,
+        /// <summary>
+        /// Name of the world we're being invited to
+        /// </summary>
+        InviteWorld,
+        /// <summary>
+        /// Name of the connecting application
+        /// </summary>
+        ApplicationName,
+        /// <summary>
+        /// Version of the connecting application
+        /// </summary>
+        ApplicationVersion,
+        /// <summary>
+        /// Name of the application used by this avatar
+        /// </summary>
+        AvatarApplicationName,
+        /// <summary>
+        /// Version of the application used by this avatar
+        /// </summary>
+        AvatarApplicationVersion,
+        /// <summary>
         /// String attribute highest
         /// </summary>
 	    StringAttributeHighest,
@@ -418,7 +470,7 @@ namespace VpNet.NativeApi
         /// <summary>
         /// The terrain node data
         /// </summary>
-        TerrainNodeData =1,
+        TerrainNodeData = 1,
         /// <summary>
         /// VP highest data
         /// </summary>
