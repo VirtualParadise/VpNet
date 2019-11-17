@@ -24,7 +24,6 @@ ____   ___.__         __               .__    __________                        
 #endregion
 
 using System.Xml.Serialization;
-using VpNet.ManagedApi.Scene;
 
 namespace VpNet
 {
