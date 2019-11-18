@@ -160,7 +160,10 @@ namespace VpNet.NativeApi
             int length;
             var ptr = vp_data(instance, attribute, out length);
             var result = new byte[length];
-            Marshal.Copy(ptr, result, 0, length);
+            if (length > 0)
+            {
+                Marshal.Copy(ptr, result, 0, length);
+            }
             return result;
         }
 
