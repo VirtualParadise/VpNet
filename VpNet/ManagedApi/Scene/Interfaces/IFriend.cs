@@ -8,14 +8,6 @@ namespace VpNet.Interfaces
     public interface IFriend
     {
         /// <summary>
-        /// Gets or sets the id.
-        /// </summary>
-        /// <value>
-        /// The id.
-        /// </value>
-        [XmlAttribute]
-        int Id { get; set; }
-        /// <summary>
         /// Gets or sets the name.
         /// </summary>
         /// <value>

@@ -54,7 +54,7 @@ namespace VpNet
 
                 connection.Notify(NetworkNotification.Connect, (int)NetworkReturnCode.Success);
             }
-            catch (SocketException e)
+            catch (SocketException)
             {
                 connection.Notify(NetworkNotification.Connect, (int)NetworkReturnCode.ConnectionError);
             }
@@ -68,7 +68,8 @@ namespace VpNet
             try
             {
                 return socket.Send(buffer);
-            } catch (SocketException e)
+            }
+            catch (SocketException)
             {
                 return -1;
             }

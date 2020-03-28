@@ -63,8 +63,6 @@ namespace VpNet.Abstract
 
         public event CellRangeQueryCompletedDelegate OnQueryCellRangeEnd;
         public event CellRangeObjectChangedDelegate OnObjectCellRangeChange;
-        public event CellRangeObjectChangedDelegate OnObjectCellRangeDelete;
-        public event CellRangeObjectChangedDelegate OnObjectCellRangeCreate;
 
         private List<TVpObject> _objects; 
         private List<TCell> _cache;
@@ -147,8 +145,7 @@ namespace VpNet.Abstract
                 var o = _objects.Find(p => p.Id == args.VpObject.Id);
                 _objects.Remove(o);
                 _objects.Add(args.VpObject);
-                if (OnObjectCellRangeChange != null)
-                    OnObjectCellRangeChange(Implementor, args);
+                OnObjectCellRangeChange?.Invoke(Implementor, args);
             }
         }
 
@@ -161,8 +158,7 @@ namespace VpNet.Abstract
                 if (_cache.Count == 0)
                 {
                     _isScanning = false;
-                    if (OnQueryCellRangeEnd != null)
-                        OnQueryCellRangeEnd(Implementor, new CellRangeQueryCompletedArgs<TVpObject> { VpObjects = _objects.Copy() });
+                    OnQueryCellRangeEnd?.Invoke(Implementor, new CellRangeQueryCompletedArgs<TVpObject> { VpObjects = _objects.Copy() });
                 }
                 else
                 {

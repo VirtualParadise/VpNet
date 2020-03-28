@@ -80,7 +80,6 @@ namespace VpNet.NativeApi
         /// <summary>
         /// Friend online
         /// </summary>
-        [Obsolete]
         FriendOnline,
         /// <summary>
         /// My user id

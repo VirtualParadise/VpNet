@@ -263,6 +263,7 @@ namespace VpNet.Abstract
             lock (this)
             {
                 SetCompletionResult(EnterCompletionSource, rc, null);
+                OnWorldEnter?.Invoke(Implementor, new WorldEnterEventArgsT<TWorld> { World = World });
             }
         }
         internal void OnJoinCallbackNativeEvent1(IntPtr instance, int rc, int reference) { lock (this) { OnJoinCallbackNativeEvent(instance, rc, reference); } }
@@ -461,10 +462,7 @@ namespace VpNet.Abstract
             lock (this)
             {
                 CheckReasonCode(Functions.vp_leave(_instance));
-                if (OnWorldLeave !=null)
-                {
-                    OnWorldLeave(Implementor,new WorldLeaveEventArgsT<TWorld> {World = Configuration.World});
-                }
+                OnWorldLeave?.Invoke(Implementor, new WorldLeaveEventArgsT<TWorld> { World = Configuration.World });
             }
         }
 
@@ -474,8 +472,7 @@ namespace VpNet.Abstract
             Functions.vp_destroy(_instance);
             _isInitialized = false;
             InitVpNative();
-            if (OnUniverseDisconnect != null)
-                OnUniverseDisconnect(Implementor, new UniverseDisconnectEventArgsT<TUniverse> { Universe = Universe,DisconnectType = VpNet.DisconnectType.UserDisconnected  });
+            OnUniverseDisconnect?.Invoke(Implementor, new UniverseDisconnectEventArgsT<TUniverse> { Universe = Universe, DisconnectType = VpNet.DisconnectType.UserDisconnected });
         }
 
         virtual public void ListWorlds()
@@ -858,7 +855,7 @@ namespace VpNet.Abstract
             }
         }
 
-        public void ConsoleMessage(int targetSession, string name, string message, TextEffectTypes effects = (TextEffectTypes) 0, byte red = 0, byte green = 0, byte blue = 0)
+        public void ConsoleMessage(int targetSession, string name, string message, TextEffectTypes effects = 0, byte red = 0, byte green = 0, byte blue = 0)
         {
             lock (this)
             {
@@ -866,25 +863,25 @@ namespace VpNet.Abstract
             }
         }
 
-        public void ConsoleMessage(TAvatar avatar, string name, string message, Color color, TextEffectTypes effects = (TextEffectTypes) 0)
+        public void ConsoleMessage(TAvatar avatar, string name, string message, Color color, TextEffectTypes effects = 0)
         {
             color = color ?? new Color();
             ConsoleMessage(avatar.Session, name, message, effects, color.R, color.G, color.B);
         }
 
-        public void ConsoleMessage(int targetSession, string name, string message, Color color, TextEffectTypes effects = (TextEffectTypes) 0)
+        public void ConsoleMessage(int targetSession, string name, string message, Color color, TextEffectTypes effects = 0)
         {
             color = color ?? new Color();
             ConsoleMessage(targetSession, name, message, effects, color.R, color.G, color.B);
         }
 
-        public void ConsoleMessage(string name, string message, Color color, TextEffectTypes effects = (TextEffectTypes)0)
+        public void ConsoleMessage(string name, string message, Color color, TextEffectTypes effects = 0)
         {
             color = color ?? new Color();
             ConsoleMessage(0, name, message, effects, color.R, color.G, color.B);
         }
 
-        public void ConsoleMessage(string message, Color color, TextEffectTypes effects = (TextEffectTypes)0)
+        public void ConsoleMessage(string message, Color color, TextEffectTypes effects = 0)
         {
             color = color ?? new Color();
             ConsoleMessage(0, string.Empty, message, effects, color.R, color.G, color.B);
@@ -1173,7 +1170,6 @@ namespace VpNet.Abstract
         public event WorldListEventDelegate OnWorldList;
         public event WorldSettingsChangedDelegate OnWorldSettingsChanged;
         public event FriendAddCallbackDelegate OnFriendAddCallback;
-        public event FriendDeleteCallbackDelegate OnFriendDeleteCallback;
         public event FriendsGetCallbackDelegate OnFriendsGetCallback;
 
         public event WorldDisconnectDelegate OnWorldDisconnect;
@@ -1221,8 +1217,7 @@ namespace VpNet.Abstract
         {
             lock (this)
             {
-                TVpObject vpObject;
-                GetVpObject(sender, out vpObject);
+                GetVpObject(sender, out TVpObject vpObject);
 
                 SetCompletionResult(reference, rc, vpObject);
             }
@@ -1295,12 +1290,11 @@ namespace VpNet.Abstract
             lock (this)
             {
                 var friend = new TFriend
-                    {
-                        UserId = Functions.vp_int(sender,IntegerAttribute.UserId),
-                        Id = Functions.vp_int(sender,IntegerAttribute.FriendId),
-                        Name = Functions.vp_string(sender, StringAttribute.FriendName),
-                       Online = Functions.vp_int(sender,IntegerAttribute.FriendOnline)==1
-                    };
+                {
+                    UserId = Functions.vp_int(sender, IntegerAttribute.UserId),
+                    Name = Functions.vp_string(sender, StringAttribute.FriendName),
+                    Online = Functions.vp_int(sender, IntegerAttribute.FriendOnline) == 1
+                };
                 OnFriendsGetCallback(Implementor, new FriendsGetCallbackEventArgsT<TFriend> { Friend = friend });
             }
         }
@@ -1444,11 +1438,10 @@ namespace VpNet.Abstract
                     && data.Rotation.Z == old.Rotation.Z)
                     return;
                 data.LastChanged = DateTime.UtcNow;
-                setAvatar(data);
+                SetAvatar(data);
 
             }
-            if (OnAvatarChange != null)
-                OnAvatarChange(Implementor, new AvatarChangeEventArgsT<TAvatar> { Avatar = _avatars[data.Session], AvatarPrevious = old });
+            OnAvatarChange?.Invoke(Implementor, new AvatarChangeEventArgsT<TAvatar> { Avatar = _avatars[data.Session], AvatarPrevious = old });
         }
 
         private void OnAvatarDeleteNative(IntPtr sender)
@@ -1522,7 +1515,6 @@ namespace VpNet.Abstract
             if (OnObjectBump == null) return;
             int session;
             int objectId;
-            Vector3 world;
             lock (this)
             {
                 session = Functions.vp_int(sender, IntegerAttribute.AvatarSession);
@@ -1538,7 +1530,6 @@ namespace VpNet.Abstract
             if (OnObjectBump == null) return;
             int session;
             int objectId;
-            Vector3 world;
             lock (this)
             {
                 session = Functions.vp_int(sender, IntegerAttribute.AvatarSession);
@@ -1575,8 +1566,7 @@ namespace VpNet.Abstract
             if (session == 0 && OnQueryCellResult != null)
                 OnQueryCellResult(Implementor, new QueryCellResultArgsT<TVpObject> { VpObject = vpObject });
             else
-                if (OnObjectCreate != null)
-                OnObjectCreate(Implementor, new ObjectCreateArgsT<TAvatar, TVpObject> { Avatar = GetAvatar(session), VpObject = vpObject });
+                OnObjectCreate?.Invoke(Implementor, new ObjectCreateArgsT<TAvatar, TVpObject> { Avatar = GetAvatar(session), VpObject = vpObject });
         }
 
 
@@ -1611,7 +1601,7 @@ namespace VpNet.Abstract
             return avatar;
         }
 
-        private void setAvatar(TAvatar avatar)
+        private void SetAvatar(TAvatar avatar)
         {
             lock (this)
             {
@@ -1723,8 +1713,7 @@ namespace VpNet.Abstract
             // TODO: some world, such as Test do not specify a objectpath, maybe there's a default search path we dont know of.
             var world = _worlds[Configuration.World.Name];
 
-            if (OnWorldSettingsChanged != null)
-                OnWorldSettingsChanged(Implementor, new WorldSettingsChangedEventArgsT<TWorld>() { World = _worlds[Configuration.World.Name]});
+            OnWorldSettingsChanged?.Invoke(Implementor, new WorldSettingsChangedEventArgsT<TWorld>() { World = _worlds[Configuration.World.Name] });
         }
 
         private void OnUniverseDisconnectNative(IntPtr sender)
@@ -1775,7 +1764,6 @@ namespace VpNet.Abstract
                 OnQueryCellResult = null;
                 OnQueryCellEnd = null;
                 OnFriendAddCallback = null;
-                OnFriendDeleteCallback = null;
                 OnFriendsGetCallback = null;
             }
         }
@@ -1837,7 +1825,7 @@ namespace VpNet.Abstract
         {
             lock (this)
             {
-                CheckReasonCode(Functions.vp_friend_delete(_instance, friend.Id));
+                CheckReasonCode(Functions.vp_friend_delete(_instance, friend.UserId));
             }
         }
 
