@@ -26,7 +26,6 @@ ____   ___.__         __               .__    __________                        
 using System;
 using System.Xml.Serialization;
 using VpNet.Abstract;
-using VpNet.Interfaces;
 
 namespace VpNet
 {

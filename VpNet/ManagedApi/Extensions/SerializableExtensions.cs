@@ -28,9 +28,6 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.Serialization.Formatters.Binary;
-using System.Text;
-using System.Xml;
-using System.Xml.Serialization;
 
 namespace VpNet.Extensions
 {
@@ -76,56 +73,6 @@ namespace VpNet.Extensions
                 }
                 
                 return oc;
-            }
-        }
-
-        /// <summary>
-        /// Saves / serializes the items to a specified file.
-        /// </summary>
-        public static void Serialize<T>(this T o, FileInfo file)
-        {
-            Serialize(o, false, true).SaveTextFile(file.FullName);
-        }
-
-        public static T Deserialize<T>(FileInfo file)
-            where T : new()
-        {
-            var x = new XmlSerializer(typeof(T));
-            using (FileStream f = file.OpenRead())
-            {
-                return (T)x.Deserialize(f);
-            }
-        }
-
-        /// <summary>
-        /// Saves / serializes the items to a specified file.
-        /// TODO: Update to .NET 4.5 Memory Mapped Files
-        /// </summary>
-        public static void Serialize<T>(this T o, string path)
-        {
-            Serialize(o, false, true).SaveTextFile(path);
-        }
-
-        public static T Deserialize<T>(string path)
-            where T : new()
-        {
-            return deserialize<T>(new FileInfo(path));
-        }
-
-        private static T deserialize<T>(FileInfo file)
-        {
-            var x = new XmlSerializer(typeof(T));
-            using (var f = file.OpenText())
-            {
-                var xml = f.ReadToEnd();
-                using (var StrReader = new StringReader(xml))
-                {
-                    var Xml_Serializer = new XmlSerializer(typeof (T));
-                    using (var XmlReader = XmlTextReader.Create(StrReader,new XmlReaderSettings(){CheckCharacters=false}))
-                    {
-                        return (T) Xml_Serializer.Deserialize(XmlReader);
-                    }
-                }
             }
         }
 
@@ -191,22 +138,5 @@ namespace VpNet.Extensions
 
             return obj;
         }
-
-        public static string Serialize<T>(this T o, bool ommitXmlDeclaration = false, bool indentation = true)
-        {
-            var xsn = new XmlSerializerNamespaces();
-            var xws = new XmlWriterSettings {Indent = indentation};
-            xws.CheckCharacters = true;
-            xws.OmitXmlDeclaration = ommitXmlDeclaration;
-           
-            var xmlStr = new StringBuilder();
-            var x = new XmlSerializer(o.GetType()/*, defaultNamespace*/);
-            using (var writer = XmlTextWriter.Create(xmlStr, xws))
-            {
-                x.Serialize(writer, o, xsn);
-                return xmlStr.ToString();
-            }
-        }
-
     }
 }

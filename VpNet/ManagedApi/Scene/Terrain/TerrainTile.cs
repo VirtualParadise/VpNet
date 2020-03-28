@@ -24,7 +24,6 @@ ____   ___.__         __               .__    __________                        
 #endregion
 
 using VpNet.Abstract;
-using VpNet.Interfaces;
 
 namespace VpNet
 {

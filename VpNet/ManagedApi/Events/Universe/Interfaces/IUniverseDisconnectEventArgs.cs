@@ -23,7 +23,6 @@ ____   ___.__         __               .__    __________                        
 */
 #endregion
 
-using VpNet.Abstract;
 
 namespace VpNet.Interfaces
 {

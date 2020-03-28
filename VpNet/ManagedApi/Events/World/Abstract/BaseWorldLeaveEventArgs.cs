@@ -24,7 +24,6 @@ ____   ___.__         __               .__    __________                        
 #endregion
 
 using System;
-using System.Xml.Serialization;
 using VpNet.Interfaces;
 
 namespace VpNet.Abstract

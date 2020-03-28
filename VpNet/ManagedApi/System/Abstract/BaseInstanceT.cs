@@ -30,7 +30,6 @@ using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
-using VpNet.Cache;
 using VpNet.Extensions;
 using VpNet.Interfaces;
 using VpNet.ManagedApi.System;
@@ -90,8 +89,6 @@ namespace VpNet.Abstract
         where T : class, new()
     {
         bool _isInitialized;
-
-        public OpCacheProvider ModelCacheProvider { get; internal set; }
 
         private readonly Dictionary<int, TaskCompletionSource<object>> _objectCompletionSources = new Dictionary<int, TaskCompletionSource<object>>();
 
@@ -1750,10 +1747,7 @@ namespace VpNet.Abstract
             // Initialize World Object Cache if a local object path has been specified and a objectpath is speficied in the world attributes.
             // TODO: some world, such as Test do not specify a objectpath, maybe there's a default search path we dont know of.
             var world = _worlds[Configuration.World.Name];
-            if (!string.IsNullOrEmpty(world.LocalCachePath) && world.RawAttributes.ContainsKey("objectpath"))
-            {
-                ModelCacheProvider = new OpCacheProvider(_worlds[Configuration.World.Name].RawAttributes["objectpath"],world.LocalCachePath);
-            }
+
             if (OnWorldSettingsChanged != null)
                 OnWorldSettingsChanged(Implementor, new WorldSettingsChangedEventArgsT<TWorld>() { World = _worlds[Configuration.World.Name]});
         }
