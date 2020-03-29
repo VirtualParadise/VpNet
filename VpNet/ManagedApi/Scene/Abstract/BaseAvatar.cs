@@ -19,6 +19,9 @@ namespace VpNet.Abstract
         virtual public int AvatarType { get; set; }
         virtual public Vector3 Position { get; set; }
         virtual public Vector3 Rotation { get; set; } // X pitch, Y yaw
+        public string ApplicationName { get; set; }
+        public string ApplicationVersion { get; set; }
+
         [XmlIgnore]
         public virtual bool IsBot
         {

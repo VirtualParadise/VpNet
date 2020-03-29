@@ -381,6 +381,8 @@ namespace VpNet.Abstract
                 Configuration.BotName = botname;
                 Configuration.UserName = username;
                 Configuration.Password = password;
+                Functions.vp_string_set(_instance, StringAttribute.ApplicationName, Configuration.ApplicationName);
+                Functions.vp_string_set(_instance, StringAttribute.ApplicationVersion, Configuration.ApplicationVersion);
 
                 LoginCompletionSource = new TaskCompletionSource<object>();
                 var rc = Functions.vp_login(_instance, username, password, botname);
@@ -1391,7 +1393,9 @@ namespace VpNet.Abstract
                         X = Functions.vp_double(sender, FloatAttribute.AvatarPitch),
                         Y = Functions.vp_double(sender, FloatAttribute.AvatarYaw),
                         Z = 0 /* roll currently not supported*/
-                    }
+                    },
+                    ApplicationName = Functions.vp_string(sender, StringAttribute.AvatarApplicationName),
+                    ApplicationVersion = Functions.vp_string(sender, StringAttribute.AvatarApplicationVersion)
                 };
                 if (!_avatars.ContainsKey(data.Session))
                     _avatars.Add(data.Session, data);

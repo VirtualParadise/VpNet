@@ -57,5 +57,9 @@ namespace VpNet.Interfaces
         Vector3 Rotation { get; set; }
 
         bool IsBot { get; }
+
+        string ApplicationName { get; set; }
+        
+        string ApplicationVersion { get; set; }
     }
 }

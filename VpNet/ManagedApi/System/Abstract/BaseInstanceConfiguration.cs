@@ -17,5 +17,7 @@ namespace VpNet.Abstract
         public string Password { get; set; }
         [XmlAttribute]
         public string BotName { get; set; }
+        public string ApplicationName { get; set; }
+        public string ApplicationVersion { get; set; }
     }
 }
