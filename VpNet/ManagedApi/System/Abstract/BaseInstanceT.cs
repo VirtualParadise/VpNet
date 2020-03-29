@@ -189,7 +189,7 @@ namespace VpNet.Abstract
             {
                 Init();
                 Configuration = new InstanceConfiguration<TWorld>(false);
-                int rc = Functions.vp_init(4);
+                int rc = Functions.vp_init(5);
                 if (rc != 0)
                 {
                     if (rc != 3)

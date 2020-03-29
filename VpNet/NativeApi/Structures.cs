@@ -12,6 +12,7 @@ namespace VpNet.NativeApi
         public SocketSendFunction Send;
         public SocketReceiveFunction Receive;
         public SocketTimeoutFunction Timeout;
+        public SocketWaitFunction Wait;
         public IntPtr Context;
     }
 }

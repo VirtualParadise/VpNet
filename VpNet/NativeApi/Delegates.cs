@@ -31,4 +31,7 @@ namespace VpNet.NativeApi
     [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
     public delegate int SocketTimeoutFunction(IntPtr socket, int seconds);
 
+    [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+    public delegate int SocketWaitFunction(IntPtr context, int duration);
+
 }
