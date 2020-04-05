@@ -246,12 +246,11 @@ namespace VpNet.ManagedApi
         {
             await ConnectAsync();
             await LoginAsync();
+            await EnterAsync();
             if (announceAvatar)
             {
-                await EnterAsync();
                 UpdateAvatar();
             }
-            await EnterAsync();
         }
 
         virtual public async Task LoginAsync()
