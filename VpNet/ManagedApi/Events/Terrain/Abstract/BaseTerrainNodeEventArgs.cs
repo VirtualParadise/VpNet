@@ -2,11 +2,11 @@
 
 namespace VpNet.Abstract
 {
-    public class BaseTerrainNodeEventArgs<TTerrain> : TimedEventArgs, ITerrainNodeEventArgs<TTerrain> where TTerrain : class,  ITerrain, new()
+    public class BaseTerrainNodeEventArgs : TimedEventArgs, ITerrainNodeEventArgs
     {
-        public TTerrain Terrain { get; set; }
+        public ITerrain Terrain { get; set; }
 
-        public BaseTerrainNodeEventArgs(TTerrain terrain)
+        public BaseTerrainNodeEventArgs(ITerrain terrain)
         {
             Terrain = terrain;
         } 

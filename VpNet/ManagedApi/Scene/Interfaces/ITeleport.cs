@@ -5,9 +5,7 @@
     /// </summary>
     /// <typeparam name="TWorld">The type of the world.</typeparam>
     /// <typeparam name="TAvatar">The type of the avatar.</typeparam>
-    public interface ITeleport<TWorld, TAvatar>
-        where TWorld : class, IWorld, new()
-        where TAvatar : class, IAvatar,new()
+    public interface ITeleport
     {
         /// <summary>
         /// Gets or sets the world.
@@ -15,14 +13,14 @@
         /// <value>
         /// The world.
         /// </value>
-        TWorld World { get; set; }
+        IWorld World { get; set; }
         /// <summary>
         /// Gets or sets the avatar.
         /// </summary>
         /// <value>
         /// The avatar.
         /// </value>
-        TAvatar Avatar { get; set; }
+        IAvatar Avatar { get; set; }
         /// <summary>
         /// Gets or sets the position.
         /// </summary>

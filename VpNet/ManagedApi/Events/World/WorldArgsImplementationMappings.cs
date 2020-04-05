@@ -5,16 +5,16 @@ namespace VpNet
 {
     [Serializable]
     [XmlRoot("OnWorldDisconnect", Namespace = Global.XmlNsEvent)]
-    public class WorldDisconnectEventArgs : Abstract.BaseWorldDisconnectEventArgs<World>{}
+    public class WorldDisconnectEventArgs : Abstract.BaseWorldDisconnectEventArgs{}
     [Serializable]
     [XmlRoot("OnWorldList", Namespace = Global.XmlNsEvent)]
-    public class WorldListEventArgs : Abstract.BaseWorldListEventArgs<World> { }
+    public class WorldListEventArgs : Abstract.BaseWorldListEventArgs { }
     [Serializable]
     [XmlRoot("OnWorldSettingsChanged", Namespace = Global.XmlNsEvent)]
-    public class WorldSettingsChangedEventArgs : Abstract.BaseWorldSettingsChangedEventArgs<World> { }
+    public class WorldSettingsChangedEventArgs : Abstract.BaseWorldSettingsChangedEventArgs { }
     [Serializable]
     [XmlRoot("OnWorldEnter", Namespace = Global.XmlNsEvent)]
-    public class WorldEnterEventArgs : Abstract.BaseWorldEnterEventArgs<World> { }
+    public class WorldEnterEventArgs : Abstract.BaseWorldEnterEventArgs { }
     [XmlRoot("OnWorldLeave", Namespace = Global.XmlNsEvent)]
-    public class WorldLeaveEventArgs : Abstract.BaseWorldLeaveEventArgs<World> { }
+    public class WorldLeaveEventArgs : Abstract.BaseWorldLeaveEventArgs { }
 }

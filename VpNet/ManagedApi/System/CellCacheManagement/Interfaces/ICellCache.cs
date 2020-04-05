@@ -1,8 +1,6 @@
 ﻿namespace VpNet.Interfaces
 {
-    interface ICellCache<TVpObject, in TCell>
-        where TVpObject : class, IVpObject, new()
-        where TCell : class, ICell,new()
+    interface ICellCache
     {
         /// <summary>
         /// Adds the cell range to be cached specified by 2 cell (start to end cell)
@@ -12,12 +10,12 @@
         /// <returns>
         /// The number of cells that are in this range
         /// </returns>
-        int AddCellRange(TCell start, TCell end);
+        int AddCellRange(ICell start, ICell end);
 
         /// <summary>
         /// Adds a cell to be cached.
         /// </summary>
         /// <param name="cell">The cell.</param>
-        void AddCell(TCell cell);
+        void AddCell(ICell cell);
     }
 }

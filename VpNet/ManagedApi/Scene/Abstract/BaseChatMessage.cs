@@ -3,7 +3,7 @@ using VpNet.Interfaces;
 
 namespace VpNet.Abstract
 {
-    public abstract class ChatMessage : IChatMessage
+    public class ChatMessage : IChatMessage
     {
         [XmlAttribute]
         virtual public ChatMessageTypes Type { get; set; }
@@ -15,11 +15,11 @@ namespace VpNet.Abstract
         [XmlAttribute]
         public virtual string Name { get; set; }
 
-        protected ChatMessage(string message)
+        public ChatMessage(string message)
         {
             Message = message;
         }
 
-        protected ChatMessage() { }
+        public ChatMessage() { }
     }
 }

@@ -6,15 +6,14 @@ using VpNet.Interfaces;
 namespace VpNet
 {
     [XmlRoot("CellRangeQuery",Namespace=Global.XmlNsEvent)]
-    public class CellRangeQueryCompletedArgs<TVpObject> : EventArgs 
-        where TVpObject: class, IVpObject, new()
+    public class CellRangeQueryCompletedArgs : EventArgs 
     {
         [XmlArray("VpObjects")]
         [XmlArrayItem("VpObject")]
-        public List<TVpObject> VpObjects { get; set; }
+        public List<IVpObject> VpObjects { get; set; }
         public CellRangeQueryCompletedArgs(){}
 
-        public CellRangeQueryCompletedArgs(List<TVpObject> vpObjects)
+        public CellRangeQueryCompletedArgs(List<IVpObject> vpObjects)
         {
             VpObjects = vpObjects;
         }

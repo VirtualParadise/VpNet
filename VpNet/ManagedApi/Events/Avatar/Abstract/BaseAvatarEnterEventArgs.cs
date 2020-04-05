@@ -5,12 +5,11 @@ using VpNet.Interfaces;
 namespace VpNet.Abstract
 {
     [Serializable]
-    public abstract class BaseAvatarEnterEventArgs<TAvatar> : TimedEventArgs, IAvatarEnterEventArgs<TAvatar>
-        where TAvatar : class, IAvatar, new()
+    public abstract class BaseAvatarEnterEventArgs : TimedEventArgs, IAvatarEnterEventArgs
     {
-        virtual public TAvatar Avatar { get; set; }
+        virtual public IAvatar Avatar { get; set; }
 
-        protected BaseAvatarEnterEventArgs(TAvatar avatar)
+        protected BaseAvatarEnterEventArgs(IAvatar avatar)
         {
             Avatar = avatar.Copy();
         }

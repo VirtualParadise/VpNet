@@ -4,11 +4,11 @@ using VpNet.Interfaces;
 namespace VpNet.Abstract
 {
     [Serializable]
-    public abstract class BaseQueryCellEndArgs<TCell> : TimedEventArgs, IQueryCellEndArgs<TCell> where TCell : class, ICell, new()
+    public abstract class BaseQueryCellEndArgs : TimedEventArgs, IQueryCellEndArgs
     {
-        public TCell Cell { get; set; }
+        public ICell Cell { get; set; }
 
-        protected BaseQueryCellEndArgs(TCell cell)
+        protected BaseQueryCellEndArgs(ICell cell)
         {
             Cell = cell;
         }

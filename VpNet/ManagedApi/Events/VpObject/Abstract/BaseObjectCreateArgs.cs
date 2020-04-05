@@ -2,15 +2,12 @@
 
 namespace VpNet.Abstract
 {
-    public abstract class BaseObjectCreateArgs<TAvatar, TVpObject> : TimedEventArgs, IObjectCreateArgs<TAvatar, TVpObject>
-        where TAvatar : class, IAvatar, new()
-        where TVpObject : class, IVpObject, new()
+    public abstract class BaseObjectCreateArgs : TimedEventArgs, IObjectCreateArgs
     {
+        public IVpObject VpObject { get; set; }
+        public IAvatar Avatar { get; set; }
 
-        public TVpObject VpObject { get; set; }
-        public TAvatar Avatar { get; set; }
-
-        protected BaseObjectCreateArgs(TAvatar avatar, TVpObject vpObject)
+        protected BaseObjectCreateArgs(IAvatar avatar, IVpObject vpObject)
         {
             VpObject = vpObject;
             Avatar = avatar;

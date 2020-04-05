@@ -8,11 +8,10 @@ namespace VpNet.Abstract
     /// </summary>
     /// <typeparam name="TAvatar">The type of the avatar.</typeparam>
     [Serializable]
-    public abstract class BaseAvatarChangeEventArgs<TAvatar> : TimedEventArgs,IAvatarChangeEventArgs<TAvatar>
-        where TAvatar : class, IAvatar, new()
+    public abstract class BaseAvatarChangeEventArgs : TimedEventArgs,IAvatarChangeEventArgs
     {
-        virtual public TAvatar Avatar { get; set; }
-        virtual public TAvatar AvatarPrevious { get; set; }
+        virtual public IAvatar Avatar { get; set; }
+        virtual public IAvatar AvatarPrevious { get; set; }
 
         public virtual System.TimeSpan TimeSpan
         {
@@ -23,7 +22,7 @@ namespace VpNet.Abstract
             }
         }
 
-        protected BaseAvatarChangeEventArgs(TAvatar avatar, TAvatar avatarPrevious)
+        protected BaseAvatarChangeEventArgs(IAvatar avatar, IAvatar avatarPrevious)
         {
             Avatar = avatar;
             AvatarPrevious = avatarPrevious;

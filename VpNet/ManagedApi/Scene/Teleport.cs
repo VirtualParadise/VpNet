@@ -6,9 +6,7 @@ namespace VpNet
 {
     [Serializable]
     [XmlRoot("Teleport", Namespace = Global.XmlNsScene)]
-    public class Teleport<TWorld,TAvatar> : Abstract.BaseTeleport<TWorld,TAvatar>
-        where TWorld : class, IWorld, new()
-        where TAvatar : class, IAvatar, new()
+    public class Teleport : Abstract.BaseTeleport
     {
         public Teleport(){} 
     }

@@ -5,8 +5,7 @@
     /// </summary>
     /// <typeparam name="TWorld">The type of the world.</typeparam>
     /// <typeparam name="TAvatar">The type of the avatar.</typeparam>
-    public interface ITeleportFunctions<in TWorld, in TAvatar>
-        where TAvatar: class, IAvatar, new()
+    public interface ITeleportFunctions
     {
         /// <summary>
         /// Teleports the avatar.
@@ -19,7 +18,7 @@
         /// <param name="yaw">The yaw.</param>
         /// <param name="pitch">The pitch.</param>
         /// <returns></returns>
-        void TeleportAvatar(TAvatar avatar, string world, double x, double y, double z, double yaw, double pitch);
+        void TeleportAvatar(IAvatar avatar, string world, double x, double y, double z, double yaw, double pitch);
         /// <summary>
         /// Teleports the avatar.
         /// </summary>
@@ -29,7 +28,7 @@
         /// <param name="yaw">The yaw.</param>
         /// <param name="pitch">The pitch.</param>
         /// <returns></returns>
-        void TeleportAvatar(TAvatar avatar, string world, Vector3 position, double yaw, double pitch);
+        void TeleportAvatar(IAvatar avatar, string world, Vector3 position, double yaw, double pitch);
         /// <summary>
         /// Teleports the avatar.
         /// </summary>
@@ -60,7 +59,7 @@
         /// <param name="position">The position.</param>
         /// <param name="rotation">The rotation.</param>
         /// <returns></returns>
-        void TeleportAvatar(TAvatar avatar, string world, Vector3 position, Vector3 rotation);
+        void TeleportAvatar(IAvatar avatar, string world, Vector3 position, Vector3 rotation);
         /// <summary>
         /// Teleports the avatar.
         /// </summary>
@@ -69,7 +68,7 @@
         /// <param name="position">The position.</param>
         /// <param name="rotation">The rotation.</param>
         /// <returns></returns>
-        void TeleportAvatar(TAvatar avatar, TWorld world, Vector3 position, Vector3 rotation);
+        void TeleportAvatar(IAvatar avatar, IWorld world, Vector3 position, Vector3 rotation);
         /// <summary>
         /// Teleports the avatar within the current world.
         /// </summary>
@@ -77,12 +76,12 @@
         /// <param name="position">The position.</param>
         /// <param name="rotation">The rotation.</param>
         /// <returns></returns>
-        void TeleportAvatar(TAvatar avatar, Vector3 position, Vector3 rotation);
+        void TeleportAvatar(IAvatar avatar, Vector3 position, Vector3 rotation);
         /// <summary>
         /// Teleports the avatar within the current world b previously having changed the avatar position and rotation properties
         /// </summary>
         /// <param name="avatar">The avatar.</param>
         /// <returns></returns>
-        void TeleportAvatar(TAvatar avatar);
+        void TeleportAvatar(IAvatar avatar);
     }
 }

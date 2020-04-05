@@ -2,11 +2,10 @@
 
 namespace VpNet.Interfaces
 {
-    public interface IWorldFunctions<in TWorld> 
-        where TWorld : class, IWorld, new()
+    public interface IWorldFunctions
     {
         void Wait(int milliseconds=0);
-        Task EnterAsync(TWorld world);
+        Task EnterAsync(IWorld world);
         Task EnterAsync(string world);
         /// <summary>
         /// Enter world using instance configuration.

@@ -6,7 +6,7 @@ namespace VpNet.Interfaces
     /// Terrain Node event arguments templated interface specifications.
     /// </summary>
     /// <typeparam name="TTerrain">The type of the terrain.</typeparam>
-    public interface ITerrainNodeEventArgs<TTerrain> where TTerrain : class, ITerrain, new()
+    public interface ITerrainNodeEventArgs
     {
         /// <summary>
         /// Gets or sets the terrain.
@@ -14,6 +14,6 @@ namespace VpNet.Interfaces
         /// <value>
         /// The terrain.
         /// </value>
-        TTerrain Terrain { get; set; }
+        ITerrain Terrain { get; set; }
     }
 }

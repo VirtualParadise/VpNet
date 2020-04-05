@@ -2,12 +2,10 @@
 
 namespace VpNet.Abstract
 {
-    public abstract class BaseTeleport<TWorld,TAvatar> : ITeleport<TWorld,TAvatar>
-        where TWorld : class, IWorld, new()
-        where TAvatar : class, IAvatar,new()
+    public abstract class BaseTeleport : ITeleport
     {
-        public TWorld World { get; set; }
-        public TAvatar Avatar { get; set; }
+        public IWorld World { get; set; }
+        public IAvatar Avatar { get; set; }
         public Vector3 Position { get; set; }
         public Vector3 Rotation { get; set; }
 

@@ -9,11 +9,10 @@ namespace VpNet
     /// </summary>
     [Serializable]
     [XmlRoot("OnQueryCellResult", Namespace = Global.XmlNsEvent)]
-    public partial class QueryCellResultArgsT<TVpObject> : Abstract.QueryCellResultArgs<TVpObject>
-        where TVpObject : class, IVpObject, new()
+    public partial class QueryCellResultArgsT : Abstract.QueryCellResultArgs
     {
     
-        public QueryCellResultArgsT(TVpObject vpObject) : base(vpObject)
+        public QueryCellResultArgsT(IVpObject vpObject) : base(vpObject)
         {
         }
 

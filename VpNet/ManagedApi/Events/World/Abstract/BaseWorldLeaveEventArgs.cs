@@ -4,13 +4,13 @@ using VpNet.Interfaces;
 namespace VpNet.Abstract
 {
     [Serializable]
-    public abstract class BaseWorldLeaveEventArgs<TWorld> : TimedEventArgs, IWorldLeaveEventArgs<TWorld> where TWorld : class, IWorld, new()
+    public abstract class BaseWorldLeaveEventArgs : TimedEventArgs
     {
-        public TWorld World { get; set; }
+        public IWorld World { get; set; }
 
         protected BaseWorldLeaveEventArgs() { }
 
-        protected BaseWorldLeaveEventArgs(TWorld world)
+        protected BaseWorldLeaveEventArgs(IWorld world)
         {
             World = world;
         }

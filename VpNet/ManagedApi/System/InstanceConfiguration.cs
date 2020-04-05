@@ -1,20 +1,11 @@
 ﻿using System;
-using VpNet.Interfaces;
+using VpNet.Abstract;
 
 namespace VpNet
 {
     [Serializable]
-    public class InstanceConfiguration<TWorld> : Abstract.BaseInstanceConfiguration<TWorld>
-        where TWorld : class, IWorld, new()
+    public class InstanceConfiguration : BaseInstanceConfiguration
     {
-        public InstanceConfiguration(bool isChildInstance)
-        {
-            IsChildInstance = isChildInstance;
-        }
 
-        public InstanceConfiguration()
-        {
-            IsChildInstance = false;
-        }
     }
 }
