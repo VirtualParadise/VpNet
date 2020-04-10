@@ -4,16 +4,15 @@ using VpNet.Interfaces;
 namespace VpNet.Abstract
 {
     [Serializable]
-    public abstract class QueryCellResultArgs<TVpObject> : TimedEventArgs, IQueryCellResultArgs<TVpObject>
-        where TVpObject : class, IVpObject, new()
+    public class QueryCellResultArgs : TimedEventArgs, IQueryCellResultArgs
     {
-        public TVpObject VpObject { get; set; }
+        public IVpObject VpObject { get; set; }
 
-        protected QueryCellResultArgs(TVpObject vpObject)
+        public QueryCellResultArgs(IVpObject vpObject)
         {
             VpObject = vpObject;
         }
 
-        protected QueryCellResultArgs() { }
+        public QueryCellResultArgs() { }
     }
 }

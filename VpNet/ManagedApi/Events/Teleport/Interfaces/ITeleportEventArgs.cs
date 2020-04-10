@@ -6,10 +6,7 @@
     /// <typeparam name="TTeleport">The type of the teleport.</typeparam>
     /// <typeparam name="TWorld">The type of the world.</typeparam>
     /// <typeparam name="TAvatar">The type of the avatar.</typeparam>
-    public interface ITeleportEventArgs<TTeleport, TWorld, TAvatar>
-        where TWorld : class, IWorld, new()
-        where TAvatar : class, IAvatar,  new()
-        where TTeleport : class, ITeleport<TWorld, TAvatar>, new()
+    public interface ITeleportEventArgs
     {
         /// <summary>
         /// Gets or sets the teleport.
@@ -17,6 +14,6 @@
         /// <value>
         /// The teleport.
         /// </value>
-        TTeleport Teleport { get; set; }
+        ITeleport Teleport { get; set; }
     }
 }

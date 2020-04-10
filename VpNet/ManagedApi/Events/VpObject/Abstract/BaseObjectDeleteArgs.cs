@@ -4,14 +4,12 @@ using VpNet.Interfaces;
 namespace VpNet.Abstract
 {
     [Serializable]
-    public abstract class BaseObjectDeleteArgs<TAvatar, TVpObject> : TimedEventArgs, IObjectDeleteArgs<TAvatar, TVpObject>
-        where TAvatar : class, IAvatar, new()
-        where TVpObject : class, IVpObject, new()
+    public abstract class BaseObjectDeleteArgs : TimedEventArgs, IObjectDeleteArgs
     {
-        public TVpObject VpObject { get; set; }
-        public TAvatar Avatar { get; set; }
+        public IVpObject VpObject { get; set; }
+        public IAvatar Avatar { get; set; }
 
-        protected BaseObjectDeleteArgs(TAvatar avatar, TVpObject vpObject)
+        protected BaseObjectDeleteArgs(IAvatar avatar, IVpObject vpObject)
         {
             VpObject = vpObject;
             Avatar = avatar;

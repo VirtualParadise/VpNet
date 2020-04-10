@@ -1,78 +1,34 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using VpNet.Abstract;
 using VpNet.Extensions;
 using VpNet.Interfaces;
 
-namespace VpNet.Abstract
+namespace VpNet.ManagedApi
 {
     /// <summary>
     /// Abtract fully teamplated instance class, providing .NET encapsulation strict templated types to the native C wrapper.
     /// </summary>
-    /// <typeparam name="T">Type of the abstract implementation</typeparam>
-    /// <typeparam name="TAvatar">The type of the avatar.</typeparam>
-    /// <typeparam name="TFriend">The type of the friend.</typeparam>
-    /// <typeparam name="TResult">The type of the result.</typeparam>
-    /// <typeparam name="TTerrainCell">The type of the terrain cell.</typeparam>
-    /// <typeparam name="TTerrainNode">The type of the terrain node.</typeparam>
-    /// <typeparam name="TTerrainTile">The type of the terrain tile.</typeparam>
-    /// <typeparam name="TVpObject">The type of the vp object.</typeparam>
-    /// <typeparam name="TWorld">The type of the world.</typeparam>
-    /// <typeparam name="TCell">The type of the cell.</typeparam>
-    /// <typeparam name="TChatMessage">The type of the chat message.</typeparam>
-    /// <typeparam name="TTerrain">The type of the terrain.</typeparam>
-    /// <typeparam name="TUniverse">The type of the universe.</typeparam>
-    /// <typeparam name="TTeleport">The type of the teleport.</typeparam>
-    public abstract partial class BaseInstanceT<T,
-        /* Scene Type specifications ----------------------------------------------------------------------------------------------------------------------------------------------*/
-        TAvatar, TFriend, TTerrainCell, TTerrainNode,
-        TTerrainTile, TVpObject, TWorld, TCell, TChatMessage, TTerrain, TUniverse, TTeleport,
-        TUserAttributes
-        > :
-        /* Interface specifications -----------------------------------------------------------------------------------------------------------------------------------------*/
-        /* Functions */
-        BaseInstanceEvents<TWorld>,
-        IAvatarFunctions<TAvatar>,
-        IChatFunctions<TAvatar>,
-        IFriendFunctions<TFriend>,
-        ITeleportFunctions<TWorld, TAvatar>,
-        ITerrainFunctions<TTerrainTile, TTerrainNode, TTerrainCell>,
-        IVpObjectFunctions<TVpObject>,
-        IWorldFunctions<TWorld>,
-        IUniverseFunctions
-        /* Constraints ----------------------------------------------------------------------------------------------------------------------------------------------------*/
-        where TUniverse : class, IUniverse, new()
-        where TTerrain : class, ITerrain, new()
-        where TCell : class, ICell, new()
-        where TChatMessage : class, IChatMessage, new()
-        where TTerrainCell : class, ITerrainCell, new()
-        where TTerrainNode : class, ITerrainNode<TTerrainTile, TTerrainNode, TTerrainCell>, new()
-        where TTerrainTile : class, ITerrainTile<TTerrainTile, TTerrainNode, TTerrainCell>, new()
-        where TWorld : class, IWorld, new()
-        where TAvatar : class, IAvatar, new()
-        where TFriend : class, IFriend, new()
-        where TVpObject : class, IVpObject, new()
-        where TTeleport : class, ITeleport<TWorld, TAvatar>, new()
-        where TUserAttributes : class, IUserAttributes, new()
-        where T : class, new()
+    public partial class Instance : IInstance
     {
-        public delegate void CellRangeQueryCompletedDelegate(T sender, CellRangeQueryCompletedArgs<TVpObject> args);
-        public delegate void CellRangeObjectChangedDelegate(T sender, ObjectChangeArgsT<TAvatar, TVpObject> args);
-        public delegate void CellRangeObjectDeletedDelegate(T sender, ObjectDeleteArgsT<TAvatar, TVpObject> args);
-        public delegate void CellRangeObjectCreatedDelegate(T sender, ObjectCreateArgsT<TAvatar, TVpObject> args);
+        public delegate void CellRangeQueryCompletedDelegate(Instance sender, CellRangeQueryCompletedArgs args);
+        public delegate void CellRangeObjectChangedDelegate(Instance sender, ObjectChangeArgs args);
+        public delegate void CellRangeObjectDeletedDelegate(Instance sender, ObjectDeleteArgs args);
+        public delegate void CellRangeObjectCreatedDelegate(Instance sender, ObjectCreateArgs args);
 
         public event CellRangeQueryCompletedDelegate OnQueryCellRangeEnd;
         public event CellRangeObjectChangedDelegate OnObjectCellRangeChange;
 
-        private List<TVpObject> _objects; 
-        private List<TCell> _cache;
+        private List<IVpObject> _objects; 
+        private List<ICell> _cache;
         private bool _isScanning;
 
-        private List<TCell> _cacheScanned;
+        private List<ICell> _cacheScanned;
         private bool _useCellCache;
-        private List<TCell> _cacheScanning;
+        private List<ICell> _cacheScanning;
 
-        public List<TVpObject> CacheObjects { get { return _objects; } } 
+        public List<IVpObject> CacheObjects { get { return _objects; } } 
 
         public int Cells { 
             get { return _cache.Count(); }
@@ -89,10 +45,10 @@ namespace VpNet.Abstract
                     throw new Exception("Please do not change the use cache boolean flag while previous scan has not been completed.");
                 if (value)
                 {
-                    _objects = new List<TVpObject>();
-                    _cache = new List<TCell>();
-                    _cacheScanned = new List<TCell>();
-                    _cacheScanning = new List<TCell>();
+                    _objects = new List<IVpObject>();
+                    _cache = new List<ICell>();
+                    _cacheScanned = new List<ICell>();
+                    _cacheScanning = new List<ICell>();
 
                     OnQueryCellResult += BaseInstanceT_CellCache_OnQueryCellResult;
                     OnQueryCellEnd += BaseInstanceT_CellCache_OnQueryCellEnd;
@@ -110,12 +66,12 @@ namespace VpNet.Abstract
             }
         }
 
-        bool IsInCellCacheRange(TVpObject vpObject)
+        bool IsInCellCacheRange(IVpObject vpObject)
         {
             return  _cacheScanned.Exists(p => p.X == vpObject.Cell.X && p.Z == vpObject.Cell.Z);
         }
 
-        void BaseInstanceT_OnObjectCreate(T sender, ObjectCreateArgsT<TAvatar, TVpObject> args)
+        void BaseInstanceT_OnObjectCreate(IInstance sender, ObjectCreateArgs args)
         {
             if (!IsInCellCacheRange(args.VpObject))
                 return;
@@ -123,7 +79,7 @@ namespace VpNet.Abstract
 
         }
 
-        void BaseInstanceT_OnObjectDelete(T sender, ObjectDeleteArgsT<TAvatar, TVpObject> args)
+        void BaseInstanceT_OnObjectDelete(IInstance sender, ObjectDeleteArgs args)
         {
             if (!IsInCellCacheRange(args.VpObject))
                 return;
@@ -131,7 +87,7 @@ namespace VpNet.Abstract
             _objects.Remove(o);
         }
 
-        void BaseInstanceT_CellCache_OnObjectChange(T sender, ObjectChangeArgsT<TAvatar, TVpObject> args)
+        void BaseInstanceT_CellCache_OnObjectChange(IInstance sender, ObjectChangeArgs args)
         {
             lock (this)
             {
@@ -145,11 +101,11 @@ namespace VpNet.Abstract
                 var o = _objects.Find(p => p.Id == args.VpObject.Id);
                 _objects.Remove(o);
                 _objects.Add(args.VpObject);
-                OnObjectCellRangeChange?.Invoke(Implementor, args);
+                OnObjectCellRangeChange?.Invoke(this, args);
             }
         }
 
-        void BaseInstanceT_CellCache_OnQueryCellEnd(T sender, QueryCellEndArgsT<TCell> args)
+        void BaseInstanceT_CellCache_OnQueryCellEnd(IInstance sender, QueryCellEndArgs args)
         {
             lock (this)
             {
@@ -158,7 +114,7 @@ namespace VpNet.Abstract
                 if (_cache.Count == 0)
                 {
                     _isScanning = false;
-                    OnQueryCellRangeEnd?.Invoke(Implementor, new CellRangeQueryCompletedArgs<TVpObject> { VpObjects = _objects.Copy() });
+                    OnQueryCellRangeEnd?.Invoke(this, new CellRangeQueryCompletedArgs { VpObjects = _objects.Copy() });
                 }
                 else
                 {
@@ -169,7 +125,7 @@ namespace VpNet.Abstract
             }
         }
 
-        void BaseInstanceT_CellCache_OnQueryCellResult(T sender, QueryCellResultArgsT<TVpObject> args)
+        void BaseInstanceT_CellCache_OnQueryCellResult(Instance sender, QueryCellResultArgs args)
         {
             lock (this)
             {
@@ -178,13 +134,13 @@ namespace VpNet.Abstract
         }
 
 
-        private bool IsCellInList(TCell cell)
+        private bool IsCellInList(ICell cell)
         {
             return ((_cache.Find(p => p.X == cell.X && p.Z == cell.Z) != null) ||
                     (_cacheScanned.Find(p => p.X == cell.X && p.Z == cell.Z) != null));
         }
 
-        public int AddCellRange(TCell start, TCell end)
+        public int AddCellRange(ICell start, ICell end)
         {
             if (_isScanning)
                 throw new Exception("Can not issue a cell range query before the other range query has ended.");
@@ -193,7 +149,7 @@ namespace VpNet.Abstract
             lock (this)
             {
                 var l = CreateQueryList(start, end);
-                foreach (TCell cell in l)
+                foreach (ICell cell in l)
                 {
 
                     if (!IsCellInList(cell))
@@ -220,18 +176,18 @@ namespace VpNet.Abstract
             }
         }
 
-        private List<TCell> CreateQueryList(TCell start, TCell end)
+        private List<ICell> CreateQueryList(ICell start, ICell end)
         {
-            var ret = new List<TCell>();
-            var listX = new List<TCell> { start, end }.OrderBy(p => p.X);
-            var listY = new List<TCell> { start, end }.OrderBy(p => p.Z);
+            var ret = new List<ICell>();
+            var listX = new List<ICell> { start, end }.OrderBy(p => p.X);
+            var listY = new List<ICell> { start, end }.OrderBy(p => p.Z);
             var p1 = new Cell(listX.ElementAt(0).X, listY.ElementAt(0).Z);
             var p2 = new Cell(listX.ElementAt(1).X, listY.ElementAt(1).Z);
             for (var x = p1.X; x < p2.X; x++)
             {
                 for (var z = p1.Z; z < p2.Z; z++)
                 {
-                    ret.Add(new TCell{X=x, Z= z});
+                    ret.Add(new Cell{X=x, Z= z});
                 }
             }
 
@@ -239,7 +195,7 @@ namespace VpNet.Abstract
         }
 
 
-        public void AddCell(TCell cell)
+        public void AddCell(ICell cell)
         {
             if (_isScanning)
                 throw new Exception("Can not issue a cell query before the other range query has ended.");

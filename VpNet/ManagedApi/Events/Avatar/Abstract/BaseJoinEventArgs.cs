@@ -2,7 +2,7 @@
 
 namespace VpNet.Abstract
 {
-    public class BaseJoinEventArgs : IJoinEventArgs
+    public class BaseJoinEventArgs : TimedEventArgs, IJoinEventArgs
     {
         public int Id
         {

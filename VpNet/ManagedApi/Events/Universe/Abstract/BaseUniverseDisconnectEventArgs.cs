@@ -4,13 +4,13 @@ using VpNet.Interfaces;
 namespace VpNet.Abstract
 {
     [Serializable]
-    public abstract class BaseUniverseDisconnectEventArgs<TUniverse> : TimedEventArgs, IUniverseDisconnectEventArgs<TUniverse> where TUniverse : class, IUniverse, new()
+    public abstract class BaseUniverseDisconnectEventArgs
     {
-        public TUniverse Universe { get; set; }
+        public IUniverse Universe { get; set; }
 
         public VpNet.DisconnectType DisconnectType { get; set; }
 
-        protected BaseUniverseDisconnectEventArgs(TUniverse universe)
+        protected BaseUniverseDisconnectEventArgs(IUniverse universe)
         {
             Universe = universe;
         }

@@ -1,12 +1,11 @@
 ﻿namespace VpNet.Interfaces
 {
-    public interface IFriendFunctions<in TFriend>
-        where TFriend : class, IFriend, new()
+    public interface IFriendFunctions
     {
         void GetFriends();
-        void AddFriendByName(TFriend friend);
+        void AddFriendByName(IFriend friend);
         void AddFriendByName(string name);
         void DeleteFriendById(int friendId);
-        void DeleteFriendById(TFriend friend);
+        void DeleteFriendById(IFriend friend);
     }
 }

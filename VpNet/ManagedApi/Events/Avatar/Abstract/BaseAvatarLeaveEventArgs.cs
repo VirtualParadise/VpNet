@@ -4,12 +4,11 @@ using VpNet.Interfaces;
 namespace VpNet.Abstract
 {
     [Serializable]
-    public abstract class BaseAvatarLeaveEventArgs<TAvatar> : TimedEventArgs, IAvatarLeaveEventArgs<TAvatar>
-        where TAvatar : class, IAvatar, new()
+    public abstract class BaseAvatarLeaveEventArgs : TimedEventArgs, IAvatarLeaveEventArgs
     {
-        virtual public TAvatar Avatar { get; set; }
+        virtual public IAvatar Avatar { get; set; }
 
-        protected BaseAvatarLeaveEventArgs(TAvatar avatar)
+        protected BaseAvatarLeaveEventArgs(IAvatar avatar)
         {
             Avatar = avatar;
         }

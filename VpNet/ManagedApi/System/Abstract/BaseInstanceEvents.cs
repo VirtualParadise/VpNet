@@ -5,12 +5,11 @@ using VpNet.NativeApi;
 namespace VpNet.Abstract
 {
     [Serializable]
-    public abstract class BaseInstanceEvents<TWorld>
-        where TWorld : class, IWorld, new()
+    public abstract class BaseInstanceEvents
     {
         internal IntPtr _instance;
         //internal InstanceConfiguration<TWorld> _configuration;
-        public InstanceConfiguration<TWorld> Configuration { get; set; }
+        public InstanceConfiguration Configuration { get; set; }
 
         #region Implementation of IInstanceEvents
 

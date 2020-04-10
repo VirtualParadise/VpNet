@@ -2,8 +2,8 @@
 
 namespace VpNet.Abstract
 {
-    public abstract class BaseFriendDeleteCallbackEventArgs<TFriend> : TimedEventArgs, IFriendDeleteCallbackEventArgs<TFriend> where TFriend : class, IFriend, new()
+    public abstract class BaseFriendDeleteCallbackEventArgs
     {
-        public TFriend Friend { get; set; }
+        public IFriend Friend { get; set; }
     }
 }

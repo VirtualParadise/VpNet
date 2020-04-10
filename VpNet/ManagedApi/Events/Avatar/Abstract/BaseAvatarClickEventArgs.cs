@@ -4,14 +4,13 @@ using VpNet.Interfaces;
 namespace VpNet.Abstract
 {
     [Serializable]
-    public abstract class BaseAvatarClickEventArgs<TAvatar> : TimedEventArgs, IAvatarClickEventArgs<TAvatar>
-        where TAvatar : class, IAvatar, new()
+    public abstract class BaseAvatarClickEventArgs : TimedEventArgs, IAvatarClickEventArgs
     {
-        public virtual TAvatar Avatar { get; set; }
-        public virtual TAvatar ClickedAvatar { get; set; }
+        public virtual IAvatar Avatar { get; set; }
+        public virtual IAvatar ClickedAvatar { get; set; }
         public virtual Vector3 WorldHit { get; set; }
 
-        protected BaseAvatarClickEventArgs(TAvatar avatar, TAvatar clickedAvatar, Vector3 worldHit)
+        protected BaseAvatarClickEventArgs(IAvatar avatar, IAvatar clickedAvatar, Vector3 worldHit)
         {
             Avatar = avatar;
             ClickedAvatar = clickedAvatar;

@@ -4,7 +4,7 @@ namespace VpNet.Interfaces
     /// World List event arguments templated interface specifications.
     /// </summary>
     /// <typeparam name="TWorld">The type of the world.</typeparam>
-    public interface IWorldEnterEventArgs<TWorld> where TWorld : class, IWorld, new()
+    public interface IWorldEnterEventArgs : IWorld
     {
         /// <summary>
         /// Gets or sets the world.
@@ -12,6 +12,6 @@ namespace VpNet.Interfaces
         /// <value>
         /// The world.
         /// </value>
-        TWorld World { get; set; }
+        IWorld World { get; set; }
     }
 }

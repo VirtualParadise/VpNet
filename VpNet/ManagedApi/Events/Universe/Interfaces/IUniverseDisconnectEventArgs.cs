@@ -4,7 +4,7 @@ namespace VpNet.Interfaces
     /// Universe Disconnected event arguments templated interface specifications.
     /// </summary>
     /// <typeparam name="TUniverse">The type of the universe.</typeparam>
-    public interface IUniverseDisconnectEventArgs<TUniverse> where TUniverse : class, IUniverse, new()
+    public interface IUniverseDisconnectEventArgs
     {
         /// <summary>
         /// Gets or sets the universe.
@@ -12,7 +12,7 @@ namespace VpNet.Interfaces
         /// <value>
         /// The universe.
         /// </value>
-        TUniverse Universe { get; set; }
+        IUniverse Universe { get; set; }
 
         /// <summary>
         /// Gets or sets the type of the disconnect.

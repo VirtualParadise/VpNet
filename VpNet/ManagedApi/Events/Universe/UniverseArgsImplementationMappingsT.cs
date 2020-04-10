@@ -9,7 +9,6 @@ namespace VpNet
     /// </summary>
     [Serializable]
     [XmlRoot("OnUniverseDisconnect", Namespace = Global.XmlNsEvent)]
-    public class UniverseDisconnectEventArgsT<TUniverse> : Abstract.BaseUniverseDisconnectEventArgs<TUniverse>
-        where TUniverse : class, IUniverse, new()
+    public class UniverseDisconnectEventArgsT<TUniverse> : Abstract.BaseUniverseDisconnectEventArgs
     {}
 }

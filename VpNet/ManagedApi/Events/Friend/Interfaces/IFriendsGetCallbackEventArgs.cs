@@ -4,7 +4,7 @@ namespace VpNet.Interfaces
     /// Friends Get Callback event arguments templated interface specifications.
     /// </summary>
     /// <typeparam name="TFriend">The type of the friend.</typeparam>
-    public interface IFriendsGetCallbackEventArgs<TFriend> where TFriend : class, IFriend, new()
+    public interface IFriendsGetCallbackEventArgs
     {
         /// <summary>
         /// Gets or sets the friend.
@@ -12,6 +12,6 @@ namespace VpNet.Interfaces
         /// <value>
         /// The friend.
         /// </value>
-        TFriend Friend { get; set; }
+        IFriend Friend { get; set; }
     }
 }

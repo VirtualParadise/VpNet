@@ -2,8 +2,8 @@
 
 namespace VpNet.Abstract
 {
-    public class BaseFriendsGetCallbackEventArgs<TFriend> : TimedEventArgs, IFriendsGetCallbackEventArgs<TFriend> where TFriend : class, IFriend, new()
+    public class BaseFriendsGetCallbackEventArgs : TimedEventArgs, IFriendsGetCallbackEventArgs
     {
-        public TFriend Friend { get; set; }
+        public IFriend Friend { get; set; }
     }
 }

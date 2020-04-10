@@ -5,12 +5,9 @@ using VpNet.Interfaces;
 namespace VpNet.Abstract
 {
     [Serializable]
-    public abstract class BaseInstanceConfiguration<TWorld>
-        where TWorld : class, IWorld, new()
+    public abstract class BaseInstanceConfiguration
     {
-        public TWorld World { get; set; }
-        [XmlAttribute]
-        public bool IsChildInstance { get; set; }
+        public IWorld World { get; set; }
         [XmlAttribute]
         public string UserName { get; set; }
         [XmlAttribute]

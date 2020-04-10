@@ -2,16 +2,13 @@
 
 namespace VpNet.Abstract
 {
-    public abstract class BaseTeleportEventArgs<TTeleport, TWorld, TAvatar> : TimedEventArgs, ITeleportEventArgs<TTeleport, TWorld, TAvatar>
-        where TWorld : class, IWorld, new()
-        where TAvatar : class, IAvatar, new()
-        where TTeleport : class, ITeleport<TWorld,TAvatar>, new()
+    public abstract class BaseTeleportEventArgs : TimedEventArgs, ITeleportEventArgs
     {
-        public TTeleport Teleport { get; set; }
+        public ITeleport Teleport { get; set; }
 
         protected BaseTeleportEventArgs() {}
 
-        protected BaseTeleportEventArgs(TTeleport teleport)
+        protected BaseTeleportEventArgs(ITeleport teleport)
         {
             Teleport = teleport;
         } 

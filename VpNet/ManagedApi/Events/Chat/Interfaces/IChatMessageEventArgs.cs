@@ -5,9 +5,7 @@ namespace VpNet.Interfaces
     /// </summary>
     /// <typeparam name="TAvatar">The type of the avatar.</typeparam>
     /// <typeparam name="TChatMessage">The type of the chat message.</typeparam>
-    public interface IChatMessageEventArgs<TAvatar, TChatMessage> 
-        where TAvatar : class, IAvatar, new() 
-        where TChatMessage : class, IChatMessage, new()
+    public interface IChatMessageEventArgs
     {
         /// <summary>
         /// Gets or sets the avatar.
@@ -15,13 +13,13 @@ namespace VpNet.Interfaces
         /// <value>
         /// The avatar.
         /// </value>
-        TAvatar Avatar { get; set; }
+        IAvatar Avatar { get; set; }
         /// <summary>
         /// Gets or sets the chat message.
         /// </summary>
         /// <value>
         /// The chat message.
         /// </value>
-        TChatMessage ChatMessage { get; set; }
+        IChatMessage ChatMessage { get; set; }
     }
 }

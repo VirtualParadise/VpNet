@@ -4,8 +4,7 @@ namespace VpNet.Interfaces
     /// Avater enter event arguments templated interface specifications.
     /// </summary>
     /// <typeparam name="TAvatar">The type of the avatar.</typeparam>
-    public interface IAvatarEnterEventArgs<TAvatar> 
-        where TAvatar : class, IAvatar, new()
+    public interface IAvatarEnterEventArgs
     {
         /// <summary>
         /// Gets or sets the avatar.
@@ -13,6 +12,6 @@ namespace VpNet.Interfaces
         /// <value>
         /// The avatar.
         /// </value>
-        TAvatar Avatar { get; set; }
+        IAvatar Avatar { get; set; }
     }
 }

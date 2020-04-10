@@ -2,15 +2,14 @@
 
 namespace VpNet.Interfaces
 {
-    public interface IVpObjectFunctions<in TVpObject> 
-        where TVpObject: class, IVpObject, new()
+    public interface IVpObjectFunctions
     {
-        Task ChangeObjectAsync(TVpObject vpObject);
-        Task<int> LoadObjectAsync(TVpObject vpObject);
-        Task<int> AddObjectAsync(TVpObject vpObject);
-        Task DeleteObjectAsync(TVpObject vpObject);
+        Task ChangeObjectAsync(IVpObject vpObject);
+        Task<int> LoadObjectAsync(IVpObject vpObject);
+        Task<int> AddObjectAsync(IVpObject vpObject);
+        Task DeleteObjectAsync(IVpObject vpObject);
         void QueryCell(int cellX, int cellZ);
-        void ClickObject(TVpObject vpObject);
+        void ClickObject(IVpObject vpObject);
         void ClickObject(int objectId);
     }
 }

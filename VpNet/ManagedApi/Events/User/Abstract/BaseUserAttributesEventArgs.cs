@@ -2,17 +2,15 @@
 
 namespace VpNet.Abstract
 {
-    public abstract class BaseUserAttributesEventArgs<TUserAttributes> :
-        TimedEventArgs, IUserAttributesEventArgs<TUserAttributes>
-        where TUserAttributes : class, IUserAttributes, new()
+    public abstract class BaseUserAttributesEventArgs : TimedEventArgs, IUserAttributesEventArgs
     {
         #region Implementation of IUserAttributesEventArgs<TUserAttributes>
 
-        public TUserAttributes UserAttributes { get; set; }
+        public IUserAttributes UserAttributes { get; set; }
 
         #endregion
 
-        protected BaseUserAttributesEventArgs(TUserAttributes userAttributes)
+        protected BaseUserAttributesEventArgs(IUserAttributes userAttributes)
         {
             UserAttributes = userAttributes;
         }

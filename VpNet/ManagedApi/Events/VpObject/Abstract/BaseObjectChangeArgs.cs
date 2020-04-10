@@ -9,14 +9,12 @@ namespace VpNet.Abstract
     /// <typeparam name="TAvatar">The type of the avatar.</typeparam>
     /// <typeparam name="TVpObject">The type of the vp object.</typeparam>
     [Serializable]
-    public abstract class BaseObjectChangeArgs<TAvatar, TVpObject> : TimedEventArgs, IObjectChangeArgs<TAvatar, TVpObject>
-        where TAvatar : class, IAvatar, new()
-        where TVpObject : class, IVpObject, new()
+    public abstract class BaseObjectChangeArgs : TimedEventArgs, IObjectChangeArgs
     {
-        public TVpObject VpObject { get; set; }
-        public TAvatar Avatar { get; set; }
+        public IVpObject VpObject { get; set; }
+        public IAvatar Avatar { get; set; }
 
-        protected BaseObjectChangeArgs(TAvatar avatar, TVpObject vpObject)
+        protected BaseObjectChangeArgs(IAvatar avatar, IVpObject vpObject)
         {
             VpObject = vpObject;
             Avatar = avatar;

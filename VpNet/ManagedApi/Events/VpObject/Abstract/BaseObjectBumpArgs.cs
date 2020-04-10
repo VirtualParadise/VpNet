@@ -4,15 +4,13 @@ using VpNet.Interfaces;
 namespace VpNet.Abstract
 {
     [Serializable]
-    public abstract class BaseObjectBumpArgs<TAvatar, TVpObject> : TimedEventArgs, IObjectBumpArgs<TAvatar, TVpObject>
-        where TAvatar : class, IAvatar, new()
-        where TVpObject : class, IVpObject, new()
+    public abstract class BaseObjectBumpArgs : TimedEventArgs, IObjectBumpArgs
     {
-        public TVpObject VpObject { get; set; }
-        public TAvatar Avatar { get; set; }
+        public IVpObject VpObject { get; set; }
+        public IAvatar Avatar { get; set; }
         public BumpType BumpType { get; set; }
 
-        protected BaseObjectBumpArgs(TAvatar avatar, TVpObject vpObject)
+        protected BaseObjectBumpArgs(IAvatar avatar, IVpObject vpObject)
         {
             VpObject = vpObject;
             Avatar = avatar;

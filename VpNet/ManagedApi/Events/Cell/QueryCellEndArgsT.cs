@@ -9,8 +9,7 @@ namespace VpNet
     /// </summary>
     [Serializable]
     [XmlRoot("OnQueryCellEnd", Namespace = Global.XmlNsEvent)]
-    public class QueryCellEndArgsT<TCell> : Abstract.BaseQueryCellEndArgs<TCell>
-        where TCell : class, ICell,new()
-    {
+    public class QueryCellEndArgsT<TCell> : Abstract.BaseQueryCellEndArgs
+        {
     }
 }

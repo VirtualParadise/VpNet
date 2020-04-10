@@ -5,15 +5,14 @@
     /// </summary>
     /// <typeparam name="TRc">The type of the result code object.</typeparam>
     /// <typeparam name="TAvatar">The type of the avatar.</typeparam>
-    public interface IAvatarFunctions<TAvatar>
-        where TAvatar : class, IAvatar,new()
+    public interface IAvatarFunctions : IAvatar
     {
         /// <summary>
         /// Gets or sets the Avatars
         /// </summary>
         /// <value>
         /// </value>
-        Dictionary<int, TAvatar> Avatars { get; set; }
+        Dictionary<int, IAvatar> Avatars { get; set; }
         /// <summary>
         /// Announce your bot at a given location.
         /// </summary>
@@ -48,9 +47,9 @@
         /// </summary>
         /// <param name="avatar">The avatar object containing the session id.</param>
         /// <returns>Zero when successful, otherwise nonzero.</returns>
-        void AvatarClick(TAvatar avatar);
+        void AvatarClick(IAvatar avatar);
         void GetUserProfile(int user);
-        void GetUserProfile(TAvatar avatar);
+        void GetUserProfile(IAvatar avatar);
         void GetUserProfile(string userName);
     }
 }

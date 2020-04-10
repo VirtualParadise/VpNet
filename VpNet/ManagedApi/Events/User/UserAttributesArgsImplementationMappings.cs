@@ -3,6 +3,6 @@
 namespace VpNet
 {
     [XmlRoot("OnUserAttributes", Namespace = Global.XmlNsEvent)]
-    public class UserAttributesEventArgs : Abstract.BaseUserAttributesEventArgs<UserAttributes> 
+    public class UserAttributesEventArgs : Abstract.BaseUserAttributesEventArgs
     { }
 }

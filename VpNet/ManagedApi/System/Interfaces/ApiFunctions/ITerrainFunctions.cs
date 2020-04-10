@@ -1,9 +1,6 @@
 ﻿namespace VpNet.Interfaces
 {
-    public interface ITerrainFunctions<in TTerrainTile,TTerrainNode,TTerrainCell>
-        where TTerrainCell : class, ITerrainCell, new()
-        where TTerrainNode : class, ITerrainNode<TTerrainTile,TTerrainNode,TTerrainCell>, new()
-        where TTerrainTile : class, ITerrainTile<TTerrainTile,TTerrainNode,TTerrainCell>, new()
+    public interface ITerrainFunctions
     {
         /// <summary>
         /// Queries a Terrain using value types for the query.
