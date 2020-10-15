@@ -16,6 +16,7 @@
     </Description>
     <PackageProjectUrl>https://github.com/VirtualParadise/VpNet</PackageProjectUrl>
     <PackageIconUrl>http://edwin-share.virtualparadise.org/2017/05/vpsdkbutton.png</PackageIconUrl>
+    <LangVersion>8</LangVersion>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="GitVersionTask" Version="5.1.1">
