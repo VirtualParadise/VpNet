@@ -3,6 +3,7 @@ namespace VpNet
     using System;
     using System.Globalization;
     using System.Runtime.CompilerServices;
+    using System.Runtime.InteropServices;
     using System.Text;
     using System.Xml.Serialization;
 
@@ -10,6 +11,7 @@ namespace VpNet
     ///     Represents a vector with three double-precision floating-point values.
     /// </summary>
     [Serializable]
+    [StructLayout(LayoutKind.Sequential)]
     public struct Vector3 : IEquatable<Vector3>, IFormattable
     {
         /// <summary>
