@@ -757,28 +757,24 @@ namespace VpNet.ManagedApi
             }
         }
 
-        public void ConsoleMessage(IAvatar avatar, string name, string message, Color color, TextEffectTypes effects = 0)
+        public void ConsoleMessage(IAvatar avatar, string name, string message, Color? color, TextEffectTypes effects = 0)
         {
-            color = color ?? new Color();
-            ConsoleMessage(avatar.Session, name, message, effects, color.R, color.G, color.B);
+            ConsoleMessage(avatar.Session, name, message, effects, color?.R ?? 0, color?.G ?? 0, color?.B ?? 0);
         }
 
-        public void ConsoleMessage(int targetSession, string name, string message, Color color, TextEffectTypes effects = 0)
+        public void ConsoleMessage(int targetSession, string name, string message, Color? color, TextEffectTypes effects = 0)
         {
-            color = color ?? new Color();
-            ConsoleMessage(targetSession, name, message, effects, color.R, color.G, color.B);
+            ConsoleMessage(targetSession, name, message, effects, color?.R ?? 0, color?.G ?? 0, color?.B ?? 0);
         }
 
-        public void ConsoleMessage(string name, string message, Color color, TextEffectTypes effects = 0)
+        public void ConsoleMessage(string name, string message, Color? color, TextEffectTypes effects = 0)
         {
-            color = color ?? new Color();
-            ConsoleMessage(0, name, message, effects, color.R, color.G, color.B);
+            ConsoleMessage(0, name, message, effects, color?.R ?? 0, color?.G ?? 0, color?.B ?? 0);
         }
 
-        public void ConsoleMessage(string message, Color color, TextEffectTypes effects = 0)
+        public void ConsoleMessage(string message, Color? color, TextEffectTypes effects = 0)
         {
-            color = color ?? new Color();
-            ConsoleMessage(0, string.Empty, message, effects, color.R, color.G, color.B);
+            ConsoleMessage(0, string.Empty, message, effects, color?.R ?? 0, color?.G ?? 0, color?.B ?? 0);
         }
 
         public void ConsoleMessage(string message)
