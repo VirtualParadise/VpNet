@@ -1284,7 +1284,7 @@ namespace VpNet.ManagedApi
             }
             data.LastChanged = DateTime.UtcNow;
             if (OnAvatarEnter == null) return;
-            var args = new AvatarEnterEventArgs {Avatar = data, Implementor = this};
+            var args = new AvatarEnterEventArgs(data);
             args.Initialize();
             OnAvatarEnter(this, args);
         }
@@ -1327,12 +1327,12 @@ namespace VpNet.ManagedApi
                 SetAvatar(data);
 
             }
-            OnAvatarChange?.Invoke(this, new AvatarChangeEventArgs { Avatar = _avatars[data.Session], AvatarPrevious = old });
+            OnAvatarChange?.Invoke(this, new AvatarChangeEventArgs(_avatars[data.Session], old));
         }
 
         private void OnAvatarDeleteNative(IntPtr sender)
         {
-            IAvatar data;
+            Avatar data;
             lock (this)
             {
                 try
@@ -1340,7 +1340,7 @@ namespace VpNet.ManagedApi
                     data = _avatars[Functions.vp_int(sender, IntegerAttribute.AvatarSession)];
                     _avatars.Remove(data.Session);
                     if (OnAvatarLeave == null) return;
-                    OnAvatarLeave(this, new AvatarLeaveEventArgs { Avatar = data });
+                    OnAvatarLeave(this, new AvatarLeaveEventArgs(data));
                 }
                 catch
                 {
@@ -1359,17 +1359,14 @@ namespace VpNet.ManagedApi
                     clickedAvatar = Functions.vp_int(sender, IntegerAttribute.AvatarSession);
 
                 OnAvatarClick(this,
-                    new AvatarClickEventArgs
-                    {
-                        Avatar = GetAvatar(Functions.vp_int(sender, IntegerAttribute.AvatarSession)),
-                        ClickedAvatar = GetAvatar(clickedAvatar),
-                        WorldHit = new Vector3
-                        {
-                            X = Functions.vp_double(sender, FloatAttribute.ClickHitX),
-                            Y = Functions.vp_double(sender, FloatAttribute.ClickHitY),
-                            Z = Functions.vp_double(sender, FloatAttribute.ClickHitZ)
-                        }
-                    });
+                    new AvatarClickEventArgs(
+                        GetAvatar(Functions.vp_int(sender, IntegerAttribute.AvatarSession)),
+                        GetAvatar(clickedAvatar),
+                        new Vector3(
+                            Functions.vp_double(sender, FloatAttribute.ClickHitX),
+                            Functions.vp_double(sender, FloatAttribute.ClickHitY),
+                            Functions.vp_double(sender, FloatAttribute.ClickHitZ)
+                        )));
             }
         }
 
@@ -1616,11 +1613,11 @@ namespace VpNet.ManagedApi
         private void OnJoinNative(IntPtr sender)
         {
             if (OnJoin == null) return;
-            OnJoin(this, new JoinEventArgs {
-                UserId = Functions.vp_int(sender, IntegerAttribute.UserId),
-                Id = Functions.vp_int(sender, IntegerAttribute.JoinId),
-                Name = Functions.vp_string(sender, StringAttribute.JoinName)
-            });
+            
+            var avatar = new Avatar(Functions.vp_int(sender, IntegerAttribute.UserId), 
+                Functions.vp_string(sender, StringAttribute.JoinName), 
+                -1, -1, Vector3.Zero, Vector3.Zero);
+            OnJoin(this, new JoinEventArgs(avatar));
         }
 
         #endregion
