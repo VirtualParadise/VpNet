@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
@@ -26,7 +27,7 @@ namespace VpNet.ManagedApi
 
         Dictionary<string, World> _worlds;
         internal IntPtr _instance;
-        private IUniverse Universe { get; set; }
+        private Universe Universe { get; set; }
         private World World { get; set; }
         private NetConfig netConfig;
         private GCHandle instanceHandle;
@@ -79,7 +80,6 @@ namespace VpNet.ManagedApi
 
         public Instance()
         {
-            Universe = new Universe();
             Configuration = new InstanceConfiguration();
             _worlds = new Dictionary<string, World>();
             _avatars = new Dictionary<int, Avatar>();
@@ -226,8 +226,17 @@ namespace VpNet.ManagedApi
 
         virtual public Task ConnectAsync(string host = "universe.virtualparadise.org", ushort port = 57000)
         {
-            Universe.Host = host;
-            Universe.Port = port;
+            EndPoint remoteEP;
+            if (IPAddress.TryParse(host, out IPAddress ipAddress))
+            {
+                remoteEP = new IPEndPoint(ipAddress, port);
+            }
+            else
+            {
+                remoteEP = new DnsEndPoint(host, port);
+            }
+
+            Universe = new Universe(remoteEP);
 
             lock (this)
             {
@@ -366,7 +375,7 @@ namespace VpNet.ManagedApi
             Functions.vp_destroy(_instance);
             _isInitialized = false;
             InitVpNative();
-            OnUniverseDisconnect?.Invoke(this, new UniverseDisconnectEventArgs { Universe = Universe, DisconnectType = VpNet.DisconnectType.UserDisconnected });
+            OnUniverseDisconnect?.Invoke(this, new UniverseDisconnectEventArgs(Universe, DisconnectType.UserDisconnected));
         }
 
         virtual public void ListWorlds()
@@ -1601,7 +1610,7 @@ namespace VpNet.ManagedApi
         private void OnUniverseDisconnectNative(IntPtr sender)
         {
             if (OnUniverseDisconnect == null) return;
-            OnUniverseDisconnect(this, new UniverseDisconnectEventArgs { Universe = Universe });
+            OnUniverseDisconnect(this, new UniverseDisconnectEventArgs(Universe));
         }
 
         private void OnWorldDisconnectNative(IntPtr sender)
