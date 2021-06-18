@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
@@ -23,7 +22,7 @@ namespace VpNet.ManagedApi
 
         private readonly Dictionary<int, TaskCompletionSource<object>> _objectCompletionSources = new Dictionary<int, TaskCompletionSource<object>>();
 
-        private Dictionary<int, IAvatar> _avatars;
+        private Dictionary<int, Avatar> _avatars;
 
         Dictionary<string, IWorld> _worlds;
         internal IntPtr _instance;
@@ -83,7 +82,7 @@ namespace VpNet.ManagedApi
             Universe = new Universe();
             Configuration = new InstanceConfiguration();
             _worlds = new Dictionary<string, IWorld>();
-            _avatars = new Dictionary<int, IAvatar>();
+            _avatars = new Dictionary<int, Avatar>();
             InitOnce();
             InitVpNative();
         }
@@ -1152,7 +1151,7 @@ namespace VpNet.ManagedApi
         {
             if (OnTeleport == null)
                 return;
-            ITeleport teleport;
+            Teleport teleport;
             lock (this)
             {
                 teleport = new Teleport
@@ -1174,7 +1173,7 @@ namespace VpNet.ManagedApi
                         World = new World { Name = Functions.vp_string(sender, StringAttribute.TeleportWorld),State = WorldState.Unknown, UserCount=-1 }
                     };
             }
-            OnTeleport(this, new TeleportEventArgs() {Teleport = teleport});
+            OnTeleport(this, new TeleportEventArgs(teleport));
         }
 
         private void OnGetFriendsCallbackNative(IntPtr sender, int rc, int reference)
@@ -1256,7 +1255,7 @@ namespace VpNet.ManagedApi
 
         private void OnAvatarAddNative(IntPtr sender)
         {
-            IAvatar data;
+            Avatar data;
             lock (this)
             {
                 data = new Avatar()
@@ -1292,8 +1291,8 @@ namespace VpNet.ManagedApi
 
         private void OnAvatarChangeNative(IntPtr sender)
         {
-            IAvatar old;
-            IAvatar data;
+            Avatar old;
+            Avatar data;
             lock (this)
             {
                 data = new Avatar()
@@ -1458,13 +1457,13 @@ namespace VpNet.ManagedApi
 
 
 
-        public List<IAvatar> Avatars()
+        public List<Avatar> Avatars()
         {
             return _avatars.Values.ToList();
         }
 
         [Obsolete("Objects are not firewalled anymore, so commits are not needed.")]
-        public void Commit(IAvatar avatar)
+        public void Commit(Avatar avatar)
         {
             //lock (_avatars)
             //{
@@ -1479,7 +1478,7 @@ namespace VpNet.ManagedApi
             //}
         }
 
-        public IAvatar GetAvatar(int session)
+        public Avatar GetAvatar(int session)
         {
             if (_avatars.ContainsKey(session))
                 return _avatars[session];
@@ -1488,7 +1487,7 @@ namespace VpNet.ManagedApi
             return avatar;
         }
 
-        private void SetAvatar(IAvatar avatar)
+        private void SetAvatar(Avatar avatar)
         {
             lock (this)
             {
