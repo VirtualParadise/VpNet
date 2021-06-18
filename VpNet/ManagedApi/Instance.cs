@@ -1217,17 +1217,17 @@ namespace VpNet.ManagedApi
                         };
                     _avatars.Add(avatar.Session, avatar);
                 }
-                data = new ChatMessageEventArgs
-                {
-                    Avatar = _avatars[Functions.vp_int(sender, IntegerAttribute.AvatarSession)],
-                    ChatMessage = new ChatMessage()
+
+                data = new ChatMessageEventArgs(
+                    _avatars[Functions.vp_int(sender, IntegerAttribute.AvatarSession)],
+                    new ChatMessage
                     {
-                        Type = (ChatMessageTypes)Functions.vp_int(sender, IntegerAttribute.ChatType),
+                        Type = (ChatMessageTypes) Functions.vp_int(sender, IntegerAttribute.ChatType),
                         Message = Functions.vp_string(sender, StringAttribute.ChatMessage),
                         Name = Functions.vp_string(sender, StringAttribute.AvatarName),
-                        TextEffectTypes = (TextEffectTypes)Functions.vp_int(sender, IntegerAttribute.ChatEffects)
+                        TextEffectTypes = (TextEffectTypes) Functions.vp_int(sender, IntegerAttribute.ChatEffects)
                     }
-                };
+                );
                 OperatingSystem os = Environment.OSVersion;
 
                 if (OnChatMessage == null) return;
