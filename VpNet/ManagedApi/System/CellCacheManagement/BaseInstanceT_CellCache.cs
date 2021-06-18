@@ -66,24 +66,24 @@ namespace VpNet.ManagedApi
             }
         }
 
-        bool IsInCellCacheRange(IVpObject vpObject)
+        bool IsInCellCacheRange(VpObject vpObject)
         {
             return  _cacheScanned.Exists(p => p.X == vpObject.Cell.X && p.Z == vpObject.Cell.Z);
         }
 
         void BaseInstanceT_OnObjectCreate(IInstance sender, ObjectCreateArgs args)
         {
-            if (!IsInCellCacheRange(args.VpObject))
+            if (!IsInCellCacheRange(args.Object))
                 return;
-            _objects.Add(args.VpObject);
+            _objects.Add(args.Object);
 
         }
 
         void BaseInstanceT_OnObjectDelete(IInstance sender, ObjectDeleteArgs args)
         {
-            if (!IsInCellCacheRange(args.VpObject))
+            if (!IsInCellCacheRange(args.Object))
                 return;
-            var o = _objects.Find(p => p.Id == args.VpObject.Id);
+            var o = _objects.Find(p => p.Id == args.Object.Id);
             _objects.Remove(o);
         }
 
@@ -91,16 +91,16 @@ namespace VpNet.ManagedApi
         {
             lock (this)
             {
-                if (!IsInCellCacheRange(args.VpObject))
+                if (!IsInCellCacheRange(args.Object))
                 {
                     // check if object was in cell range prior.
-                    var prev = _objects.Find(p => p.Id == args.VpObject.Id);
+                    var prev = _objects.Find(p => p.Id == args.Object.Id);
                     _objects.Remove(prev);
                     return;
                 }
-                var o = _objects.Find(p => p.Id == args.VpObject.Id);
+                var o = _objects.Find(p => p.Id == args.Object.Id);
                 _objects.Remove(o);
-                _objects.Add(args.VpObject);
+                _objects.Add(args.Object);
                 OnObjectCellRangeChange?.Invoke(this, args);
             }
         }

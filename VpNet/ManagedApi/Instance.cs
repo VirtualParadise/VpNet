@@ -1119,7 +1119,7 @@ namespace VpNet.ManagedApi
         {
             lock (this)
             {
-                GetVpObject(sender, out IVpObject vpObject);
+                GetVpObject(sender, out VpObject vpObject);
 
                 SetCompletionResult(reference, rc, vpObject);
             }
@@ -1397,9 +1397,7 @@ namespace VpNet.ManagedApi
                     };
             }
 
-            OnObjectClick(this,
-                          new ObjectClickArgs
-                              {WorldHit=world, Avatar = GetAvatar(session), VpObject = new VpObject {Id = objectId}});
+            OnObjectClick(this, new ObjectClickArgs(GetAvatar(session), new VpObject{Id = objectId}, world));
         }
 
         private void OnObjectBumpNative(IntPtr sender)
@@ -1413,8 +1411,7 @@ namespace VpNet.ManagedApi
                 objectId = Functions.vp_int(sender, IntegerAttribute.ObjectId);
             }
 
-            OnObjectBump(this,
-                          new ObjectBumpArgs { BumpType = BumpType.BumpBegin, Avatar = GetAvatar(session), VpObject = new VpObject { Id = objectId } });
+            OnObjectBump(this, new ObjectBumpArgs(GetAvatar(session), new VpObject{Id = objectId}, BumpType.BumpBegin));
         }
 
         private void OnObjectBumpEndNative(IntPtr sender)
@@ -1428,8 +1425,7 @@ namespace VpNet.ManagedApi
                 objectId = Functions.vp_int(sender, IntegerAttribute.ObjectId);
             }
 
-            OnObjectBump(this,
-                          new ObjectBumpArgs { BumpType = BumpType.BumpEnd, Avatar = GetAvatar(session), VpObject = new VpObject { Id = objectId } });
+            OnObjectBump(this, new ObjectBumpArgs(GetAvatar(session), new VpObject{Id = objectId}, BumpType.BumpEnd));
         }
 
         private void OnObjectDeleteNative(IntPtr sender)
@@ -1442,13 +1438,13 @@ namespace VpNet.ManagedApi
                 session = Functions.vp_int(sender, IntegerAttribute.AvatarSession);
                 objectId = Functions.vp_int(sender, IntegerAttribute.ObjectId);
             }
-            OnObjectDelete(this, new ObjectDeleteArgs { Avatar = GetAvatar(session), VpObject = new VpObject { Id = objectId } });
+            OnObjectDelete(this, new ObjectDeleteArgs(GetAvatar(session), new VpObject{Id = objectId}));
         }
 
         private void OnObjectCreateNative(IntPtr sender)
         {
             if (OnObjectCreate == null && OnQueryCellResult == null) return;
-            IVpObject vpObject;
+            VpObject vpObject;
             int session;
             lock (this)
             {
@@ -1458,7 +1454,7 @@ namespace VpNet.ManagedApi
             if (session == 0 && OnQueryCellResult != null)
                 OnQueryCellResult(this, new QueryCellResultArgs { VpObject = vpObject });
             else
-                OnObjectCreate?.Invoke(this, new ObjectCreateArgs { Avatar = GetAvatar(session), VpObject = vpObject });
+                OnObjectCreate?.Invoke(this, new ObjectCreateArgs(GetAvatar(session), vpObject));
         }
 
 
@@ -1508,7 +1504,7 @@ namespace VpNet.ManagedApi
             }
         }
 
-        private static void GetVpObject(IntPtr sender, out IVpObject vpObject)
+        private static void GetVpObject(IntPtr sender, out VpObject vpObject)
         {
             vpObject = new VpObject
             {
@@ -1541,14 +1537,14 @@ namespace VpNet.ManagedApi
         private void OnObjectChangeNative(IntPtr sender)
         {
             if (OnObjectChange == null) return;
-            IVpObject vpObject;
+            VpObject vpObject;
             int sessionId;
             lock (this)
             {
-                GetVpObject(sender,out vpObject);
+                GetVpObject(sender, out vpObject);
                 sessionId = Functions.vp_int(sender, IntegerAttribute.AvatarSession);
             }
-            OnObjectChange(this, new ObjectChangeArgs { Avatar = GetAvatar(sessionId), VpObject = vpObject });
+            OnObjectChange(this, new ObjectChangeArgs(GetAvatar(sessionId), vpObject));
         }
 
         private void OnQueryCellEndNative(IntPtr sender)

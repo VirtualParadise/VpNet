@@ -4,7 +4,7 @@ using VpNet.Abstract;
 namespace VpNet
 {
     /// <summary>
-    /// Default Event Arguments implementation mapping. You can define your own mappings when implementing VpNet.Abstract.BaseInstanceT
+    ///     Provides event arguments for <see cref="ManagedApi.Instance.OnTerrainNode" />.
     /// </summary>
     [XmlRoot("OnTerrainNode", Namespace = Global.XmlNsEvent)]
     public class TerrainNodeEventArgs : BaseTerrainNodeEventArgs
