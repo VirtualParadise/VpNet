@@ -1207,52 +1207,40 @@ namespace VpNet.ManagedApi
 
         private void OnChatNative(IntPtr sender)
         {
-            ChatMessageEventArgs data;
+            if (OnChatMessage is null)
+                return;
+
+            ChatMessageTypes type;
+            TextEffectTypes effects;
+            string text;
+            string name;
+            Color color = new Color(0, 0, 0);
+            Avatar avatar;
+            
             lock (this)
             {
-                if (!_avatars.ContainsKey(Functions.vp_int(sender, IntegerAttribute.AvatarSession)))
+                int session = Functions.vp_int(sender, IntegerAttribute.AvatarSession);
+                type = (ChatMessageTypes) Functions.vp_int(sender, IntegerAttribute.ChatType);
+                effects = (TextEffectTypes) Functions.vp_int(sender, IntegerAttribute.ChatEffects);
+                text = Functions.vp_string(sender, StringAttribute.ChatMessage);
+                name = Functions.vp_string(sender, StringAttribute.AvatarName);
+                
+                if (type == ChatMessageTypes.Console)
                 {
-                    var avatar = new Avatar
-                        {
-                            Name = Functions.vp_string(sender, StringAttribute.AvatarName),
-                            Session = Functions.vp_int(sender, IntegerAttribute.AvatarSession)
-                        };
-                    _avatars.Add(avatar.Session, avatar);
-                }
+                    byte r = (byte)Functions.vp_int(sender, IntegerAttribute.ChatRolorRed);
+                    byte g = (byte)Functions.vp_int(sender, IntegerAttribute.ChatColorGreen);
+                    byte b = (byte)Functions.vp_int(sender, IntegerAttribute.ChatColorBlue);
 
-                data = new ChatMessageEventArgs(
-                    _avatars[Functions.vp_int(sender, IntegerAttribute.AvatarSession)],
-                    new ChatMessage
-                    {
-                        Type = (ChatMessageTypes) Functions.vp_int(sender, IntegerAttribute.ChatType),
-                        Message = Functions.vp_string(sender, StringAttribute.ChatMessage),
-                        Name = Functions.vp_string(sender, StringAttribute.AvatarName),
-                        TextEffectTypes = (TextEffectTypes) Functions.vp_int(sender, IntegerAttribute.ChatEffects)
-                    }
-                );
-                OperatingSystem os = Environment.OSVersion;
-
-                if (OnChatMessage == null) return;
-                if (data.ChatMessage.Type == ChatMessageTypes.Console)
-                {
-                    data.ChatMessage.Color = new Color
-                    {
-                        R = (byte)Functions.vp_int(sender, IntegerAttribute.ChatRolorRed),
-                        G = (byte)Functions.vp_int(sender, IntegerAttribute.ChatColorGreen),
-                        B = (byte)Functions.vp_int(sender, IntegerAttribute.ChatColorBlue)
-                    };
+                    color = new Color(r, g, b);
                 }
-                else
-                {
-                    data.ChatMessage.Color = new Color
-                    {
-                        R = 0,
-                        G = 0,
-                        B = 0
-                    };
-                }
+                
+                if (!_avatars.TryGetValue(session, out avatar))
+                    _avatars.Add(session, avatar = new Avatar { Name = name, Session = session });
             }
-            OnChatMessage(this, data);
+
+            var message = new ChatMessage(name, text, type, color, effects);
+            var args = new ChatMessageEventArgs(avatar, message);
+            OnChatMessage.Invoke(this, args);
         }
 
         private void OnAvatarAddNative(IntPtr sender)
