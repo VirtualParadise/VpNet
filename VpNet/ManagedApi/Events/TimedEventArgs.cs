@@ -16,9 +16,5 @@ namespace VpNet
         }
         [EditorBrowsable(EditorBrowsableState.Never)]
         public virtual void Initialize() { }
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        [XmlIgnore]
-        public virtual object Implementor { get; set; }
-
     }
 }
