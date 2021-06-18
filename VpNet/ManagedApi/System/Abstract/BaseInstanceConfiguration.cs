@@ -7,7 +7,7 @@ namespace VpNet.Abstract
     [Serializable]
     public abstract class BaseInstanceConfiguration
     {
-        public IWorld World { get; set; }
+        public World World { get; set; }
         [XmlAttribute]
         public string UserName { get; set; }
         [XmlAttribute]

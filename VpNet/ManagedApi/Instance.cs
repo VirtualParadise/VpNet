@@ -24,10 +24,10 @@ namespace VpNet.ManagedApi
 
         private Dictionary<int, Avatar> _avatars;
 
-        Dictionary<string, IWorld> _worlds;
+        Dictionary<string, World> _worlds;
         internal IntPtr _instance;
         private IUniverse Universe { get; set; }
-        private IWorld World { get; set; }
+        private World World { get; set; }
         private NetConfig netConfig;
         private GCHandle instanceHandle;
         private TaskCompletionSource<object> ConnectCompletionSource;
@@ -81,7 +81,7 @@ namespace VpNet.ManagedApi
         {
             Universe = new Universe();
             Configuration = new InstanceConfiguration();
-            _worlds = new Dictionary<string, IWorld>();
+            _worlds = new Dictionary<string, World>();
             _avatars = new Dictionary<int, Avatar>();
             InitOnce();
             InitVpNative();
@@ -289,7 +289,7 @@ namespace VpNet.ManagedApi
 
         #endregion
 
-        #region IWorldFunctions Implementations
+        #region WorldFunctions Implementations
         [Obsolete("No longer necessary for network IO to occur")]
         virtual public void Wait(int milliseconds = 10)
         {
@@ -308,7 +308,7 @@ namespace VpNet.ManagedApi
             return EnterAsync(Configuration.World);
         }
 
-        virtual public Task EnterAsync(IWorld world)
+        virtual public Task EnterAsync(World world)
         {
             lock (this)
             {
@@ -647,7 +647,7 @@ namespace VpNet.ManagedApi
                            (float)rotation.Y, (float)rotation.X);
         }
 
-        public void TeleportAvatar(IAvatar avatar, IWorld world, Vector3 position, Vector3 rotation)
+        public void TeleportAvatar(IAvatar avatar, World world, Vector3 position, Vector3 rotation)
         {
             TeleportAvatar(avatar.Session, world.Name, (float)position.X, (float)position.Y, (float)position.Z,
                            (float)rotation.Y, (float)rotation.X);
@@ -882,7 +882,7 @@ namespace VpNet.ManagedApi
 
         #endregion
 
-        #region  IWorldPermissionFunctions Implementations
+        #region  WorldPermissionFunctions Implementations
 
         public virtual void WorldPermissionUser(string permission, int userId, int enable)
         {
@@ -967,7 +967,7 @@ namespace VpNet.ManagedApi
 
         #endregion
 
-        #region IWorldSettingsFunctions Implementations
+        #region WorldSettingsFunctions Implementations
 
         public virtual void WorldSettingSession(string setting, string value, IAvatar toAvatar)
         {
@@ -1563,7 +1563,7 @@ namespace VpNet.ManagedApi
             if (OnWorldList == null)
                 return;
 
-            IWorld data;
+            World data;
             lock (this)
             {
                 string worldName = Functions.vp_string(_instance, StringAttribute.WorldName);
