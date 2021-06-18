@@ -156,7 +156,7 @@ namespace VpNet.ManagedApi
             lock (this)
             {
                 SetCompletionResult(EnterCompletionSource, rc, null);
-                OnWorldEnter?.Invoke(this, new WorldEnterEventArgs() { World = World });
+                OnWorldEnter?.Invoke(this, new WorldEnterEventArgs(World));
             }
         }
         internal void OnJoinCallbackNativeEvent1(IntPtr instance, int rc, int reference) { lock (this) { OnJoinCallbackNativeEvent(instance, rc, reference); } }
@@ -356,7 +356,7 @@ namespace VpNet.ManagedApi
             lock (this)
             {
                 CheckReasonCode(Functions.vp_leave(_instance));
-                OnWorldLeave?.Invoke(this, new WorldLeaveEventArgs { World = Configuration.World });
+                OnWorldLeave?.Invoke(this, new WorldLeaveEventArgs(Configuration.World));
             }
         }
 
@@ -1574,7 +1574,7 @@ namespace VpNet.ManagedApi
             if (_worlds.ContainsKey(data.Name))
                 _worlds.Remove(data.Name);
             _worlds.Add(data.Name,data);
-            OnWorldList(this, new WorldListEventArgs { World = data as World });
+            OnWorldList(this, new WorldListEventArgs(data));
         }
 
         private void OnWorldSettingNativeEvent(IntPtr instance)
@@ -1595,7 +1595,7 @@ namespace VpNet.ManagedApi
             // TODO: some world, such as Test do not specify a objectpath, maybe there's a default search path we dont know of.
             var world = _worlds[Configuration.World.Name];
 
-            OnWorldSettingsChanged?.Invoke(this, new WorldSettingsChangedEventArgs { World = (World)_worlds[Configuration.World.Name] });
+            OnWorldSettingsChanged?.Invoke(this, new WorldSettingsChangedEventArgs(_worlds[Configuration.World.Name]));
         }
 
         private void OnUniverseDisconnectNative(IntPtr sender)
@@ -1607,7 +1607,7 @@ namespace VpNet.ManagedApi
         private void OnWorldDisconnectNative(IntPtr sender)
         {
             if (OnWorldDisconnect == null) return;
-            OnWorldDisconnect(this, new WorldDisconnectEventArgs { World = (World) World });
+            OnWorldDisconnect(this, new WorldDisconnectEventArgs(World));
         }
 
         private void OnJoinNative(IntPtr sender)

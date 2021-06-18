@@ -4,19 +4,12 @@ using System.Xml.Serialization;
 namespace VpNet
 {
     /// <summary>
-    ///     Represents a class which contains information about a world setting-change event.
+    ///     Provides event arguments for <see cref="ManagedApi.Instance.OnWorldEnter" />.
     /// </summary>
     [Serializable]
     [XmlRoot("OnWorldEnter", Namespace = Global.XmlNsEvent)]
     public sealed class WorldEnterEventArgs : TimedEventArgs
     {
-        /// <summary>
-        ///     Initializes a new instance of the <see cref="WorldEnterEventArgs" /> class.
-        /// </summary>
-        public WorldEnterEventArgs()
-        {
-        }
-
         /// <summary>
         ///     Initializes a new instance of the <see cref="WorldEnterEventArgs" /> class.
         /// </summary>
@@ -27,9 +20,9 @@ namespace VpNet
         }
 
         /// <summary>
-        ///     Gets or sets the entered world.
+        ///     Gets the world which was entered.
         /// </summary>
-        /// <value>The entered world.</value>
+        /// <value>The world which was entered.</value>
         public World World { get; set; }
     }
 }

@@ -4,7 +4,7 @@ using System.Xml.Serialization;
 namespace VpNet
 {
     /// <summary>
-    ///     Represents a class which contains information about a world disconnection event.
+    ///     Provides event arguments for <see cref="ManagedApi.Instance.OnWorldDisconnect" />.
     /// </summary>
     [Serializable]
     [XmlRoot("OnWorldDisconnect", Namespace = Global.XmlNsEvent)]
@@ -13,14 +13,7 @@ namespace VpNet
         /// <summary>
         ///     Initializes a new instance of the <see cref="WorldDisconnectEventArgs" /> class.
         /// </summary>
-        public WorldDisconnectEventArgs()
-        {
-        }
-
-        /// <summary>
-        ///     Initializes a new instance of the <see cref="WorldDisconnectEventArgs" /> class.
-        /// </summary>
-        /// <value>The world involved in the disconnect.</value>
+        /// <value>The disconnected world.</value>
         public WorldDisconnectEventArgs(World world)
         {
             World = world;
