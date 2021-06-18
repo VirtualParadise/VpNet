@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Xml.Serialization;
-using VpNet.Interfaces;
 
 namespace VpNet
 {
