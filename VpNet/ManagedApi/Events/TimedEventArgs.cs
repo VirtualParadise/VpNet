@@ -4,7 +4,7 @@ using System.Xml.Serialization;
 
 namespace VpNet
 {
-    public abstract class TimedEventArgs : EventArgs, ITimedEventArgs
+    public abstract class TimedEventArgs : EventArgs
     {
         private DateTime _creationDate = DateTime.UtcNow;
 
