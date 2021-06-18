@@ -19,8 +19,6 @@ namespace VpNet.ManagedApi
     [Serializable]
     public partial class Instance : IInstance
     {
-        bool _isInitialized;
-
         private readonly Dictionary<int, TaskCompletionSource<object>> _objectCompletionSources = new Dictionary<int, TaskCompletionSource<object>>();
 
         private Dictionary<int, Avatar> _avatars;
@@ -373,7 +371,6 @@ namespace VpNet.ManagedApi
         {
             _avatars.Clear();
             Functions.vp_destroy(_instance);
-            _isInitialized = false;
             InitVpNative();
             OnUniverseDisconnect?.Invoke(this, new UniverseDisconnectEventArgs(Universe, DisconnectType.UserDisconnected));
         }
