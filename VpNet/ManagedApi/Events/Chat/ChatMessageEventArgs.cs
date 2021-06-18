@@ -6,7 +6,7 @@ namespace VpNet
     ///     Provides event arguments for <see cref="ManagedApi.Instance.OnChatMessage" />.
     /// </summary>
     [XmlRoot("OnChatMessage", Namespace = Global.XmlNsEvent)]
-    public class ChatMessageEventArgs : TimedEventArgs
+    public sealed class ChatMessageEventArgs : TimedEventArgs
     {
         /// <summary>
         ///     Initializes a new instance of the <see cref="ChatMessageEventArgs" /> class.

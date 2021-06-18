@@ -7,7 +7,7 @@ namespace VpNet
     ///     Provides event arguments for <see cref="ManagedApi.Instance.OnAvatarChange" />.
     /// </summary>
     [XmlRoot("OnAvatarChange", Namespace = Global.XmlNsEvent)]
-    public class AvatarChangeEventArgs : TimedEventArgs
+    public sealed class AvatarChangeEventArgs : TimedEventArgs
     {
         /// <summary>
         ///     Initializes a new instance of the <see cref="AvatarChangeEventArgs" /> class.

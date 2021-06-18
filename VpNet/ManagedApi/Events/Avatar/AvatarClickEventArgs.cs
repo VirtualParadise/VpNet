@@ -6,7 +6,7 @@ namespace VpNet
     ///     Represents a class which contains information about an avatar click event.
     /// </summary>
     [XmlRoot("OnAvatarClick", Namespace = Global.XmlNsEvent)]
-    public class AvatarClickEventArgs : TimedEventArgs
+    public sealed class AvatarClickEventArgs : TimedEventArgs
     {
         /// <summary>
         ///     Initializes a new instance of the <see cref="AvatarClickEventArgs" /> class.

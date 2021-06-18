@@ -6,7 +6,7 @@ namespace VpNet
     /// Default Event Arguments implementation mapping. You can define your own mappings when implementing VpNet.Abstract.BaseInstanceT
     /// </summary>
     [XmlRoot("OnAvatarLeave", Namespace = Global.XmlNsEvent)]
-    public class AvatarLeaveEventArgs : TimedEventArgs
+    public sealed class AvatarLeaveEventArgs : TimedEventArgs
     {
         /// <summary>
         ///     Initializes a new instance of the <see cref="AvatarEnterEventArgs" /> class.
