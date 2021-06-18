@@ -9,7 +9,7 @@ namespace VpNet.Abstract
     public abstract class BaseVpObject : IVpObject
     {
         private Vector3 _position;
-        private Cell _cell;
+        private Cell? _cell;
 
         [XmlAttribute]
         public int Id { get; set; }
@@ -23,7 +23,7 @@ namespace VpNet.Abstract
             get { return _position; }
             set
             {
-                _cell = null;
+                _cell = new Cell();
                 _position = value;
             }
         }
@@ -65,7 +65,7 @@ namespace VpNet.Abstract
         }
 
         [XmlIgnore]
-        public ICell Cell
+        public Cell Cell
         {
             get
             {
@@ -75,7 +75,7 @@ namespace VpNet.Abstract
                    // else
                    //     _cell = new Cell(0,0);
 
-                return _cell;
+                return _cell.Value;
             }
         }
     }

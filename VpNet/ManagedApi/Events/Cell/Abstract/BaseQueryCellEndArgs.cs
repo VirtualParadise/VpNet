@@ -6,9 +6,9 @@ namespace VpNet.Abstract
     [Serializable]
     public abstract class BaseQueryCellEndArgs : TimedEventArgs, IQueryCellEndArgs
     {
-        public ICell Cell { get; set; }
+        public Cell Cell { get; set; }
 
-        protected BaseQueryCellEndArgs(ICell cell)
+        protected BaseQueryCellEndArgs(Cell cell)
         {
             Cell = cell;
         }

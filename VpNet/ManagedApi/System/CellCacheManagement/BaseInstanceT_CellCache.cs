@@ -21,12 +21,12 @@ namespace VpNet.ManagedApi
         public event CellRangeObjectChangedDelegate OnObjectCellRangeChange;
 
         private List<IVpObject> _objects; 
-        private List<ICell> _cache;
+        private List<Cell> _cache;
         private bool _isScanning;
 
-        private List<ICell> _cacheScanned;
+        private List<Cell> _cacheScanned;
         private bool _useCellCache;
-        private List<ICell> _cacheScanning;
+        private List<Cell> _cacheScanning;
 
         public List<IVpObject> CacheObjects { get { return _objects; } } 
 
@@ -46,9 +46,9 @@ namespace VpNet.ManagedApi
                 if (value)
                 {
                     _objects = new List<IVpObject>();
-                    _cache = new List<ICell>();
-                    _cacheScanned = new List<ICell>();
-                    _cacheScanning = new List<ICell>();
+                    _cache = new List<Cell>();
+                    _cacheScanned = new List<Cell>();
+                    _cacheScanning = new List<Cell>();
 
                     OnQueryCellResult += BaseInstanceT_CellCache_OnQueryCellResult;
                     OnQueryCellEnd += BaseInstanceT_CellCache_OnQueryCellEnd;
@@ -134,13 +134,13 @@ namespace VpNet.ManagedApi
         }
 
 
-        private bool IsCellInList(ICell cell)
+        private bool IsCellInList(Cell cell)
         {
-            return ((_cache.Find(p => p.X == cell.X && p.Z == cell.Z) != null) ||
-                    (_cacheScanned.Find(p => p.X == cell.X && p.Z == cell.Z) != null));
+            return ((_cache.Exists(p => p.X == cell.X && p.Z == cell.Z)) ||
+                    (_cacheScanned.Exists(p => p.X == cell.X && p.Z == cell.Z)));
         }
 
-        public int AddCellRange(ICell start, ICell end)
+        public int AddCellRange(Cell start, Cell end)
         {
             if (_isScanning)
                 throw new Exception("Can not issue a cell range query before the other range query has ended.");
@@ -149,7 +149,7 @@ namespace VpNet.ManagedApi
             lock (this)
             {
                 var l = CreateQueryList(start, end);
-                foreach (ICell cell in l)
+                foreach (Cell cell in l)
                 {
 
                     if (!IsCellInList(cell))
@@ -176,18 +176,18 @@ namespace VpNet.ManagedApi
             }
         }
 
-        private List<ICell> CreateQueryList(ICell start, ICell end)
+        private List<Cell> CreateQueryList(Cell start, Cell end)
         {
-            var ret = new List<ICell>();
-            var listX = new List<ICell> { start, end }.OrderBy(p => p.X);
-            var listY = new List<ICell> { start, end }.OrderBy(p => p.Z);
+            var ret = new List<Cell>();
+            var listX = new List<Cell> { start, end }.OrderBy(p => p.X);
+            var listY = new List<Cell> { start, end }.OrderBy(p => p.Z);
             var p1 = new Cell(listX.ElementAt(0).X, listY.ElementAt(0).Z);
             var p2 = new Cell(listX.ElementAt(1).X, listY.ElementAt(1).Z);
             for (var x = p1.X; x < p2.X; x++)
             {
                 for (var z = p1.Z; z < p2.Z; z++)
                 {
-                    ret.Add(new Cell{X=x, Z= z});
+                    ret.Add(new Cell(x, z));
                 }
             }
 
@@ -195,7 +195,7 @@ namespace VpNet.ManagedApi
         }
 
 
-        public void AddCell(ICell cell)
+        public void AddCell(Cell cell)
         {
             if (_isScanning)
                 throw new Exception("Can not issue a cell query before the other range query has ended.");

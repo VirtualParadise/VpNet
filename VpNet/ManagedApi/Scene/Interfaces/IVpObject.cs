@@ -39,6 +39,6 @@ namespace VpNet.Interfaces
         byte[] Data { get; set; }
 
         [XmlIgnore]
-        ICell Cell { get; }
+        Cell Cell { get; }
     }
 }

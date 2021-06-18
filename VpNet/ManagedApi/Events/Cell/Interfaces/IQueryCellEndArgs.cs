@@ -12,6 +12,6 @@ namespace VpNet.Interfaces
         /// <value>
         /// The cell.
         /// </value>
-        ICell Cell { get; set; }
+        Cell Cell { get; set; }
     }
 }
