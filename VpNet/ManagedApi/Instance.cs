@@ -1189,16 +1189,23 @@ namespace VpNet.ManagedApi
         {
             if (OnFriendAddCallback == null)
                 return;
+
+            int userId;
+            string name;
+            bool isOnline;
+            
             lock (this)
             {
-                var friend = new Friend
-                {
-                    UserId = Functions.vp_int(sender, IntegerAttribute.UserId),
-                    Name = Functions.vp_string(sender, StringAttribute.FriendName),
-                    Online = Functions.vp_int(sender, IntegerAttribute.FriendOnline) == 1
-                };
-                OnFriendsGetCallback(this, new FriendsGetCallbackEventArgs { Friend = friend });
+                userId = Functions.vp_int(sender, IntegerAttribute.UserId);
+                name = Functions.vp_string(sender, StringAttribute.FriendName);
+                isOnline = Functions.vp_int(sender, IntegerAttribute.FriendOnline) == 1;
             }
+
+            var friend = new Friend { UserId = userId, Name = name, Online = isOnline };
+            var args = new FriendsGetCallbackEventArgs(friend);
+            
+            Debug.Assert(!(OnFriendsGetCallback is null), $"{nameof(OnFriendsGetCallback)} != null");
+            OnFriendsGetCallback.Invoke(this, args);
         }
 
         private void OnFriendDeleteCallbackNative(IntPtr sender, int rc, int reference)
