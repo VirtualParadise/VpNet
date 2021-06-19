@@ -8,7 +8,6 @@ namespace VpNet.Interfaces
     /// </summary>
     public interface IAvatar
     {
-        [XmlAttribute]
         DateTime LastChanged { get; set; }
 
         /// <summary>
@@ -17,7 +16,6 @@ namespace VpNet.Interfaces
         /// <value>
         /// The user id.
         /// </value>
-        [XmlAttribute]
         int UserId { get; set; }
 
         /// <summary>
@@ -26,7 +24,6 @@ namespace VpNet.Interfaces
         /// <value>
         /// The name.
         /// </value>
-        [XmlAttribute]
         string Name { get; set; }
 
         /// <summary>
@@ -35,10 +32,8 @@ namespace VpNet.Interfaces
         /// <value>
         /// The session.
         /// </value>
-        [XmlIgnore]
         int Session { get; set; }
 
-        [XmlAttribute]
         int AvatarType { get; set; }
 
         /// <summary>

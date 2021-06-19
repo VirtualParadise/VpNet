@@ -1,13 +1,10 @@
 ﻿using System;
-using System.Xml.Serialization;
 
 namespace VpNet
 {
     /// <summary>
     ///     Represents a class which contains information about a teleport.
     /// </summary>
-    [Serializable]
-    [XmlRoot("Teleport", Namespace = Global.XmlNsScene)]
     public class Teleport : IEquatable<Teleport>
     {
         /// <summary>

@@ -1,12 +1,8 @@
-﻿using System.Xml.Serialization;
-using VpNet.Abstract;
-
-namespace VpNet
+﻿namespace VpNet
 {
     /// <summary>
     ///     Provides event arguments for <see cref="Instance.OnFriendAddCallback" />.
     /// </summary>
-    [XmlRoot("OnFriendAddCallback", Namespace = Global.XmlNsEvent)]
     public sealed class FriendAddCallbackEventArgs
     {
         /// <summary>

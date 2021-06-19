@@ -4,7 +4,6 @@ using System.Xml.Serialization;
 namespace VpNet
 {
     [Serializable]
-    [XmlRoot("VpObject", Namespace = Global.XmlNsScene)]
     public class VpObject : IEquatable<VpObject>
     {
         /// <summary>

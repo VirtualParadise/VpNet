@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using VpNet.Abstract;
 using VpNet.Extensions;
-using VpNet.Interfaces;
 
 namespace VpNet
 {

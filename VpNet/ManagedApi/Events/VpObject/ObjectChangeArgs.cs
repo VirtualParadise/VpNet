@@ -1,11 +1,8 @@
-﻿using System.Xml.Serialization;
-
-namespace VpNet
+﻿namespace VpNet
 {
     /// <summary>
     ///     Provides event arguments for <see cref="Instance.OnObjectChange" />.
     /// </summary>
-    [XmlRoot("OnObjectChange", Namespace = Global.XmlNsEvent)]
     public sealed class ObjectChangeArgs : TimedEventArgs
     {
         /// <summary>

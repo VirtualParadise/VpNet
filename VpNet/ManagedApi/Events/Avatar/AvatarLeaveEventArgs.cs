@@ -1,11 +1,8 @@
-﻿using System.Xml.Serialization;
-
-namespace VpNet
+﻿namespace VpNet
 {
     /// <summary>
     /// Default Event Arguments implementation mapping. You can define your own mappings when implementing VpNet.Abstract.BaseInstanceT
     /// </summary>
-    [XmlRoot("OnAvatarLeave", Namespace = Global.XmlNsEvent)]
     public sealed class AvatarLeaveEventArgs : TimedEventArgs
     {
         /// <summary>

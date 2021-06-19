@@ -1,6 +1,5 @@
 using System;
 using System.ComponentModel;
-using System.Xml.Serialization;
 
 namespace VpNet
 {
@@ -8,7 +7,6 @@ namespace VpNet
     {
         private DateTime _creationDate = DateTime.UtcNow;
 
-        [XmlAttribute]
         public DateTime CreationDateUtc
         {
             get { return _creationDate; }

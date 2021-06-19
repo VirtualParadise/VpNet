@@ -1,11 +1,8 @@
-﻿using System.Xml.Serialization;
-
-namespace VpNet
+﻿namespace VpNet
 {
     /// <summary>
     ///     Represents a class which contains information about an avatar click event.
     /// </summary>
-    [XmlRoot("OnAvatarClick", Namespace = Global.XmlNsEvent)]
     public sealed class AvatarClickEventArgs : TimedEventArgs
     {
         /// <summary>

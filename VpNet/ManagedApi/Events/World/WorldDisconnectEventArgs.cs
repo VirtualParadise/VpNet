@@ -1,13 +1,8 @@
-﻿using System;
-using System.Xml.Serialization;
-
-namespace VpNet
+﻿namespace VpNet
 {
     /// <summary>
     ///     Provides event arguments for <see cref="Instance.OnWorldDisconnect" />.
     /// </summary>
-    [Serializable]
-    [XmlRoot("OnWorldDisconnect", Namespace = Global.XmlNsEvent)]
     public sealed class WorldDisconnectEventArgs : TimedEventArgs
     {
         /// <summary>

@@ -9,7 +9,6 @@ namespace VpNet
     ///     <see cref="ReasonCode.Success" />.
     /// </summary>
     [Serializable]
-    [XmlRoot("VpException", Namespace = Global.XmlNsException)]
     public sealed class VpException : Exception
     {
         /// <summary>

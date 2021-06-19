@@ -13,7 +13,6 @@ namespace VpNet.Interfaces
         /// <value>
         /// The name.
         /// </value>
-        [XmlAttribute]
         string Name { get; set; }
         /// <summary>
         /// Gets or sets the user id.
@@ -21,7 +20,6 @@ namespace VpNet.Interfaces
         /// <value>
         /// The user id.
         /// </value>
-        [XmlAttribute]
         int UserId { get; set; }
         /// <summary>
         /// Gets or sets a value indicating whether this <see cref="IFriend"/> is online.
@@ -29,7 +27,6 @@ namespace VpNet.Interfaces
         /// <value>
         ///   <c>true</c> if online; otherwise, <c>false</c>.
         /// </value>
-        [XmlAttribute]
         bool Online { get; set; }
 
     }

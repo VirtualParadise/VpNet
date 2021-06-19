@@ -1,11 +1,8 @@
-﻿using System.Xml.Serialization;
-
-namespace VpNet
+﻿namespace VpNet
 {
     /// <summary>
     ///     Provides event arguments for <see cref="Instance.OnUserAttributes" />.
     /// </summary>
-    [XmlRoot("OnUserAttributes", Namespace = Global.XmlNsEvent)]
     public sealed class UserAttributesEventArgs : TimedEventArgs
     {
         /// <summary>
