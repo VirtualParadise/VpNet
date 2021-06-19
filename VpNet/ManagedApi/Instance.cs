@@ -1151,8 +1151,9 @@ namespace VpNet.ManagedApi
 
                 attributes = new UserAttributes(id, name, email, lastLogin.UtcDateTime, onlineTime, registrationDate.UtcDateTime);
             }
-            
-            OnUserAttributes(this,new UserAttributesEventArgs(){UserAttributes = attributes});
+
+            var args = new UserAttributesEventArgs(attributes);
+            OnUserAttributes(this, args);
         }
 
         private void OnTeleportNative(IntPtr sender)
