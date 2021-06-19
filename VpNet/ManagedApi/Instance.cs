@@ -24,7 +24,6 @@ namespace VpNet
 
         Dictionary<string, World> _worlds;
         internal IntPtr _instance;
-        private Universe Universe { get; set; }
         private World World { get; set; }
         private NetConfig netConfig;
         private GCHandle instanceHandle;
@@ -89,6 +88,12 @@ namespace VpNet
         /// </summary>
         /// <value>A read-only view of the avatars currently seen by this instance.</value>
         public IReadOnlyCollection<Avatar> Avatars => _avatars.Values;
+        
+        /// <summary>
+        ///     Gets the universe to which this instance is currently connected.
+        /// </summary>
+        /// <value>The universe to which this instance is currently connected.</value>
+        public Universe Universe { get; private set; }
 
         private void InitVpNative()
         {
@@ -377,6 +382,8 @@ namespace VpNet
             Functions.vp_destroy(_instance);
             InitVpNative();
             OnUniverseDisconnect?.Invoke(this, new UniverseDisconnectEventArgs(Universe, DisconnectType.UserDisconnected));
+
+            Universe = null;
         }
 
         virtual public void ListWorlds()
