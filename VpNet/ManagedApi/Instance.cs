@@ -18,6 +18,9 @@ namespace VpNet
     [Serializable]
     public partial class Instance
     {
+        private const string DefaultUniverseHost = "universe.virtualparadise.org";
+        private const int DefaultUniversePort = 57000;
+        
         private readonly Dictionary<int, TaskCompletionSource<object>> _objectCompletionSources = new Dictionary<int, TaskCompletionSource<object>>();
 
         private Dictionary<int, Avatar> _avatars;
@@ -236,28 +239,70 @@ namespace VpNet
 
         #region IUniverseFunctions Implementations
 
-        public virtual Task ConnectAsync(string host = "universe.virtualparadise.org", ushort port = 57000)
+        /// <summary>
+        ///     Establishes a connection to default Virtual Paradise universe.
+        /// </summary>
+        public Task ConnectAsync()
         {
-            EndPoint remoteEP;
-            if (IPAddress.TryParse(host, out IPAddress ipAddress))
-            {
-                remoteEP = new IPEndPoint(ipAddress, port);
-            }
-            else
-            {
-                remoteEP = new DnsEndPoint(host, port);
-            }
+            return ConnectAsync(DefaultUniverseHost, DefaultUniversePort);
+        }
 
+        /// <summary>
+        ///     Establishes a connection to the universe at the specified remote endpoint.
+        /// </summary>
+        /// <param name="host">The remote host.</param>
+        /// <param name="port">The remote port.</param>
+        public Task ConnectAsync(string host, int port)
+        {
+            EndPoint remoteEP = IPAddress.TryParse(host, out var ipAddress)
+                ? (EndPoint) new IPEndPoint(ipAddress, port)
+                : new DnsEndPoint(host, port);
+            
+            return ConnectAsync(remoteEP);
+        }
+
+        /// <summary>
+        ///     Establishes a connection to the universe at the specified remote endpoint.
+        /// </summary>
+        /// <param name="remoteEP">The remote endpoint of the universe.</param>
+        public Task ConnectAsync(EndPoint remoteEP)
+        {
+            string host;
+            int port;
+
+            switch (remoteEP)
+            {
+                case null:
+                    host = DefaultUniverseHost;
+                    port = DefaultUniversePort;
+                    remoteEP = new DnsEndPoint(host, port); // reconstruct endpoint for Universe ctor
+                    break;
+                    
+                case IPEndPoint ip:
+                    host = ip.Address.ToString();
+                    port = ip.Port;
+                    break;
+                
+                case DnsEndPoint dns:
+                    host = dns.Host;
+                    port = dns.Port;
+                    break;
+                
+                default:
+                    throw new ArgumentException("The specified remote endpoint is not supported.", nameof(remoteEP));
+            }
+            
             Universe = new Universe(remoteEP);
 
             lock (this)
             {
                 ConnectCompletionSource = new TaskCompletionSource<object>();
-                var rc = Functions.vp_connect_universe(_instance, host, port);
-                if (rc != 0)
+                int reason = Functions.vp_connect_universe(_instance, host, port);
+                if (reason != 0)
                 {
-                    return Task.FromException(new VpException((ReasonCode)rc));
+                    return Task.FromException<VpException>(new VpException((ReasonCode) reason));
                 }
+
                 return ConnectCompletionSource.Task;
             }
         }
