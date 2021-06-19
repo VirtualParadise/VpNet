@@ -1633,8 +1633,8 @@ namespace VpNet.ManagedApi
             {
                 Functions.vp_destroy(_instance);
             }
-
-            if (instanceHandle != null)
+            
+            if (instanceHandle != GCHandle.FromIntPtr(IntPtr.Zero))
             {
                 instanceHandle.Free();
             }
