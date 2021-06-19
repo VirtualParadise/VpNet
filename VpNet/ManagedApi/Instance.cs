@@ -466,9 +466,9 @@ namespace VpNet
 
         #endregion
 
-        #region IVpObjectFunctions implementations
+        #region VpObjectFunctions implementations
 
-        public void ClickObject(IVpObject vpObject)
+        public void ClickObject(VpObject vpObject)
         {
             lock (this)
             {
@@ -484,7 +484,7 @@ namespace VpNet
             }
         }
 
-        public void ClickObject(IVpObject vpObject, IAvatar avatar)
+        public void ClickObject(VpObject vpObject, IAvatar avatar)
         {
             lock (this)
             {
@@ -492,7 +492,7 @@ namespace VpNet
             }
         }
 
-        public void ClickObject(IVpObject vpObject, IAvatar avatar, Vector3 worldHit)
+        public void ClickObject(VpObject vpObject, IAvatar avatar, Vector3 worldHit)
         {
             lock (this)
             {
@@ -500,7 +500,7 @@ namespace VpNet
             }
         }
 
-        public void ClickObject(IVpObject vpObject, Vector3 worldHit)
+        public void ClickObject(VpObject vpObject, Vector3 worldHit)
         {
             lock (this)
             {
@@ -532,7 +532,7 @@ namespace VpNet
             }
         }
 
-        public virtual Task DeleteObjectAsync(IVpObject vpObject)
+        public virtual Task DeleteObjectAsync(VpObject vpObject)
         {
             var referenceNumber = ObjectReferenceCounter.GetNextReference();
             var tcs = new TaskCompletionSource<object>();
@@ -552,7 +552,7 @@ namespace VpNet
             return tcs.Task;
         }
 
-        public virtual async Task<int> LoadObjectAsync(IVpObject vpObject)
+        public virtual async Task<int> LoadObjectAsync(VpObject vpObject)
         {
             var referenceNumber = ObjectReferenceCounter.GetNextReference();
             var tcs = new TaskCompletionSource<object>();
@@ -574,7 +574,7 @@ namespace VpNet
                 Functions.vp_double_set(_instance, FloatAttribute.ObjectRotationAngle, vpObject.Angle);
                 Functions.vp_int_set(_instance, IntegerAttribute.ObjectType, vpObject.ObjectType);
                 Functions.vp_int_set(_instance, IntegerAttribute.ObjectUserId, vpObject.Owner);
-                Functions.vp_int_set(_instance, IntegerAttribute.ObjectTime, (int)new DateTimeOffset(vpObject.Time).ToUnixTimeSeconds());
+                Functions.vp_int_set(_instance, IntegerAttribute.ObjectTime, (int)vpObject.Time.ToUnixTimeSeconds());
 
                 int rc = Functions.vp_object_load(_instance);
                 if (rc != 0)
@@ -590,7 +590,7 @@ namespace VpNet
             return id;
         }
 
-        public virtual async Task<int> AddObjectAsync(IVpObject vpObject)
+        public virtual async Task<int> AddObjectAsync(VpObject vpObject)
         {
             var referenceNumber = ObjectReferenceCounter.GetNextReference();
             var tcs = new TaskCompletionSource<object>();
@@ -626,7 +626,7 @@ namespace VpNet
             return id;
         }
 
-        public virtual Task ChangeObjectAsync(IVpObject vpObject)
+        public virtual Task ChangeObjectAsync(VpObject vpObject)
         {
             var referenceNumber = ObjectReferenceCounter.GetNextReference();
             var tcs = new TaskCompletionSource<object>();
@@ -659,7 +659,7 @@ namespace VpNet
             return tcs.Task;
         }
 
-        public virtual async Task<IVpObject> GetObjectAsync(int id)
+        public virtual async Task<VpObject> GetObjectAsync(int id)
         {
             var referenceNumber = ObjectReferenceCounter.GetNextReference();
             var tcs = new TaskCompletionSource<object>();
@@ -675,7 +675,7 @@ namespace VpNet
                 }
             }
 
-            var obj = (IVpObject)await tcs.Task.ConfigureAwait(false);
+            var obj = (VpObject)await tcs.Task.ConfigureAwait(false);
             return obj;
         }
 

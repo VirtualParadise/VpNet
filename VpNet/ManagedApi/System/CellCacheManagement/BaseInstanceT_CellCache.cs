@@ -17,7 +17,7 @@ namespace VpNet
         public event CellRangeQueryCompletedDelegate OnQueryCellRangeEnd;
         public event CellRangeObjectChangedDelegate OnObjectCellRangeChange;
 
-        private List<IVpObject> _objects; 
+        private List<VpObject> _objects; 
         private List<Cell> _cache;
         private bool _isScanning;
 
@@ -25,7 +25,7 @@ namespace VpNet
         private bool _useCellCache;
         private List<Cell> _cacheScanning;
 
-        public List<IVpObject> CacheObjects { get { return _objects; } } 
+        public List<VpObject> CacheObjects { get { return _objects; } } 
 
         public int Cells { 
             get { return _cache.Count(); }
@@ -42,7 +42,7 @@ namespace VpNet
                     throw new Exception("Please do not change the use cache boolean flag while previous scan has not been completed.");
                 if (value)
                 {
-                    _objects = new List<IVpObject>();
+                    _objects = new List<VpObject>();
                     _cache = new List<Cell>();
                     _cacheScanned = new List<Cell>();
                     _cacheScanning = new List<Cell>();

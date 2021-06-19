@@ -10,10 +10,10 @@ namespace VpNet
     {
         [XmlArray("VpObjects")]
         [XmlArrayItem("VpObject")]
-        public List<IVpObject> VpObjects { get; set; }
+        public List<VpObject> VpObjects { get; set; }
         public CellRangeQueryCompletedArgs(){}
 
-        public CellRangeQueryCompletedArgs(List<IVpObject> vpObjects)
+        public CellRangeQueryCompletedArgs(List<VpObject> vpObjects)
         {
             VpObjects = vpObjects;
         }
