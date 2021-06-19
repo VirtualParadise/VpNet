@@ -3,7 +3,7 @@
 namespace VpNet
 {
     /// <summary>
-    ///     Provides event arguments for <see cref="ManagedApi.Instance.OnObjectDelete" />.
+    ///     Provides event arguments for <see cref="Instance.OnObjectDelete" />.
     /// </summary>
     [XmlRoot("OnObjectDelete", Namespace = Global.XmlNsEvent)]
     public sealed class ObjectDeleteArgs : TimedEventArgs

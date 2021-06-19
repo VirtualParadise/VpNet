@@ -4,7 +4,7 @@ using System.Xml.Serialization;
 namespace VpNet
 {
     /// <summary>
-    ///     Provides event arguments for <see cref="ManagedApi.Instance.OnWorldList" />.
+    ///     Provides event arguments for <see cref="Instance.OnWorldList" />.
     /// </summary>
     [Serializable]
     [XmlRoot("OnWorldList", Namespace = Global.XmlNsEvent)]

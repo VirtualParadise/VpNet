@@ -3,7 +3,7 @@
 namespace VpNet
 {
     /// <summary>
-    ///     Provides event arguments for <see cref="ManagedApi.Instance.OnAvatarEnter" />.
+    ///     Provides event arguments for <see cref="Instance.OnAvatarEnter" />.
     /// </summary>
     [XmlRoot("OnAvatarEnter", Namespace = Global.XmlNsEvent)]
     public sealed class AvatarEnterEventArgs : TimedEventArgs

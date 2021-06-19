@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 using System.Net;
 using System.Runtime.InteropServices;
 using System.Threading;
@@ -11,7 +10,7 @@ using VpNet.Interfaces;
 using VpNet.ManagedApi.System;
 using VpNet.NativeApi;
 
-namespace VpNet.ManagedApi
+namespace VpNet
 {
     /// <summary>
     /// Abtract fully teamplated instance class, providing .NET encapsulation strict templated types to the native C wrapper.

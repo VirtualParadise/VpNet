@@ -4,7 +4,7 @@ using VpNet.Abstract;
 namespace VpNet
 {
     /// <summary>
-    ///     Provides event arguments for <see cref="ManagedApi.Instance.OnTerrainNode" />.
+    ///     Provides event arguments for <see cref="Instance.OnTerrainNode" />.
     /// </summary>
     [XmlRoot("OnTerrainNode", Namespace = Global.XmlNsEvent)]
     public class TerrainNodeEventArgs : BaseTerrainNodeEventArgs

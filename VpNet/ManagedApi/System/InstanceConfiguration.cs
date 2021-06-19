@@ -1,7 +1,7 @@
 ﻿namespace VpNet
 {
     /// <summary>
-    ///     Represents a class which contains a configuration for an <see cref="ManagedApi.Instance" />.
+    ///     Represents a class which contains a configuration for an <see cref="Instance" />.
     /// </summary>
     public class InstanceConfiguration
     {

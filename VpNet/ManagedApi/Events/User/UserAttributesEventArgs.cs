@@ -3,7 +3,7 @@
 namespace VpNet
 {
     /// <summary>
-    ///     Provides event arguments for <see cref="ManagedApi.Instance.OnUserAttributes" />.
+    ///     Provides event arguments for <see cref="Instance.OnUserAttributes" />.
     /// </summary>
     [XmlRoot("OnUserAttributes", Namespace = Global.XmlNsEvent)]
     public sealed class UserAttributesEventArgs : TimedEventArgs

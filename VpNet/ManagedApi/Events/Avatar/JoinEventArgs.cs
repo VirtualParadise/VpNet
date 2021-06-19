@@ -3,7 +3,7 @@
 namespace VpNet
 {
     /// <summary>
-    ///     Provides event arguments for <see cref="ManagedApi.Instance.OnJoin" />.
+    ///     Provides event arguments for <see cref="Instance.OnJoin" />.
     /// </summary>
     [XmlRoot("OnJoin", Namespace = Global.XmlNsEvent)]
     public sealed class JoinEventArgs : TimedEventArgs

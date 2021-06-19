@@ -4,7 +4,7 @@ using VpNet.Abstract;
 namespace VpNet
 {
     /// <summary>
-    ///     Provides event arguments for <see cref="ManagedApi.Instance.OnFriendDeleteCallback" />
+    ///     Provides event arguments for <see cref="Instance.OnFriendDeleteCallback" />
     /// </summary>
     [XmlRoot("OnFriendDeleteCallback", Namespace = Global.XmlNsEvent)]
     public sealed class FriendDeleteCallbackEventArgs

@@ -4,7 +4,7 @@ using VpNet.Abstract;
 namespace VpNet
 {
     /// <summary>
-    ///     Provides event arguments for <see cref="ManagedApi.Instance.OnFriendsGetCallback" />.
+    ///     Provides event arguments for <see cref="Instance.OnFriendsGetCallback" />.
     /// </summary>
     [XmlRoot("OnFriendsGetCallback", Namespace = Global.XmlNsEvent)]
     public sealed class FriendsGetCallbackEventArgs

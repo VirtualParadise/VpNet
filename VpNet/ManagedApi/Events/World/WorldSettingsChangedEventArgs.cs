@@ -4,7 +4,7 @@ using System.Xml.Serialization;
 namespace VpNet
 {
     /// <summary>
-    ///     Provides event arguments for <see cref="ManagedApi.Instance.OnWorldSettingsChanged" />.
+    ///     Provides event arguments for <see cref="Instance.OnWorldSettingsChanged" />.
     /// </summary>
     [Serializable]
     [XmlRoot("OnWorldSettingsChanged", Namespace = Global.XmlNsEvent)]

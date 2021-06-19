@@ -3,7 +3,7 @@
 namespace VpNet
 {
     /// <summary>
-    ///     Provides event arguments for <see cref="ManagedApi.Instance.OnObjectClick" />.
+    ///     Provides event arguments for <see cref="Instance.OnObjectClick" />.
     /// </summary>
     [XmlRoot("OnObjectClick", Namespace = Global.XmlNsEvent)]
     public sealed class ObjectClickArgs : TimedEventArgs

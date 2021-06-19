@@ -3,7 +3,7 @@
 namespace VpNet
 {
     /// <summary>
-    ///     Provides event arguments for <see cref="ManagedApi.Instance.OnObjectBump" />.
+    ///     Provides event arguments for <see cref="Instance.OnObjectBump" />.
     /// </summary>
     [XmlRoot("OnObjectBump", Namespace = Global.XmlNsEvent)]
     public sealed class ObjectBumpArgs : TimedEventArgs

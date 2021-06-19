@@ -4,7 +4,7 @@ using System.Xml.Serialization;
 namespace VpNet
 {
     /// <summary>
-    ///     Provides event arguments for <see cref="ManagedApi.Instance.OnUniverseDisconnect" />.
+    ///     Provides event arguments for <see cref="Instance.OnUniverseDisconnect" />.
     /// </summary>
     [Serializable]
     [XmlRoot("OnUniverseDisconnect", Namespace = Global.XmlNsEvent)]
