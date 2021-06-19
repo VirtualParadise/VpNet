@@ -8,7 +8,7 @@ namespace VpNet
     /// </summary>
     [Serializable]
     [XmlRoot("OnUniverseDisconnect", Namespace = Global.XmlNsEvent)]
-    public class UniverseDisconnectEventArgs : TimedEventArgs
+    public sealed class UniverseDisconnectEventArgs : TimedEventArgs
     {
         /// <summary>
         ///     Initializes a new instance of the <see cref="UniverseDisconnectEventArgs" /> class.

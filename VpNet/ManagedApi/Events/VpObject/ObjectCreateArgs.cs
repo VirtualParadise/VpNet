@@ -6,7 +6,7 @@ namespace VpNet
     ///     Provides event arguments for <see cref="ManagedApi.Instance.OnObjectCreate" />.
     /// </summary>
     [XmlRoot("OnObjectCreate", Namespace = Global.XmlNsEvent)]
-    public class ObjectCreateArgs : TimedEventArgs
+    public sealed class ObjectCreateArgs : TimedEventArgs
     {
         /// <summary>
         ///     Initializes a new instance of the <see cref="ObjectCreateArgs" /> class.

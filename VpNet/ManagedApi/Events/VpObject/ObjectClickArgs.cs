@@ -6,7 +6,7 @@ namespace VpNet
     ///     Provides event arguments for <see cref="ManagedApi.Instance.OnObjectClick" />.
     /// </summary>
     [XmlRoot("OnObjectClick", Namespace = Global.XmlNsEvent)]
-    public class ObjectClickArgs : TimedEventArgs
+    public sealed class ObjectClickArgs : TimedEventArgs
     {
         /// <summary>
         ///     Initializes a new instance of the <see cref="ObjectClickArgs" /> class.

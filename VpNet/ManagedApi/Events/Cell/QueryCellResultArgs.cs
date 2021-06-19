@@ -8,7 +8,7 @@ namespace VpNet
     /// </summary>
     [Serializable]
     [XmlRoot("OnQueryCellResult", Namespace = Global.XmlNsEvent)]
-    public class QueryCellResultArgs : TimedEventArgs
+    public sealed class QueryCellResultArgs : TimedEventArgs
     {
         public QueryCellResultArgs(VpObject vpObject)
         {

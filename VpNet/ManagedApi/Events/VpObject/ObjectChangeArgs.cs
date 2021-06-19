@@ -6,7 +6,7 @@ namespace VpNet
     ///     Provides event arguments for <see cref="ManagedApi.Instance.OnObjectChange" />.
     /// </summary>
     [XmlRoot("OnObjectChange", Namespace = Global.XmlNsEvent)]
-    public class ObjectChangeArgs : TimedEventArgs
+    public sealed class ObjectChangeArgs : TimedEventArgs
     {
         /// <summary>
         ///     Initializes a new instance of the <see cref="ObjectChangeArgs" /> class.

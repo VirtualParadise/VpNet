@@ -8,7 +8,7 @@ namespace VpNet
     /// </summary>
     [Serializable]
     [XmlRoot("OnQueryCellEnd", Namespace = Global.XmlNsEvent)]
-    public class QueryCellEndArgs : TimedEventArgs
+    public sealed class QueryCellEndArgs : TimedEventArgs
     {
         /// <summary>
         ///     Initializes a new instance of the <see cref="QueryCellEndArgs" /> class.
