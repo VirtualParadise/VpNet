@@ -8,17 +8,17 @@ namespace VpNet.Abstract
     public abstract class BaseAvatar : IAvatar
     {
         [XmlAttribute]
-        virtual public DateTime LastChanged { get; set; }
+        public virtual DateTime LastChanged { get; set; }
         [XmlAttribute]
-        virtual public int UserId { get; set; }
+        public virtual int UserId { get; set; }
         [XmlAttribute]
-        virtual public string Name { get; set; }
+        public virtual string Name { get; set; }
         [XmlIgnore]
-        virtual public int Session { get;set; }
+        public virtual int Session { get;set; }
         [XmlAttribute]
-        virtual public int AvatarType { get; set; }
-        virtual public Vector3 Position { get; set; }
-        virtual public Vector3 Rotation { get; set; } // X pitch, Y yaw
+        public virtual int AvatarType { get; set; }
+        public virtual Vector3 Position { get; set; }
+        public virtual Vector3 Rotation { get; set; } // X pitch, Y yaw
         public string ApplicationName { get; set; }
         public string ApplicationVersion { get; set; }
 

@@ -236,7 +236,7 @@ namespace VpNet
 
         #region IUniverseFunctions Implementations
 
-        virtual public Task ConnectAsync(string host = "universe.virtualparadise.org", ushort port = 57000)
+        public virtual Task ConnectAsync(string host = "universe.virtualparadise.org", ushort port = 57000)
         {
             EndPoint remoteEP;
             if (IPAddress.TryParse(host, out IPAddress ipAddress))
@@ -262,7 +262,7 @@ namespace VpNet
             }
         }
 
-        virtual public async Task LoginAndEnterAsync(bool announceAvatar = true)
+        public virtual async Task LoginAndEnterAsync(bool announceAvatar = true)
         {
             await ConnectAsync();
             await LoginAsync();
@@ -273,7 +273,7 @@ namespace VpNet
             }
         }
 
-        virtual public async Task LoginAsync()
+        public virtual async Task LoginAsync()
         {
             if (Configuration == null ||
                 string.IsNullOrEmpty(Configuration.BotName) ||
@@ -287,7 +287,7 @@ namespace VpNet
             await LoginAsync(Configuration.UserName, Configuration.Password, Configuration.BotName);
         }
 
-        virtual public Task LoginAsync(string username, string password, string botname)
+        public virtual Task LoginAsync(string username, string password, string botname)
         {
             lock (this)
             {
@@ -312,24 +312,24 @@ namespace VpNet
 
         #region WorldFunctions Implementations
         [Obsolete("No longer necessary for network IO to occur")]
-        virtual public void Wait(int milliseconds = 10)
+        public virtual void Wait(int milliseconds = 10)
         {
             Thread.Sleep(milliseconds);
         }
 
-        virtual public Task EnterAsync(string worldname)
+        public virtual Task EnterAsync(string worldname)
         {
             return EnterAsync(new World { Name = worldname });
         }
 
-        virtual public Task EnterAsync()
+        public virtual Task EnterAsync()
         {
             if (Configuration == null || Configuration.World == null || string.IsNullOrEmpty(Configuration.World.Name))
                 throw new ArgumentException("Can't login because of Incomplete instance world configuration.");
             return EnterAsync(Configuration.World);
         }
 
-        virtual public Task EnterAsync(World world)
+        public virtual Task EnterAsync(World world)
         {
             lock (this)
             {
@@ -346,7 +346,7 @@ namespace VpNet
             }
         }
 
-        virtual public IAvatar My()
+        public virtual IAvatar My()
         {
             return new Avatar
             {
@@ -372,7 +372,7 @@ namespace VpNet
         /// <summary>
         /// Leave the current world
         /// </summary>
-        virtual public void Leave()
+        public virtual void Leave()
         {
             lock (this)
             {
@@ -381,7 +381,7 @@ namespace VpNet
             }
         }
 
-        virtual public void Disconnect()
+        public virtual void Disconnect()
         {
             _avatars.Clear();
             Functions.vp_destroy(_instance);
@@ -391,7 +391,7 @@ namespace VpNet
             Universe = null;
         }
 
-        virtual public void ListWorlds()
+        public virtual void ListWorlds()
         {
             lock (this)
             {
@@ -403,7 +403,7 @@ namespace VpNet
 
         #region IQueryCellFunctions Implementation
 
-        virtual public void QueryCell(int cellX, int cellZ)
+        public virtual void QueryCell(int cellX, int cellZ)
         {
             lock (this)
             {
@@ -411,7 +411,7 @@ namespace VpNet
             }
         }
 
-        virtual public void QueryCell(int cellX, int cellZ, int revision)
+        public virtual void QueryCell(int cellX, int cellZ, int revision)
         {
             lock (this)
             {
@@ -487,7 +487,7 @@ namespace VpNet
             }
         }
 
-        virtual public Task DeleteObjectAsync(IVpObject vpObject)
+        public virtual Task DeleteObjectAsync(IVpObject vpObject)
         {
             var referenceNumber = ObjectReferenceCounter.GetNextReference();
             var tcs = new TaskCompletionSource<object>();
@@ -507,7 +507,7 @@ namespace VpNet
             return tcs.Task;
         }
 
-        virtual public async Task<int> LoadObjectAsync(IVpObject vpObject)
+        public virtual async Task<int> LoadObjectAsync(IVpObject vpObject)
         {
             var referenceNumber = ObjectReferenceCounter.GetNextReference();
             var tcs = new TaskCompletionSource<object>();
@@ -545,7 +545,7 @@ namespace VpNet
             return id;
         }
 
-        virtual public async Task<int> AddObjectAsync(IVpObject vpObject)
+        public virtual async Task<int> AddObjectAsync(IVpObject vpObject)
         {
             var referenceNumber = ObjectReferenceCounter.GetNextReference();
             var tcs = new TaskCompletionSource<object>();
@@ -581,7 +581,7 @@ namespace VpNet
             return id;
         }
 
-        virtual public Task ChangeObjectAsync(IVpObject vpObject)
+        public virtual Task ChangeObjectAsync(IVpObject vpObject)
         {
             var referenceNumber = ObjectReferenceCounter.GetNextReference();
             var tcs = new TaskCompletionSource<object>();
@@ -614,7 +614,7 @@ namespace VpNet
             return tcs.Task;
         }
 
-        virtual public async Task<IVpObject> GetObjectAsync(int id)
+        public virtual async Task<IVpObject> GetObjectAsync(int id)
         {
             var referenceNumber = ObjectReferenceCounter.GetNextReference();
             var tcs = new TaskCompletionSource<object>();
@@ -638,7 +638,7 @@ namespace VpNet
 
         #region ITeleportFunctions Implementations
 
-        virtual public void TeleportAvatar(int targetSession, string world, double x, double y, double z, double yaw, double pitch)
+        public virtual void TeleportAvatar(int targetSession, string world, double x, double y, double z, double yaw, double pitch)
         {
             lock (this)
             {
@@ -647,23 +647,23 @@ namespace VpNet
             }
         }
 
-        virtual public void TeleportAvatar(IAvatar avatar, string world, double x, double y, double z, double yaw, double pitch)
+        public virtual void TeleportAvatar(IAvatar avatar, string world, double x, double y, double z, double yaw, double pitch)
         {
             TeleportAvatar(avatar.Session, world, (float)x, (float)y, (float)z, (float)yaw, (float)pitch);
         }
 
-        virtual public void TeleportAvatar(IAvatar avatar, string world, Vector3 position, double yaw, double pitch)
+        public virtual void TeleportAvatar(IAvatar avatar, string world, Vector3 position, double yaw, double pitch)
         {
             TeleportAvatar(avatar.Session, world, (float)position.X, (float)position.Y, (float)position.Z, (float)yaw, (float)pitch);
         }
 
-        virtual public void TeleportAvatar(int targetSession, string world, Vector3 position, double yaw, double pitch)
+        public virtual void TeleportAvatar(int targetSession, string world, Vector3 position, double yaw, double pitch)
         {
             TeleportAvatar(targetSession, world, (float)position.X, (float)position.Y, (float)position.Z, (float)yaw, (float)pitch);
 
         }
 
-        virtual public void TeleportAvatar(IAvatar avatar, string world, Vector3 position, Vector3 rotation)
+        public virtual void TeleportAvatar(IAvatar avatar, string world, Vector3 position, Vector3 rotation)
         {
             TeleportAvatar(avatar.Session, world, (float)position.X, (float)position.Y, (float)position.Z,
                            (float)rotation.Y, (float)rotation.X);
@@ -675,13 +675,13 @@ namespace VpNet
                            (float)rotation.Y, (float)rotation.X);
         }
 
-        virtual public void TeleportAvatar(IAvatar avatar, Vector3 position, Vector3 rotation)
+        public virtual void TeleportAvatar(IAvatar avatar, Vector3 position, Vector3 rotation)
         {
             TeleportAvatar(avatar.Session, string.Empty, (float)position.X, (float)position.Y, (float)position.Z,
                            (float)rotation.Y, (float)rotation.X);
         }
 
-        virtual public void TeleportAvatar(IAvatar avatar)
+        public virtual void TeleportAvatar(IAvatar avatar)
         {
             TeleportAvatar(avatar.Session, string.Empty, (float)avatar.Position.X, (float)avatar.Position.Y,
                            (float)avatar.Position.Z, (float)avatar.Rotation.Y, (float)avatar.Rotation.X);
@@ -691,7 +691,7 @@ namespace VpNet
 
         #region IAvatarFunctions Implementations.
 
-        virtual public void GetUserProfile(int userId)
+        public virtual void GetUserProfile(int userId)
         {
             lock (this)
             {
@@ -700,7 +700,7 @@ namespace VpNet
         }
 
         [Obsolete]
-        virtual public void GetUserProfile(string userName)
+        public virtual void GetUserProfile(string userName)
         {
             lock (this)
             {
@@ -708,12 +708,12 @@ namespace VpNet
             }
         }
 
-        virtual public void GetUserProfile(IAvatar profile)
+        public virtual void GetUserProfile(IAvatar profile)
         {
             GetUserProfile(profile.UserId);
         }
 
-        virtual public void UpdateAvatar(double x = 0.0f, double y = 0.0f, double z = 0.0f,double yaw = 0.0f, double pitch = 0.0f)
+        public virtual void UpdateAvatar(double x = 0.0f, double y = 0.0f, double z = 0.0f,double yaw = 0.0f, double pitch = 0.0f)
         {
             lock (this)
             {
@@ -754,7 +754,7 @@ namespace VpNet
 
         #region IChatFunctions Implementations
 
-        virtual public void Say(string message)
+        public virtual void Say(string message)
         {
             lock (this)
             {
@@ -762,7 +762,7 @@ namespace VpNet
             }
         }
 
-        virtual public void Say(string format, params object[] arg)
+        public virtual void Say(string format, params object[] arg)
         {
             lock (this)
             {
@@ -803,22 +803,22 @@ namespace VpNet
             ConsoleMessage(0, string.Empty, message, 0, 0, 0, 0);
         }
 
-        virtual public void ConsoleMessage(IAvatar avatar, string name, string message, TextEffectTypes effects = 0, byte red = 0, byte green = 0, byte blue = 0)
+        public virtual void ConsoleMessage(IAvatar avatar, string name, string message, TextEffectTypes effects = 0, byte red = 0, byte green = 0, byte blue = 0)
         {
             ConsoleMessage(avatar.Session, name, message, effects, red, green, blue);
         }
 
-        virtual public void UrlSendOverlay(IAvatar avatar, string url)
+        public virtual void UrlSendOverlay(IAvatar avatar, string url)
         {
             UrlSendOverlay(avatar.Session, url);
         }
 
-        virtual public void UrlSendOverlay(IAvatar avatar, Uri url)
+        public virtual void UrlSendOverlay(IAvatar avatar, Uri url)
         {
             UrlSendOverlay(avatar.Session, url.AbsoluteUri);
         }
 
-        virtual public void UrlSendOverlay(int avatarSession, string url)
+        public virtual void UrlSendOverlay(int avatarSession, string url)
         {
             lock (this)
             {
@@ -826,22 +826,22 @@ namespace VpNet
             }
         }
 
-        virtual public void UrlSendOverlay(int avatarSession, Uri url)
+        public virtual void UrlSendOverlay(int avatarSession, Uri url)
         {
             UrlSendOverlay(avatarSession, url.AbsoluteUri);
         }
 
-        virtual public void UrlSend(IAvatar avatar, string url)
+        public virtual void UrlSend(IAvatar avatar, string url)
         {
             UrlSend(avatar.Session, url);
         }
 
-        virtual public void UrlSend(IAvatar avatar, Uri url)
+        public virtual void UrlSend(IAvatar avatar, Uri url)
         {
             UrlSend(avatar.Session, url.AbsoluteUri);
         }
 
-        virtual public void UrlSend(int avatarSession, string url)
+        public virtual void UrlSend(int avatarSession, string url)
         {
             lock (this)
             {
@@ -849,7 +849,7 @@ namespace VpNet
             }
         }
 
-        virtual public void UrlSend(int avatarSession, Uri url)
+        public virtual void UrlSend(int avatarSession, Uri url)
         {
             UrlSend(avatarSession, url.AbsoluteUri);
         }
