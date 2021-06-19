@@ -85,6 +85,11 @@ namespace VpNet.ManagedApi
             InitVpNative();
         }
 
+        /// <summary>
+        ///     Gets a read-only view of the avatars currently seen by this instance.
+        /// </summary>
+        /// <value>A read-only view of the avatars currently seen by this instance.</value>
+        public IReadOnlyCollection<Avatar> Avatars => _avatars.Values;
 
         private void InitVpNative()
         {
@@ -1487,11 +1492,6 @@ namespace VpNet.ManagedApi
                 OnQueryCellResult?.Invoke(this, new QueryCellResultArgs(vpObject));
             else
                 OnObjectCreate?.Invoke(this, new ObjectCreateArgs(avatar, vpObject));
-        }
-        
-        public List<Avatar> Avatars()
-        {
-            return _avatars.Values.ToList();
         }
 
         public Avatar GetAvatar(int session)
