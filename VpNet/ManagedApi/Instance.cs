@@ -17,7 +17,7 @@ namespace VpNet.ManagedApi
     /// Abtract fully teamplated instance class, providing .NET encapsulation strict templated types to the native C wrapper.
     /// </summary>
     [Serializable]
-    public partial class Instance : IInstance
+    public partial class Instance
     {
         private readonly Dictionary<int, TaskCompletionSource<object>> _objectCompletionSources = new Dictionary<int, TaskCompletionSource<object>>();
 
