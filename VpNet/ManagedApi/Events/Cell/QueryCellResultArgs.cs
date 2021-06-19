@@ -4,16 +4,21 @@ using System.Xml.Serialization;
 namespace VpNet
 {
     /// <summary>
-    /// Default Event Arguments implementation mapping. You can define your own mappings when implementing VpNet.Abstract.BaseInstanceT
+    ///     Provides event arguments for <see cref="ManagedApi.Instance.OnQueryCellResult" />.
     /// </summary>
     [Serializable]
     [XmlRoot("OnQueryCellResult", Namespace = Global.XmlNsEvent)]
-    public partial class QueryCellResultArgs : Abstract.QueryCellResultArgs
+    public class QueryCellResultArgs : TimedEventArgs
     {
-        public QueryCellResultArgs(VpObject vpObject) : base(vpObject)
+        public QueryCellResultArgs(VpObject vpObject)
         {
+            Object = vpObject;
         }
-
-        public QueryCellResultArgs() { }
+        
+        /// <summary>
+        ///     Gets the object returned by the query.
+        /// </summary>
+        /// <value>The object returned by the query.</value>
+        public VpObject Object { get; set; }
     }
 }

@@ -129,7 +129,7 @@ namespace VpNet.ManagedApi
         {
             lock (this)
             {
-                _objects.Add(args.VpObject);
+                _objects.Add(args.Object);
             }
         }
 

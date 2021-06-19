@@ -1529,7 +1529,7 @@ namespace VpNet.ManagedApi
                 x = Functions.vp_int(sender, IntegerAttribute.CellX);
                 z = Functions.vp_int(sender, IntegerAttribute.CellZ);
             }
-            OnQueryCellEnd(this, new QueryCellEndArgs { Cell = new Cell { X = x, Z = z } });
+            OnQueryCellEnd(this, new QueryCellEndArgs(new Cell(x, z)));
         }
 
         private void OnWorldListNative(IntPtr sender)
