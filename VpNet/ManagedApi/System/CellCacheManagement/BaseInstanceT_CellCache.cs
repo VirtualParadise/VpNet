@@ -111,7 +111,7 @@ namespace VpNet
                 if (_cache.Count == 0)
                 {
                     _isScanning = false;
-                    OnQueryCellRangeEnd?.Invoke(this, new CellRangeQueryCompletedArgs { VpObjects = _objects.Copy() });
+                    OnQueryCellRangeEnd?.Invoke(this, new CellRangeQueryCompletedArgs(_objects));
                 }
                 else
                 {

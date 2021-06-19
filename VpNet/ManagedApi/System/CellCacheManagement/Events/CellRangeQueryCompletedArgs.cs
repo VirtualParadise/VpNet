@@ -1,21 +1,29 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Xml.Serialization;
-using VpNet.Interfaces;
 
 namespace VpNet
 {
+    /// <summary>
+    ///     Provides event arguments for <see cref="Instance.OnObjectCellRangeChange" />.
+    /// </summary>
     [XmlRoot("CellRangeQuery",Namespace=Global.XmlNsEvent)]
-    public class CellRangeQueryCompletedArgs : EventArgs 
+    public sealed class CellRangeQueryCompletedArgs : EventArgs
     {
-        [XmlArray("VpObjects")]
-        [XmlArrayItem("VpObject")]
-        public List<VpObject> VpObjects { get; set; }
-        public CellRangeQueryCompletedArgs(){}
-
-        public CellRangeQueryCompletedArgs(List<VpObject> vpObjects)
+        /// <summary>
+        ///     Initializes a new instance of the <see cref="CellRangeQueryCompletedArgs" /> class.
+        /// </summary>
+        /// <param name="objects">The objects.</param>
+        public CellRangeQueryCompletedArgs(IEnumerable<VpObject> objects)
         {
-            VpObjects = vpObjects;
+            VpObjects = objects.ToList().AsReadOnly();
         }
+
+        /// <summary>
+        ///     Gets a read-only view of the objects.
+        /// </summary>
+        /// <value>A read-only view of the objects.</value>
+        public IReadOnlyList<VpObject> VpObjects { get; }
     }
 }

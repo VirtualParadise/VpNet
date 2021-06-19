@@ -12,46 +12,6 @@ namespace VpNet.Extensions
     public static class SerializableExtensions
     {
         /// <summary>
-        /// Create a templated (isolated) copy without references to the original object.
-        /// TODO: Update to .NET 4.5 Memory Mapped Files, research potential pitfalls on .NET MONO implementation for this.
-        /// </summary>
-        /// <returns>A copy of the object</returns>
-        public static T Copy<T>(this T o)
-        {
-            if (!typeof(T).IsSerializable)
-                throw new ArgumentException("The type must be serializable.", typeof(T).ToString());
-
-            // decouple from instance before copy.
-            //object instance = null;
-            //var result =
-            //    o.GetType()
-            //        .GetFields()
-            //        .Where(p => p.FieldType.BaseType != null && p.FieldType.BaseType.Name.StartsWith("BaseInstanceT"))
-            //        .SingleOrDefault();
-            //if (result != null)
-            //{
-            //    instance = result.GetValue(o);
-            //    result.SetValue(o, null);
-            //}
-
-            var formatter = new BinaryFormatter();
-            using (var stream = new MemoryStream())
-            {
-                formatter.Serialize(stream, o);
-                stream.Seek(0, SeekOrigin.Begin);
-                var oc = (T)formatter.Deserialize(stream);
-                var fields = o.GetType().GetFields();
-                for (int i=0;i<fields.Count();i++)
-                {
-                    if (fields[i].FieldType.BaseType != null && fields[i].FieldType.BaseType.Name.StartsWith("BaseInstanceT"))
-                        fields[i].SetValue(oc, fields[i].GetValue(o));
-                }
-                
-                return oc;
-            }
-        }
-
-        /// <summary>
         /// Copies public properties from another object into your own object. 
         /// Both objects must derive from the same abstact class.
         /// 
