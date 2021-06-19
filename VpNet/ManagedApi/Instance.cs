@@ -1317,13 +1317,9 @@ namespace VpNet.ManagedApi
                 };
                 // determine if the avatar actually changed.
                 old = new Avatar().CopyFrom(_avatars[data.Session], true);
-                if (data.Position.X == old.Position.X
-                    && data.Position.Y == old.Position.Y
-                    && data.Position.Z == old.Position.Z
-                    && data.Rotation.X == old.Rotation.X
-                    && data.Rotation.Y == old.Rotation.Y
-                    && data.Rotation.Z == old.Rotation.Z)
+                if (data.Position == old.Position)
                     return;
+                
                 data.LastChanged = DateTime.UtcNow;
                 SetAvatar(data);
 
