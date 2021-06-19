@@ -1262,7 +1262,7 @@ namespace VpNet
                 isOnline = Functions.vp_int(sender, IntegerAttribute.FriendOnline) == 1;
             }
 
-            var friend = new Friend { UserId = userId, Name = name, Online = isOnline };
+            var friend = new Friend(userId, name, isOnline);
             var args = new FriendsGetCallbackEventArgs(friend);
             
             Debug.Assert(!(OnFriendsGetCallback is null), $"{nameof(OnFriendsGetCallback)} != null");
@@ -1753,7 +1753,7 @@ namespace VpNet
             }
         }
 
-        public void AddFriendByName(IFriend friend)
+        public void AddFriendByName(Friend friend)
         {
             lock (this)
             {
@@ -1777,7 +1777,7 @@ namespace VpNet
             }
         }
 
-        public void DeleteFriendById(IFriend friend)
+        public void DeleteFriendById(Friend friend)
         {
             lock (this)
             {
