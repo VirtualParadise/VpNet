@@ -1454,9 +1454,10 @@ namespace VpNet.ManagedApi
 
         public Avatar GetAvatar(int session)
         {
-            if (_avatars.ContainsKey(session))
-                return _avatars[session];
-            var avatar = new Avatar { Session = session };
+            if (_avatars.TryGetValue(session, out Avatar avatar))
+                return avatar;
+
+            avatar = new Avatar { Session = session };
             _avatars.Add(session, avatar);
             return avatar;
         }
