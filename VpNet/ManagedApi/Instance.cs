@@ -24,7 +24,6 @@ namespace VpNet
 
         Dictionary<string, World> _worlds;
         internal IntPtr _instance;
-        private World World { get; set; }
         private NetConfig netConfig;
         private GCHandle instanceHandle;
         private TaskCompletionSource<object> ConnectCompletionSource;
@@ -94,6 +93,12 @@ namespace VpNet
         /// </summary>
         /// <value>The universe to which this instance is currently connected.</value>
         public Universe Universe { get; private set; }
+        
+        /// <summary>
+        ///     Gets the world to which this instance is currently connected.
+        /// </summary>
+        /// <value>The world to which this instance is currently connected.</value>
+        public World World { get; private set; }
 
         private void InitVpNative()
         {
