@@ -5,17 +5,17 @@ using VpNet.Abstract;
 using VpNet.Extensions;
 using VpNet.Interfaces;
 
-namespace VpNet.ManagedApi
+namespace VpNet
 {
     /// <summary>
     /// Abtract fully teamplated instance class, providing .NET encapsulation strict templated types to the native C wrapper.
     /// </summary>
     public partial class Instance
     {
-        public delegate void CellRangeQueryCompletedDelegate(VpNet.Instance sender, CellRangeQueryCompletedArgs args);
-        public delegate void CellRangeObjectChangedDelegate(VpNet.Instance sender, ObjectChangeArgs args);
-        public delegate void CellRangeObjectDeletedDelegate(VpNet.Instance sender, ObjectDeleteArgs args);
-        public delegate void CellRangeObjectCreatedDelegate(VpNet.Instance sender, ObjectCreateArgs args);
+        public delegate void CellRangeQueryCompletedDelegate(Instance sender, CellRangeQueryCompletedArgs args);
+        public delegate void CellRangeObjectChangedDelegate(Instance sender, ObjectChangeArgs args);
+        public delegate void CellRangeObjectDeletedDelegate(Instance sender, ObjectDeleteArgs args);
+        public delegate void CellRangeObjectCreatedDelegate(Instance sender, ObjectCreateArgs args);
 
         public event CellRangeQueryCompletedDelegate OnQueryCellRangeEnd;
         public event CellRangeObjectChangedDelegate OnObjectCellRangeChange;
@@ -71,7 +71,7 @@ namespace VpNet.ManagedApi
             return  _cacheScanned.Exists(p => p.X == vpObject.Cell.X && p.Z == vpObject.Cell.Z);
         }
 
-        void BaseInstanceT_OnObjectCreate(VpNet.Instance sender, ObjectCreateArgs args)
+        void BaseInstanceT_OnObjectCreate(Instance sender, ObjectCreateArgs args)
         {
             if (!IsInCellCacheRange(args.Object))
                 return;
@@ -79,7 +79,7 @@ namespace VpNet.ManagedApi
 
         }
 
-        void BaseInstanceT_OnObjectDelete(VpNet.Instance sender, ObjectDeleteArgs args)
+        void BaseInstanceT_OnObjectDelete(Instance sender, ObjectDeleteArgs args)
         {
             if (!IsInCellCacheRange(args.Object))
                 return;
@@ -87,7 +87,7 @@ namespace VpNet.ManagedApi
             _objects.Remove(o);
         }
 
-        void BaseInstanceT_CellCache_OnObjectChange(VpNet.Instance sender, ObjectChangeArgs args)
+        void BaseInstanceT_CellCache_OnObjectChange(Instance sender, ObjectChangeArgs args)
         {
             lock (this)
             {
@@ -105,7 +105,7 @@ namespace VpNet.ManagedApi
             }
         }
 
-        void BaseInstanceT_CellCache_OnQueryCellEnd(VpNet.Instance sender, QueryCellEndArgs args)
+        void BaseInstanceT_CellCache_OnQueryCellEnd(Instance sender, QueryCellEndArgs args)
         {
             lock (this)
             {
@@ -125,7 +125,7 @@ namespace VpNet.ManagedApi
             }
         }
 
-        void BaseInstanceT_CellCache_OnQueryCellResult(VpNet.Instance sender, QueryCellResultArgs args)
+        void BaseInstanceT_CellCache_OnQueryCellResult(Instance sender, QueryCellResultArgs args)
         {
             lock (this)
             {
