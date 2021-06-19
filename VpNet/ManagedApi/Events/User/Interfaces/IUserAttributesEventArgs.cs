@@ -5,6 +5,6 @@ namespace VpNet.Interfaces
     /// </summary>
     public interface IUserAttributesEventArgs
     {
-        IUserAttributes UserAttributes { get; set; }
+        UserAttributes UserAttributes { get; set; }
     }
 }

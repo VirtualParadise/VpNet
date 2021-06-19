@@ -1133,20 +1133,26 @@ namespace VpNet.ManagedApi
         {
             if (OnUserAttributes == null)
                 return;
-            IUserAttributes att;
+            
+            UserAttributes attributes;
+            
             lock (this)
             {
-                att = new UserAttributes()
-                          {
-                              Email = Functions.vp_string(sender, StringAttribute.UserEmail),
-                              Id = Functions.vp_int(sender, IntegerAttribute.UserId),
-                              LastLogin = DateTimeOffset.FromUnixTimeSeconds(Functions.vp_int(sender, IntegerAttribute.UserLastLogin)).UtcDateTime,
-                              Name = Functions.vp_string(sender, StringAttribute.UserName),
-                              OnlineTime = new TimeSpan(0, 0, 0, Functions.vp_int(sender, IntegerAttribute.UserOnlineTime)),
-                              RegistrationDate = DateTimeOffset.FromUnixTimeSeconds(Functions.vp_int(sender, IntegerAttribute.UserRegistrationTime)).UtcDateTime
-                          };
+                int id = Functions.vp_int(sender, IntegerAttribute.UserId);
+                string name = Functions.vp_string(sender, StringAttribute.UserName);
+                string email = Functions.vp_string(sender, StringAttribute.UserEmail);
+                int lastLoginTimestamp = Functions.vp_int(sender, IntegerAttribute.UserLastLogin);
+                int registrationDateTimestamp = Functions.vp_int(sender, IntegerAttribute.UserRegistrationTime);
+                int onlineTimeSeconds = Functions.vp_int(sender, IntegerAttribute.UserOnlineTime);
+
+                DateTimeOffset lastLogin = DateTimeOffset.FromUnixTimeSeconds(lastLoginTimestamp);
+                DateTimeOffset registrationDate = DateTimeOffset.FromUnixTimeSeconds(registrationDateTimestamp);
+                TimeSpan onlineTime = TimeSpan.FromSeconds(onlineTimeSeconds);
+
+                attributes = new UserAttributes(id, name, email, lastLogin.UtcDateTime, onlineTime, registrationDate.UtcDateTime);
             }
-            OnUserAttributes(this,new UserAttributesEventArgs(){UserAttributes = att});
+            
+            OnUserAttributes(this,new UserAttributesEventArgs(){UserAttributes = attributes});
         }
 
         private void OnTeleportNative(IntPtr sender)

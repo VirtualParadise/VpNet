@@ -6,11 +6,11 @@ namespace VpNet.Abstract
     {
         #region Implementation of IUserAttributesEventArgs<TUserAttributes>
 
-        public IUserAttributes UserAttributes { get; set; }
+        public UserAttributes UserAttributes { get; set; }
 
         #endregion
 
-        protected BaseUserAttributesEventArgs(IUserAttributes userAttributes)
+        protected BaseUserAttributesEventArgs(UserAttributes userAttributes)
         {
             UserAttributes = userAttributes;
         }
