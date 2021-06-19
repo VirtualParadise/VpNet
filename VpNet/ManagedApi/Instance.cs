@@ -1218,26 +1218,22 @@ namespace VpNet.ManagedApi
             // todo: implement this.
         }
 
-
         private void OnChatNative(IntPtr sender)
         {
             if (OnChatMessage is null)
                 return;
 
-            ChatMessageTypes type;
-            TextEffectTypes effects;
-            string text;
-            string name;
-            Color color = new Color(0, 0, 0);
             Avatar avatar;
+            ChatMessage message;
             
             lock (this)
             {
                 int session = Functions.vp_int(sender, IntegerAttribute.AvatarSession);
-                type = (ChatMessageTypes) Functions.vp_int(sender, IntegerAttribute.ChatType);
-                effects = (TextEffectTypes) Functions.vp_int(sender, IntegerAttribute.ChatEffects);
-                text = Functions.vp_string(sender, StringAttribute.ChatMessage);
-                name = Functions.vp_string(sender, StringAttribute.AvatarName);
+                var type = (ChatMessageTypes) Functions.vp_int(sender, IntegerAttribute.ChatType);
+                var effects = (TextEffectTypes) Functions.vp_int(sender, IntegerAttribute.ChatEffects);
+                string text = Functions.vp_string(sender, StringAttribute.ChatMessage);
+                string name = Functions.vp_string(sender, StringAttribute.AvatarName);
+                Color color = new Color(0, 0, 0);
                 
                 if (type == ChatMessageTypes.Console)
                 {
@@ -1250,9 +1246,10 @@ namespace VpNet.ManagedApi
                 
                 if (!_avatars.TryGetValue(session, out avatar))
                     _avatars.Add(session, avatar = new Avatar { Name = name, Session = session });
+                
+                message = new ChatMessage(name, text, type, color, effects);
             }
 
-            var message = new ChatMessage(name, text, type, color, effects);
             var args = new ChatMessageEventArgs(avatar, message);
             OnChatMessage.Invoke(this, args);
         }
