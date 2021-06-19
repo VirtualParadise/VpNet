@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Net;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
-using VpNet.Abstract;
 using VpNet.Extensions;
 using VpNet.Interfaces;
 using VpNet.ManagedApi.System;
@@ -1296,7 +1296,7 @@ namespace VpNet.ManagedApi
             Avatar data;
             lock (this)
             {
-                data = new Avatar()
+                data = new Avatar
                 {
                     UserId = _avatars[Functions.vp_int(sender, IntegerAttribute.AvatarSession)].UserId,
                     Name = Functions.vp_string(sender, StringAttribute.AvatarName),
@@ -1329,124 +1329,166 @@ namespace VpNet.ManagedApi
 
         private void OnAvatarDeleteNative(IntPtr sender)
         {
-            Avatar data;
+            Avatar avatar;
+            
             lock (this)
             {
-                try
-                {
-                    data = _avatars[Functions.vp_int(sender, IntegerAttribute.AvatarSession)];
-                    _avatars.Remove(data.Session);
-                    if (OnAvatarLeave == null) return;
-                    OnAvatarLeave(this, new AvatarLeaveEventArgs(data));
-                }
-                catch
-                {
-
-                }
+                int session = Functions.vp_int(sender, IntegerAttribute.AvatarSession);
+                if (!_avatars.TryGetValue(session, out avatar))
+                    return;
+                
+                _avatars.Remove(session);
             }
+            
+            OnAvatarLeave?.Invoke(this, new AvatarLeaveEventArgs(avatar));
         }
 
         private void OnAvatarClickNative(IntPtr sender)
         {
-            if (OnAvatarClick == null) return;
+            if (OnAvatarClick is null)
+                return;
+            
+            int avatarSession;
+            int clickedSession;
+            Vector3 hitPoint;
+            
             lock (this)
             {
-                var clickedAvatar = Functions.vp_int(sender, IntegerAttribute.ClickedSession);
-                if (clickedAvatar == 0)
-                    clickedAvatar = Functions.vp_int(sender, IntegerAttribute.AvatarSession);
+                avatarSession = Functions.vp_int(sender, IntegerAttribute.AvatarSession);
+                clickedSession = Functions.vp_int(sender, IntegerAttribute.ClickedSession);
+                
+                if (clickedSession == 0)
+                    clickedSession = avatarSession;
 
-                OnAvatarClick(this,
-                    new AvatarClickEventArgs(
-                        GetAvatar(Functions.vp_int(sender, IntegerAttribute.AvatarSession)),
-                        GetAvatar(clickedAvatar),
-                        new Vector3(
-                            Functions.vp_double(sender, FloatAttribute.ClickHitX),
-                            Functions.vp_double(sender, FloatAttribute.ClickHitY),
-                            Functions.vp_double(sender, FloatAttribute.ClickHitZ)
-                        )));
+                double hitX = Functions.vp_double(sender, FloatAttribute.ClickHitX);
+                double hitY = Functions.vp_double(sender, FloatAttribute.ClickHitX);
+                double hitZ = Functions.vp_double(sender, FloatAttribute.ClickHitX);
+                hitPoint = new Vector3(hitX, hitY, hitZ);
             }
+            
+            var avatar = GetAvatar(avatarSession);
+            var clickedAvatar = GetAvatar(clickedSession);
+            var args = new AvatarClickEventArgs(avatar, clickedAvatar, hitPoint);
+            
+            Debug.Assert(!(OnAvatarClick is null), $"{nameof(OnAvatarClick)} != null");
+            OnAvatarClick.Invoke(this, args);
         }
 
         private void OnObjectClickNative(IntPtr sender)
         {
-            if (OnObjectClick == null) return;
+            if (OnObjectClick is null)
+                return;
+            
             int session;
             int objectId;
-            Vector3 world;
+            Vector3 hitPoint;
+            
             lock (this)
             {
                 session = Functions.vp_int(sender, IntegerAttribute.AvatarSession);
                 objectId = Functions.vp_int(sender, IntegerAttribute.ObjectId);
-                world = new Vector3
-                    {
-                        X = Functions.vp_double(sender, FloatAttribute.ClickHitX),
-                        Y = Functions.vp_double(sender, FloatAttribute.ClickHitY),
-                        Z = Functions.vp_double(sender, FloatAttribute.ClickHitZ)
-                    };
+                double hitX = Functions.vp_double(sender, FloatAttribute.ClickHitX);
+                double hitY = Functions.vp_double(sender, FloatAttribute.ClickHitX);
+                double hitZ = Functions.vp_double(sender, FloatAttribute.ClickHitX);
+                hitPoint = new Vector3(hitX, hitY, hitZ);
             }
 
-            OnObjectClick(this, new ObjectClickArgs(GetAvatar(session), new VpObject{Id = objectId}, world));
+            var avatar = GetAvatar(session);
+            var vpObject = new VpObject { Id = objectId };
+            var args = new ObjectClickArgs(avatar, vpObject, hitPoint);
+            
+            Debug.Assert(!(OnObjectClick is null), $"{nameof(OnObjectClick)} != null");
+            OnObjectClick.Invoke(this, args);
         }
 
         private void OnObjectBumpNative(IntPtr sender)
         {
-            if (OnObjectBump == null) return;
+            if (OnObjectBump == null)
+                return;
+
             int session;
             int objectId;
+            
             lock (this)
             {
                 session = Functions.vp_int(sender, IntegerAttribute.AvatarSession);
                 objectId = Functions.vp_int(sender, IntegerAttribute.ObjectId);
             }
 
-            OnObjectBump(this, new ObjectBumpArgs(GetAvatar(session), new VpObject{Id = objectId}, BumpType.BumpBegin));
+            var avatar = GetAvatar(session);
+            var vpObject = new VpObject { Id = objectId };
+            var args = new ObjectBumpArgs(avatar, vpObject, BumpType.BumpBegin);
+
+            Debug.Assert(!(OnObjectBump is null), $"{nameof(OnObjectBump)} != null");
+            OnObjectBump.Invoke(this, args);
         }
 
         private void OnObjectBumpEndNative(IntPtr sender)
         {
-            if (OnObjectBump == null) return;
+            if (OnObjectBump == null)
+                return;
+            
             int session;
             int objectId;
+            
             lock (this)
             {
                 session = Functions.vp_int(sender, IntegerAttribute.AvatarSession);
                 objectId = Functions.vp_int(sender, IntegerAttribute.ObjectId);
             }
 
-            OnObjectBump(this, new ObjectBumpArgs(GetAvatar(session), new VpObject{Id = objectId}, BumpType.BumpEnd));
+            var avatar = GetAvatar(session);
+            var vpObject = new VpObject { Id = objectId };
+            var args = new ObjectBumpArgs(avatar, vpObject, BumpType.BumpEnd);
+
+            Debug.Assert(!(OnObjectBump is null), $"{nameof(OnObjectBump)} != null");
+            OnObjectBump.Invoke(this, args);
         }
 
         private void OnObjectDeleteNative(IntPtr sender)
         {
-            if (OnObjectDelete == null) return;
+            if (OnObjectDelete == null)
+                return;
+            
             int session;
             int objectId;
+            
             lock (this)
             {
                 session = Functions.vp_int(sender, IntegerAttribute.AvatarSession);
                 objectId = Functions.vp_int(sender, IntegerAttribute.ObjectId);
             }
-            OnObjectDelete(this, new ObjectDeleteArgs(GetAvatar(session), new VpObject{Id = objectId}));
+
+            var avatar = GetAvatar(session);
+            var vpObject = new VpObject { Id = objectId };
+            var args = new ObjectDeleteArgs(avatar, vpObject);
+            
+            Debug.Assert(!(OnObjectDelete is null), $"{nameof(OnObjectDelete)} != null");
+            OnObjectDelete.Invoke(this, args);
         }
 
         private void OnObjectCreateNative(IntPtr sender)
         {
-            if (OnObjectCreate == null && OnQueryCellResult == null) return;
-            VpObject vpObject;
+            if (OnObjectCreate is null && OnQueryCellResult is null)
+                return;
+            
             int session;
+            
             lock (this)
             {
                 session = Functions.vp_int(sender, IntegerAttribute.AvatarSession);
-                GetVpObject(sender, out vpObject);
             }
-            if (session == 0 && OnQueryCellResult != null)
-                OnQueryCellResult(this, new QueryCellResultArgs { VpObject = vpObject });
+            
+            var avatar = GetAvatar(session);
+            
+            GetVpObject(sender, out VpObject vpObject);
+            
+            if (session == 0)
+                OnQueryCellResult?.Invoke(this, new QueryCellResultArgs(vpObject));
             else
-                OnObjectCreate?.Invoke(this, new ObjectCreateArgs(GetAvatar(session), vpObject));
+                OnObjectCreate?.Invoke(this, new ObjectCreateArgs(avatar, vpObject));
         }
-
-
-
+        
         public List<Avatar> Avatars()
         {
             return _avatars.Values.ToList();
