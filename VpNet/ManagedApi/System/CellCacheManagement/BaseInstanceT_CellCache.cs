@@ -7,9 +7,6 @@ using VpNet.Interfaces;
 
 namespace VpNet
 {
-    /// <summary>
-    /// Abtract fully teamplated instance class, providing .NET encapsulation strict templated types to the native C wrapper.
-    /// </summary>
     public partial class Instance
     {
         public delegate void CellRangeQueryCompletedDelegate(Instance sender, CellRangeQueryCompletedArgs args);
