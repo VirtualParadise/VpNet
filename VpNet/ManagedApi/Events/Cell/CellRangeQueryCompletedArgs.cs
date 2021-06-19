@@ -1,14 +1,12 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Xml.Serialization;
 
 namespace VpNet
 {
     /// <summary>
     ///     Provides event arguments for <see cref="Instance.OnObjectCellRangeChange" />.
     /// </summary>
-    [XmlRoot("CellRangeQuery",Namespace=Global.XmlNsEvent)]
     public sealed class CellRangeQueryCompletedArgs : EventArgs
     {
         /// <summary>

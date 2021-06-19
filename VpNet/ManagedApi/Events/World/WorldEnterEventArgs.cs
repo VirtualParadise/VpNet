@@ -1,13 +1,10 @@
 ﻿using System;
-using System.Xml.Serialization;
 
 namespace VpNet
 {
     /// <summary>
     ///     Provides event arguments for <see cref="Instance.OnWorldEnter" />.
     /// </summary>
-    [Serializable]
-    [XmlRoot("OnWorldEnter", Namespace = Global.XmlNsEvent)]
     public sealed class WorldEnterEventArgs : TimedEventArgs
     {
         /// <summary>

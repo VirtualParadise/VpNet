@@ -1,11 +1,8 @@
-﻿using System.Xml.Serialization;
-
-namespace VpNet
+﻿namespace VpNet
 {
     /// <summary>
     ///     Provides event arguments for <see cref="Instance.OnChatMessage" />.
     /// </summary>
-    [XmlRoot("OnChatMessage", Namespace = Global.XmlNsEvent)]
     public sealed class ChatMessageEventArgs : TimedEventArgs
     {
         /// <summary>

@@ -1,14 +1,8 @@
-using System;
-using System.Xml.Serialization;
-using VpNet.Abstract;
-
 namespace VpNet
 {
     /// <summary>
     ///     Represents a friend.
     /// </summary>
-    [Serializable]
-    [XmlRoot("Friend", Namespace = Global.XmlNsScene)]
     public class Friend
     {
         internal Friend(int userId, string name, bool isOnline)

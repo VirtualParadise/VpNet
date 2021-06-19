@@ -1,11 +1,8 @@
-﻿using System.Xml.Serialization;
-
-namespace VpNet
+﻿namespace VpNet
 {
     /// <summary>
     ///     Provides event arguments for <see cref="Instance.OnObjectCreate" />.
     /// </summary>
-    [XmlRoot("OnObjectCreate", Namespace = Global.XmlNsEvent)]
     public sealed class ObjectCreateArgs : TimedEventArgs
     {
         /// <summary>

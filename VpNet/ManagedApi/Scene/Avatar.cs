@@ -1,13 +1,10 @@
 ﻿using System;
-using System.Xml.Serialization;
 
 namespace VpNet
 {
     /// <summary>
     ///     Represents an avatar; an online representation of a user.
     /// </summary>
-    [Serializable]
-    [XmlRoot("Avatar", Namespace = Global.XmlNsScene)]
     public class Avatar : IEquatable<Avatar>, ICloneable
     {
         internal Avatar()

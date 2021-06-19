@@ -1,13 +1,10 @@
 ﻿using System;
-using System.Xml.Serialization;
 
 namespace VpNet
 {
     /// <summary>
     ///     Represents a world.
     /// </summary>
-    [Serializable]
-    [XmlRoot("World", Namespace = Global.XmlNsScene)]
     public class World : IEquatable<World>
     {
         /// <summary>
@@ -30,21 +27,18 @@ namespace VpNet
         ///     Gets or sets the name of the world.
         /// </summary>
         /// <value>The name of the world.</value>
-        [XmlAttribute]
         public string Name { get; set; }
         
         /// <summary>
         ///     Gets or sets the number of users currently in the world.
         /// </summary>
         /// <value>The number of users currently in the world.</value>
-        [XmlAttribute]
         public int UserCount { get; set; }
         
         /// <summary>
         ///     Gets or sets the world state.
         /// </summary>
         /// <value>The world state.</value>
-        [XmlAttribute]
         public WorldState State { get; set; }
 
         /// <summary>
@@ -60,7 +54,6 @@ namespace VpNet
         /// <remarks>
         ///     If this value is specified, the SDK will allow the option to cache models, unzip them and read their contents.
         /// </remarks>
-        [XmlAttribute]
         public string LocalCachePath { get; set; }
 
         /// <inheritdoc />

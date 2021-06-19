@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Globalization;
 using System.Text;
-using System.Xml.Serialization;
 
 namespace VpNet
 {
@@ -26,19 +25,16 @@ namespace VpNet
         /// <summary>
         ///     Gets or sets the red component value of this color.
         /// </summary>
-        [XmlAttribute]
         public byte R { get; set; }
 
         /// <summary>
         ///     Gets or sets the green component value of this color.
         /// </summary>
-        [XmlAttribute]
         public byte G { get; set; }
 
         /// <summary>
         ///     Gets or sets the blue component value of this color.
         /// </summary>
-        [XmlAttribute]
         public byte B { get; set; }
 
         /// <summary>

@@ -2,14 +2,12 @@ using System;
 using System.Globalization;
 using System.Runtime.InteropServices;
 using System.Text;
-using System.Xml.Serialization;
 
 namespace VpNet
 {
     /// <summary>
     ///     Represents a vector with three single-precision floating-point values.
     /// </summary>
-    [Serializable]
     [StructLayout(LayoutKind.Sequential)]
     public struct Vector3 : IEquatable<Vector3>, IFormattable
     {
@@ -17,53 +15,45 @@ namespace VpNet
         ///     A vector whose 3 elements are equal to one.
         /// </summary>
         /// <value>The vector (1, 1, 1).</value>
-        [XmlIgnore]
         public static readonly Vector3 One = new Vector3(1);
 
         /// <summary>
         ///     A vector whose 3 elements are equal to zero.
         /// </summary>
         /// <value>The vector (0, 0, 0).</value>
-        [XmlIgnore]
         public static readonly Vector3 Zero = new Vector3(0);
 
         /// <summary>
         ///     The vector (1, 0, 0).
         /// </summary>
         /// <value>The vector (1, 0, 0).</value>
-        [XmlIgnore]
         public static readonly Vector3 UnitX = new Vector3(1, 0, 0);
 
         /// <summary>
         ///     The vector (0, 1, 0).
         /// </summary>
         /// <value>The vector (0, 1, 0).</value>
-        [XmlIgnore]
         public static readonly Vector3 UnitY = new Vector3(0, 1, 0);
 
         /// <summary>
         ///     The vector (0, 0, 1).
         /// </summary>
         /// <value>The vector (0, 0, 1).</value>
-        [XmlIgnore]
         public static readonly Vector3 UnitZ = new Vector3(0, 0, 1);
 
         /// <summary>
         ///     The X component of the vector.
         /// </summary>
-        [XmlAttribute]
         public double X;
 
         /// <summary>
         ///     The Y component of the vector.
         /// </summary>
-        [XmlAttribute]
         public double Y;
 
         /// <summary>
         ///     The Z component of the vector.
         /// </summary>
-        [XmlAttribute]
         public double Z;
 
         /// <summary>

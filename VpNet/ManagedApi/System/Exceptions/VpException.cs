@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Xml.Serialization;
 using VpNet.NativeApi;
 
 namespace VpNet
@@ -8,8 +7,6 @@ namespace VpNet
     ///     The exception that is thrown when an operation performed by the native SDK did not return
     ///     <see cref="ReasonCode.Success" />.
     /// </summary>
-    [Serializable]
-    [XmlRoot("VpException", Namespace = Global.XmlNsException)]
     public sealed class VpException : Exception
     {
         /// <summary>
