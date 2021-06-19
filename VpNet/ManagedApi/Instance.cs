@@ -391,27 +391,37 @@ namespace VpNet
             }
         }
 
-        public virtual IAvatar My()
+        /// <summary>
+        ///     If connected to a world, returns the state of this instance's avatar.
+        /// </summary>
+        /// <returns>An instance of <see cref="Avatar" />, encapsulating the state of this instance.</returns>
+        public Avatar My()
         {
-            return new Avatar
+            Avatar avatar;
+
+            if (World is null) return null;
+            
+            lock (this)
             {
-                UserId = Functions.vp_int(_instance, IntegerAttribute.MyUserId),
-                Name = Configuration.BotName,
-                AvatarType = Functions.vp_int(_instance, IntegerAttribute.MyType),
-                Position = new Vector3
-                {
-                    X = Functions.vp_double(_instance, FloatAttribute.MyX),
-                    Y = Functions.vp_double(_instance, FloatAttribute.MyY),
-                    Z = Functions.vp_double(_instance, FloatAttribute.MyZ)
-                },
-                Rotation = new Vector3
-                {
-                    X = Functions.vp_double(_instance, FloatAttribute.MyPitch),
-                    Y = Functions.vp_double(_instance, FloatAttribute.MyYaw),
-                    Z = 0 /* roll currently not supported*/
-                },
-                LastChanged = DateTime.Now
-            };
+                int userId = Functions.vp_int(_instance, IntegerAttribute.MyUserId);
+                int type = Functions.vp_int(_instance, IntegerAttribute.MyType);
+                string name = Configuration.BotName;
+
+                double x = Functions.vp_double(_instance, FloatAttribute.MyX);
+                double y = Functions.vp_double(_instance, FloatAttribute.MyY);
+                double z = Functions.vp_double(_instance, FloatAttribute.MyZ);
+                
+                double pitch = Functions.vp_double(_instance, FloatAttribute.MyPitch);
+                double yaw = Functions.vp_double(_instance, FloatAttribute.MyYaw);
+
+                var position = new Vector3(x, y, z);
+                var rotation = new Vector3(pitch, yaw, 0);
+
+                avatar = new Avatar(userId, 0, name, type, position, rotation, DateTimeOffset.Now,
+                    Configuration.ApplicationName, Configuration.ApplicationVersion);
+            }
+
+            return avatar;
         }
 
         /// <summary>
@@ -484,7 +494,7 @@ namespace VpNet
             }
         }
 
-        public void ClickObject(VpObject vpObject, IAvatar avatar)
+        public void ClickObject(VpObject vpObject, Avatar avatar)
         {
             lock (this)
             {
@@ -492,7 +502,7 @@ namespace VpNet
             }
         }
 
-        public void ClickObject(VpObject vpObject, IAvatar avatar, Vector3 worldHit)
+        public void ClickObject(VpObject vpObject, Avatar avatar, Vector3 worldHit)
         {
             lock (this)
             {
@@ -692,12 +702,12 @@ namespace VpNet
             }
         }
 
-        public virtual void TeleportAvatar(IAvatar avatar, string world, double x, double y, double z, double yaw, double pitch)
+        public virtual void TeleportAvatar(Avatar avatar, string world, double x, double y, double z, double yaw, double pitch)
         {
             TeleportAvatar(avatar.Session, world, (float)x, (float)y, (float)z, (float)yaw, (float)pitch);
         }
 
-        public virtual void TeleportAvatar(IAvatar avatar, string world, Vector3 position, double yaw, double pitch)
+        public virtual void TeleportAvatar(Avatar avatar, string world, Vector3 position, double yaw, double pitch)
         {
             TeleportAvatar(avatar.Session, world, (float)position.X, (float)position.Y, (float)position.Z, (float)yaw, (float)pitch);
         }
@@ -708,25 +718,25 @@ namespace VpNet
 
         }
 
-        public virtual void TeleportAvatar(IAvatar avatar, string world, Vector3 position, Vector3 rotation)
+        public virtual void TeleportAvatar(Avatar avatar, string world, Vector3 position, Vector3 rotation)
         {
             TeleportAvatar(avatar.Session, world, (float)position.X, (float)position.Y, (float)position.Z,
                            (float)rotation.Y, (float)rotation.X);
         }
 
-        public void TeleportAvatar(IAvatar avatar, World world, Vector3 position, Vector3 rotation)
+        public void TeleportAvatar(Avatar avatar, World world, Vector3 position, Vector3 rotation)
         {
             TeleportAvatar(avatar.Session, world.Name, (float)position.X, (float)position.Y, (float)position.Z,
                            (float)rotation.Y, (float)rotation.X);
         }
 
-        public virtual void TeleportAvatar(IAvatar avatar, Vector3 position, Vector3 rotation)
+        public virtual void TeleportAvatar(Avatar avatar, Vector3 position, Vector3 rotation)
         {
             TeleportAvatar(avatar.Session, string.Empty, (float)position.X, (float)position.Y, (float)position.Z,
                            (float)rotation.Y, (float)rotation.X);
         }
 
-        public virtual void TeleportAvatar(IAvatar avatar)
+        public virtual void TeleportAvatar(Avatar avatar)
         {
             TeleportAvatar(avatar.Session, string.Empty, (float)avatar.Position.X, (float)avatar.Position.Y,
                            (float)avatar.Position.Z, (float)avatar.Rotation.Y, (float)avatar.Rotation.X);
@@ -734,7 +744,7 @@ namespace VpNet
 
         #endregion
 
-        #region IAvatarFunctions Implementations.
+        #region AvatarFunctions Implementations.
 
         public virtual void GetUserProfile(int userId)
         {
@@ -753,7 +763,7 @@ namespace VpNet
             }
         }
 
-        public virtual void GetUserProfile(IAvatar profile)
+        public virtual void GetUserProfile(Avatar profile)
         {
             GetUserProfile(profile.UserId);
         }
@@ -790,7 +800,7 @@ namespace VpNet
             }
         }
 
-        public void AvatarClick(IAvatar avatar)
+        public void AvatarClick(Avatar avatar)
         {
             AvatarClick(avatar.Session);
         }
@@ -823,7 +833,7 @@ namespace VpNet
             }
         }
 
-        public void ConsoleMessage(IAvatar avatar, string name, string message, Color color, TextEffectTypes effects = 0)
+        public void ConsoleMessage(Avatar avatar, string name, string message, Color color, TextEffectTypes effects = 0)
         {
             ConsoleMessage(avatar.Session, name, message, effects, color.R, color.G, color.B);
         }
@@ -848,17 +858,17 @@ namespace VpNet
             ConsoleMessage(0, string.Empty, message, 0, 0, 0, 0);
         }
 
-        public virtual void ConsoleMessage(IAvatar avatar, string name, string message, TextEffectTypes effects = 0, byte red = 0, byte green = 0, byte blue = 0)
+        public virtual void ConsoleMessage(Avatar avatar, string name, string message, TextEffectTypes effects = 0, byte red = 0, byte green = 0, byte blue = 0)
         {
             ConsoleMessage(avatar.Session, name, message, effects, red, green, blue);
         }
 
-        public virtual void UrlSendOverlay(IAvatar avatar, string url)
+        public virtual void UrlSendOverlay(Avatar avatar, string url)
         {
             UrlSendOverlay(avatar.Session, url);
         }
 
-        public virtual void UrlSendOverlay(IAvatar avatar, Uri url)
+        public virtual void UrlSendOverlay(Avatar avatar, Uri url)
         {
             UrlSendOverlay(avatar.Session, url.AbsoluteUri);
         }
@@ -876,12 +886,12 @@ namespace VpNet
             UrlSendOverlay(avatarSession, url.AbsoluteUri);
         }
 
-        public virtual void UrlSend(IAvatar avatar, string url)
+        public virtual void UrlSend(Avatar avatar, string url)
         {
             UrlSend(avatar.Session, url);
         }
 
-        public virtual void UrlSend(IAvatar avatar, Uri url)
+        public virtual void UrlSend(Avatar avatar, Uri url)
         {
             UrlSend(avatar.Session, url.AbsoluteUri);
         }
@@ -902,7 +912,7 @@ namespace VpNet
         #endregion
 
         #region IJoinFunctions Implementations
-        public virtual void Join(IAvatar avatar)
+        public virtual void Join(Avatar avatar)
         {
             lock (this)
             {
@@ -955,7 +965,7 @@ namespace VpNet
             }
         }
 
-        public virtual void WorldPermissionUserEnable(WorldPermissions permission, IAvatar avatar)
+        public virtual void WorldPermissionUserEnable(WorldPermissions permission, Avatar avatar)
         {
             lock (this)
             {
@@ -971,7 +981,7 @@ namespace VpNet
             }
         }
 
-        public virtual void WorldPermissionUserDisable(WorldPermissions permission, IAvatar avatar)
+        public virtual void WorldPermissionUserDisable(WorldPermissions permission, Avatar avatar)
         {
             lock (this)
             {
@@ -995,7 +1005,7 @@ namespace VpNet
             }
         }
 
-        public virtual void WorldPermissionSessionEnable(WorldPermissions permission, IAvatar avatar)
+        public virtual void WorldPermissionSessionEnable(WorldPermissions permission, Avatar avatar)
         {
             lock (this)
             {
@@ -1012,7 +1022,7 @@ namespace VpNet
         }
 
 
-        public virtual void WorldPermissionSessionDisable(WorldPermissions permission, IAvatar avatar)
+        public virtual void WorldPermissionSessionDisable(WorldPermissions permission, Avatar avatar)
         {
             lock (this)
             {
@@ -1032,7 +1042,7 @@ namespace VpNet
 
         #region WorldSettingsFunctions Implementations
 
-        public virtual void WorldSettingSession(string setting, string value, IAvatar toAvatar)
+        public virtual void WorldSettingSession(string setting, string value, Avatar toAvatar)
         {
             lock (this)
             {
@@ -1306,7 +1316,7 @@ namespace VpNet
                 }
                 
                 if (!_avatars.TryGetValue(session, out avatar))
-                    _avatars.Add(session, avatar = new Avatar { Name = name, Session = session });
+                    _avatars.Add(session, avatar = new Avatar(0, session, name, 0, Vector3.Zero, Vector3.Zero, DateTimeOffset.Now, string.Empty, string.Empty));
                 
                 message = new ChatMessage(name, text, type, color, effects);
             }
@@ -1317,75 +1327,69 @@ namespace VpNet
 
         private void OnAvatarAddNative(IntPtr sender)
         {
-            Avatar data;
+            Avatar avatar;
+            
             lock (this)
             {
-                data = new Avatar()
-                {
-                    UserId = Functions.vp_int(sender, IntegerAttribute.UserId),
-                    Name = Functions.vp_string(sender, StringAttribute.AvatarName),
-                    Session = Functions.vp_int(sender, IntegerAttribute.AvatarSession),
-                    AvatarType = Functions.vp_int(sender, IntegerAttribute.AvatarType),
-                    Position = new Vector3
-                    {
-                        X = Functions.vp_double(sender, FloatAttribute.AvatarX),
-                        Y = Functions.vp_double(sender, FloatAttribute.AvatarY),
-                        Z = Functions.vp_double(sender, FloatAttribute.AvatarZ)
-                    },
-                    Rotation = new Vector3
-                    {
-                        X = Functions.vp_double(sender, FloatAttribute.AvatarPitch),
-                        Y = Functions.vp_double(sender, FloatAttribute.AvatarYaw),
-                        Z = 0 /* roll currently not supported*/
-                    },
-                    ApplicationName = Functions.vp_string(sender, StringAttribute.AvatarApplicationName),
-                    ApplicationVersion = Functions.vp_string(sender, StringAttribute.AvatarApplicationVersion)
-                };
-                if (!_avatars.ContainsKey(data.Session))
-                    _avatars.Add(data.Session, data);
+                int session = Functions.vp_int(sender, IntegerAttribute.AvatarSession);
+                int userId = Functions.vp_int(sender, IntegerAttribute.UserId);
+                int type = Functions.vp_int(sender, IntegerAttribute.AvatarType);
+                string name = Functions.vp_string(sender, StringAttribute.AvatarName);
+
+                double x = Functions.vp_double(sender, FloatAttribute.AvatarX);
+                double y = Functions.vp_double(sender, FloatAttribute.AvatarY);
+                double z = Functions.vp_double(sender, FloatAttribute.AvatarZ);
+                
+                double pitch = Functions.vp_double(sender, FloatAttribute.AvatarPitch);
+                double yaw = Functions.vp_double(sender, FloatAttribute.AvatarYaw);
+
+                string applicationName = Functions.vp_string(sender, StringAttribute.ApplicationName);
+                string applicationVersion = Functions.vp_string(sender, StringAttribute.ApplicationVersion);
+
+                var position = new Vector3(x, y, z);
+                var rotation = new Vector3(pitch, yaw, 0);
+
+                avatar = new Avatar(userId, 0, name, type, position, rotation, DateTimeOffset.Now, applicationName, applicationVersion);
+
+                if (_avatars.ContainsKey(session))
+                    _avatars[session] = avatar;
+                else
+                    _avatars.Add(session, avatar);
             }
-            data.LastChanged = DateTime.UtcNow;
-            if (OnAvatarEnter == null) return;
-            var args = new AvatarEnterEventArgs(data);
-            args.Initialize();
-            OnAvatarEnter(this, args);
+            
+            if (OnAvatarEnter is null) return;
+
+            var args = new AvatarEnterEventArgs(avatar);
+            OnAvatarEnter?.Invoke(this, args);
         }
 
         private void OnAvatarChangeNative(IntPtr sender)
         {
-            Avatar old;
-            Avatar data;
+            Avatar avatar;
+            Avatar oldAvatar = null;
             lock (this)
             {
-                data = new Avatar
-                {
-                    UserId = _avatars[Functions.vp_int(sender, IntegerAttribute.AvatarSession)].UserId,
-                    Name = Functions.vp_string(sender, StringAttribute.AvatarName),
-                    Session = Functions.vp_int(sender, IntegerAttribute.AvatarSession),
-                    AvatarType = Functions.vp_int(sender, IntegerAttribute.AvatarType),
-                    Position = new Vector3
-                    {
-                        X = Functions.vp_double(sender, FloatAttribute.AvatarX),
-                        Y = Functions.vp_double(sender, FloatAttribute.AvatarY),
-                        Z = Functions.vp_double(sender, FloatAttribute.AvatarZ)
-                    },
-                    Rotation = new Vector3
-                    {
-                        X = Functions.vp_double(sender, FloatAttribute.AvatarPitch),
-                        Y = Functions.vp_double(sender, FloatAttribute.AvatarYaw),
-                        Z = 0 /* roll currently not supported*/
-                    }
-                };
-                // determine if the avatar actually changed.
-                old = new Avatar().CopyFrom(_avatars[data.Session], true);
-                if (data.Position == old.Position)
-                    return;
-                
-                data.LastChanged = DateTime.UtcNow;
-                SetAvatar(data);
+                int session = Functions.vp_int(sender, IntegerAttribute.AvatarSession);
 
+                if (_avatars.TryGetValue(session, out avatar))
+                    oldAvatar = (Avatar) avatar.Clone();
+                else
+                    avatar = new Avatar();
+
+                double x = Functions.vp_double(sender, FloatAttribute.AvatarX);
+                double y = Functions.vp_double(sender, FloatAttribute.AvatarY);
+                double z = Functions.vp_double(sender, FloatAttribute.AvatarZ);
+                
+                double pitch = Functions.vp_double(sender, FloatAttribute.AvatarPitch);
+                double yaw = Functions.vp_double(sender, FloatAttribute.AvatarYaw);
+
+                avatar.Name = Functions.vp_string(sender, StringAttribute.AvatarName);
+                avatar.AvatarType = Functions.vp_int(sender, IntegerAttribute.AvatarType);
+                avatar.Position = new Vector3(x, y, z);
+                avatar.Rotation = new Vector3(pitch, yaw, 0);
+                avatar.LastChanged = DateTimeOffset.Now;
             }
-            OnAvatarChange?.Invoke(this, new AvatarChangeEventArgs(_avatars[data.Session], old));
+            OnAvatarChange?.Invoke(this, new AvatarChangeEventArgs(avatar, oldAvatar));
         }
 
         private void OnAvatarDeleteNative(IntPtr sender)
@@ -1552,27 +1556,8 @@ namespace VpNet
 
         public Avatar GetAvatar(int session)
         {
-            if (_avatars.TryGetValue(session, out Avatar avatar))
-                return avatar;
-
-            avatar = new Avatar { Session = session };
-            _avatars.Add(session, avatar);
+            _avatars.TryGetValue(session, out Avatar avatar);
             return avatar;
-        }
-
-        private void SetAvatar(Avatar avatar)
-        {
-            lock (this)
-            {
-                if (_avatars.ContainsKey(avatar.Session))
-                {
-                    ((Avatar)_avatars[avatar.Session]).CopyFrom(avatar, true);
-                }
-                else
-                {
-                    _avatars[avatar.Session] = avatar;
-                }
-            }
         }
 
         private static void GetVpObject(IntPtr sender, out VpObject vpObject)
@@ -1689,11 +1674,16 @@ namespace VpNet
         private void OnJoinNative(IntPtr sender)
         {
             if (OnJoin == null) return;
-            
-            var avatar = new Avatar(Functions.vp_int(sender, IntegerAttribute.UserId), 
-                Functions.vp_string(sender, StringAttribute.JoinName), 
-                -1, -1, Vector3.Zero, Vector3.Zero);
-            OnJoin(this, new JoinEventArgs(avatar));
+
+            lock (this)
+            {
+                int userId = Functions.vp_int(sender, IntegerAttribute.UserId);
+                string name = Functions.vp_string(sender, StringAttribute.JoinName);
+
+                var avatar = new Avatar(userId, -1, name, -1, Vector3.Zero, Vector3.Zero, DateTimeOffset.MinValue, string.Empty, string.Empty);
+                var args = new JoinEventArgs(avatar);
+                OnJoin?.Invoke(this, args);
+            }
         }
 
         #endregion

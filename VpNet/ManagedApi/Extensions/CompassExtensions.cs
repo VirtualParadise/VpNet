@@ -4,7 +4,7 @@ namespace VpNet.Extensions
 {
     public static class CompassExtensions
     {
-        public static string ToCompassLongString(this IAvatar avatar)
+        public static string ToCompassLongString(this Avatar avatar)
         {
             var direction = (avatar.Rotation.Y % 360 + 360) % 360;
             if (direction <= 22.5f) return "South";
@@ -17,7 +17,7 @@ namespace VpNet.Extensions
             return direction <= 337.5 ? "South-East" : "South";
         }
 
-        public static string ToCompassString(IAvatar avatar)
+        public static string ToCompassString(Avatar avatar)
         {
             var direction = (avatar.Rotation.Y % 360 + 360) % 360;
             if (direction <= 22.5f) return "S";
@@ -30,8 +30,8 @@ namespace VpNet.Extensions
             return direction <= 337.5 ? "SE" : "S";
         }
 
-        public static CompassDirectionType ToCompassType<TAvatar>(IAvatar avatar)
-             where TAvatar : IAvatar
+        public static CompassDirectionType ToCompassType<TAvatar>(Avatar avatar)
+             where TAvatar : Avatar
         {
             var direction = (avatar.Rotation.Y % 360 + 360) % 360;
             if (direction <= 22.5f) return CompassDirectionType.S;
