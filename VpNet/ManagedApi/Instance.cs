@@ -1619,7 +1619,7 @@ namespace VpNet.ManagedApi
                 OnWorldSettingsChanged = null;
                 OnWorldDisconnect = null;
                 OnUniverseDisconnect = null;
-                //OnUserAttributes = null;
+                OnUserAttributes = null;
                 OnQueryCellResult = null;
                 OnQueryCellEnd = null;
                 OnFriendAddCallback = null;
