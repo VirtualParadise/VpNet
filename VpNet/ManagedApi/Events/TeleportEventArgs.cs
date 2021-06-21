@@ -18,6 +18,6 @@
         ///     Gets or sets the teleport information related to this event.
         /// </summary>
         /// <value>The teleport information.</value>
-        public Teleport Teleport { get; set; }
+        public Teleport Teleport { get; }
     }
 }

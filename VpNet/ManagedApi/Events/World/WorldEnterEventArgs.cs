@@ -18,6 +18,6 @@
         ///     Gets the world which was entered.
         /// </summary>
         /// <value>The world which was entered.</value>
-        public World World { get; set; }
+        public World World { get; }
     }
 }

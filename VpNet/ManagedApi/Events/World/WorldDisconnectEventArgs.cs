@@ -18,6 +18,6 @@
         ///     Gets or sets the disconnected world.
         /// </summary>
         /// <value>The disconnected world.</value>
-        public World World { get; set; }
+        public World World { get; }
     }
 }

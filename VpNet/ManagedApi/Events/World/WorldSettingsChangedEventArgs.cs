@@ -18,6 +18,6 @@
         ///     Gets the world which was changed.
         /// </summary>
         /// <value>The changed world.</value>
-        public World World { get; set; }
+        public World World { get; }
     }
 }

@@ -14,6 +14,6 @@
         ///     Gets the object returned by the query.
         /// </summary>
         /// <value>The object returned by the query.</value>
-        public VpObject Object { get; set; }
+        public VpObject Object { get; }
     }
 }

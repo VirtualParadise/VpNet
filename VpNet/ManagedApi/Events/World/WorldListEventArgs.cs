@@ -18,6 +18,6 @@
         ///     Gets the world returned from the list.
         /// </summary>
         /// <value>The listed world.</value>
-        public World World { get; set; }
+        public World World { get; }
     }
 }
