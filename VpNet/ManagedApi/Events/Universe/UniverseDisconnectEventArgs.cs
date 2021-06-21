@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace VpNet
+﻿namespace VpNet
 {
     /// <summary>
     ///     Provides event arguments for <see cref="Instance.OnUniverseDisconnect" />.
