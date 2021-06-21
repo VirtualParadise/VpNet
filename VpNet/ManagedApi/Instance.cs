@@ -17,29 +17,27 @@ namespace VpNet
     {
         private const string DefaultUniverseHost = "universe.virtualparadise.org";
         private const int DefaultUniversePort = 57000;
-        
-        private readonly Dictionary<int, TaskCompletionSource<object>> _objectCompletionSources = new Dictionary<int, TaskCompletionSource<object>>();
 
-        private Dictionary<int, Avatar> _avatars;
-
-        Dictionary<string, World> _worlds;
-        internal IntPtr _instance;
-        private NetConfig netConfig;
-        private GCHandle instanceHandle;
-        private TaskCompletionSource<object> ConnectCompletionSource;
-        private TaskCompletionSource<object> LoginCompletionSource;
-        private TaskCompletionSource<object> EnterCompletionSource;
+        private readonly Dictionary<int, TaskCompletionSource<object>> _objectCompletionSources;
+        private readonly Dictionary<int, Avatar> _avatars;
+        private readonly Dictionary<string, World> _worlds;
+        private TaskCompletionSource<object> _connectCompletionSource;
+        private TaskCompletionSource<object> _loginCompletionSource;
+        private TaskCompletionSource<object> _enterCompletionSource;
+        private IntPtr _instance;
+        private NetConfig _netConfig;
+        private GCHandle _instanceHandle;
 
         internal void InitOnce()
         {
-            instanceHandle = GCHandle.Alloc(this);
-            netConfig.Context = GCHandle.ToIntPtr(instanceHandle);
-            netConfig.Create = Connection.CreateNative;
-            netConfig.Destroy = Connection.DestroyNative;
-            netConfig.Connect = Connection.ConnectNative;
-            netConfig.Receive = Connection.ReceiveNative;
-            netConfig.Send = Connection.SendNative;
-            netConfig.Timeout = Connection.TimeoutNative;
+            _instanceHandle = GCHandle.Alloc(this);
+            _netConfig.Context = GCHandle.ToIntPtr(_instanceHandle);
+            _netConfig.Create = Connection.CreateNative;
+            _netConfig.Destroy = Connection.DestroyNative;
+            _netConfig.Connect = Connection.ConnectNative;
+            _netConfig.Receive = Connection.ReceiveNative;
+            _netConfig.Send = Connection.SendNative;
+            _netConfig.Timeout = Connection.TimeoutNative;
 
             OnChatNativeEvent += OnChatNative;
             OnAvatarAddNativeEvent += OnAvatarAddNative;
@@ -76,6 +74,7 @@ namespace VpNet
         public Instance()
         {
             Configuration = new InstanceConfiguration();
+            _objectCompletionSources = new Dictionary<int, TaskCompletionSource<object>>();
             _worlds = new Dictionary<string, World>();
             _avatars = new Dictionary<int, Avatar>();
             InitOnce();
@@ -109,7 +108,7 @@ namespace VpNet
                 throw new VpException((ReasonCode)rc);
             }
 
-            _instance = Functions.vp_create(ref netConfig);
+            _instance = Functions.vp_create(ref _netConfig);
 
             SetNativeEvent(Events.Chat, OnChatNative1);
             SetNativeEvent(Events.AvatarAdd, OnAvatarAddNative1);
@@ -160,14 +159,14 @@ namespace VpNet
         {
             lock (this)
             {
-                SetCompletionResult(LoginCompletionSource, rc, null);
+                SetCompletionResult(_loginCompletionSource, rc, null);
             }
         }
         internal void OnEnterCallbackNativeEvent1(IntPtr instance, int rc, int reference)
         {
             lock (this)
             {
-                SetCompletionResult(EnterCompletionSource, rc, null);
+                SetCompletionResult(_enterCompletionSource, rc, null);
                 OnWorldEnter?.Invoke(this, new WorldEnterEventArgs(World));
             }
         }
@@ -176,7 +175,7 @@ namespace VpNet
         {
             lock (this)
             {
-                SetCompletionResult(ConnectCompletionSource, rc, null);
+                SetCompletionResult(_connectCompletionSource, rc, null);
             }
         }
         internal void OnWorldPermissionUserSetCallbackNative1(IntPtr instance, int rc, int reference) { lock (this) { OnWorldPermissionUserSetCallbackNativeEvent(instance, rc, reference); } }
@@ -293,14 +292,14 @@ namespace VpNet
 
             lock (this)
             {
-                ConnectCompletionSource = new TaskCompletionSource<object>();
+                _connectCompletionSource = new TaskCompletionSource<object>();
                 int reason = Functions.vp_connect_universe(_instance, host, port);
                 if (reason != 0)
                 {
                     return Task.FromException<VpException>(new VpException((ReasonCode) reason));
                 }
 
-                return ConnectCompletionSource.Task;
+                return _connectCompletionSource.Task;
             }
         }
 
@@ -339,14 +338,14 @@ namespace VpNet
                 Functions.vp_string_set(_instance, StringAttribute.ApplicationName, Configuration.ApplicationName);
                 Functions.vp_string_set(_instance, StringAttribute.ApplicationVersion, Configuration.ApplicationVersion);
 
-                LoginCompletionSource = new TaskCompletionSource<object>();
+                _loginCompletionSource = new TaskCompletionSource<object>();
                 var rc = Functions.vp_login(_instance, username, password, botname);
                 if (rc != 0)
                 {
                     return Task.FromException(new VpException((ReasonCode)rc));
                 }
 
-                return LoginCompletionSource.Task;
+                return _loginCompletionSource.Task;
             }
         }
 
@@ -377,14 +376,14 @@ namespace VpNet
             {
                 Configuration.World = world;
 
-                EnterCompletionSource = new TaskCompletionSource<object>();
+                _enterCompletionSource = new TaskCompletionSource<object>();
                 var rc = Functions.vp_enter(_instance, world.Name);
                 if (rc != 0)
                 {
                     return Task.FromException(new VpException((ReasonCode)rc));
                 }
 
-                return EnterCompletionSource.Task;
+                return _enterCompletionSource.Task;
             }
         }
 
@@ -1720,9 +1719,9 @@ namespace VpNet
                 Functions.vp_destroy(_instance);
             }
             
-            if (instanceHandle != GCHandle.FromIntPtr(IntPtr.Zero))
+            if (_instanceHandle != GCHandle.FromIntPtr(IntPtr.Zero))
             {
-                instanceHandle.Free();
+                _instanceHandle.Free();
             }
 
             GC.SuppressFinalize(this);
