@@ -37,74 +37,39 @@ namespace VpNet
             InitOnce();
             InitVpNative();
         }
+
+        public event VpEventHandler<ChatMessageEventArgs> OnChatMessage;
+        public event VpEventHandler<AvatarEnterEventArgs> OnAvatarEnter;
+        public event VpEventHandler<AvatarChangeEventArgs> OnAvatarChange;
+        public event VpEventHandler<AvatarLeaveEventArgs> OnAvatarLeave;
+        public event VpEventHandler<AvatarClickEventArgs> OnAvatarClick;
+        public event VpEventHandler<JoinEventArgs> OnJoin;
+
+        public event VpEventHandler<TeleportEventArgs> OnTeleport;
+        public event VpEventHandler<UserAttributesEventArgs> OnUserAttributes;
+
+        public event VpEventHandler<ObjectCreateArgs> OnObjectCreate;
+        public event VpEventHandler<ObjectChangeArgs> OnObjectChange;
+        public event VpEventHandler<ObjectDeleteArgs> OnObjectDelete;
+        public event VpEventHandler<ObjectClickArgs> OnObjectClick;
+        public event VpEventHandler<ObjectBumpArgs> OnObjectBump;
+
+
+        public event VpEventHandler<WorldListEventArgs> OnWorldList;
+        public event VpEventHandler<WorldSettingsChangedEventArgs> OnWorldSettingsChanged;
+        public event VpEventHandler<FriendAddCallbackEventArgs> OnFriendAddCallback;
+        public event VpEventHandler<FriendDeleteCallbackEventArgs> OnFriendDeleteCallback; 
+        public event VpEventHandler<FriendsGetCallbackEventArgs> OnFriendsGetCallback;
+
+        public event VpEventHandler<WorldDisconnectEventArgs> OnWorldDisconnect;
+        public event VpEventHandler<UniverseDisconnectEventArgs> OnUniverseDisconnect;
+
+        public event VpEventHandler<QueryCellResultArgs> OnQueryCellResult;
+        public event VpEventHandler<QueryCellEndArgs> OnQueryCellEnd;
+
+        public event VpEventHandler<WorldEnterEventArgs> OnWorldEnter;
         
-        public delegate void ChatMessageDelegate(Instance sender, ChatMessageEventArgs args);
-
-        public delegate void AvatarChangeDelegate(Instance sender, AvatarChangeEventArgs args);
-        public delegate void AvatarEnterDelegate(Instance sender, AvatarEnterEventArgs args);
-        public delegate void AvatarLeaveDelegate(Instance sender, AvatarLeaveEventArgs args);
-        public delegate void AvatarClickDelegate(Instance sender, AvatarClickEventArgs args);
-
-        public delegate void TeleportDelegate(Instance sender, TeleportEventArgs args);
-
-        public delegate void UserAttributesDelegate(Instance sender, UserAttributesEventArgs args);
-
-        public delegate void WorldListEventDelegate(Instance sender, WorldListEventArgs args);
-
-        public delegate void ObjectCreateDelegate(Instance sender, ObjectCreateArgs args);
-        public delegate void ObjectChangeDelegate(Instance sender, ObjectChangeArgs args);
-        public delegate void ObjectDeleteDelegate(Instance sender, ObjectDeleteArgs args);
-        public delegate void ObjectClickDelegate(Instance sender, ObjectClickArgs args);
-        public delegate void ObjectBumpDelegate(Instance sender, ObjectBumpArgs args);
-
-        public delegate void QueryCellResultDelegate(Instance sender, QueryCellResultArgs args);
-        public delegate void QueryCellEndDelegate(Instance sender, QueryCellEndArgs args);
-
-        public delegate void WorldSettingsChangedDelegate(Instance sender, WorldSettingsChangedEventArgs args);
-        public delegate void WorldDisconnectDelegate(Instance sender, WorldDisconnectEventArgs args);
-
-        public delegate void UniverseDisconnectDelegate(Instance sender, UniverseDisconnectEventArgs args);
-        public delegate void JoinDelegate(Instance sender, JoinEventArgs args);
-
-        public delegate void FriendAddCallbackDelegate(Instance sender, FriendAddCallbackEventArgs args);
-        public delegate void FriendDeleteCallbackDelegate(Instance sender, FriendDeleteCallbackEventArgs args);
-        public delegate void FriendsGetCallbackDelegate(Instance sender, FriendsGetCallbackEventArgs args);
-
-        public delegate void WorldLeaveDelegate(Instance sender, WorldLeaveEventArgs args);
-        
-        public delegate void WorldEnterDelegate(Instance sender, WorldEnterEventArgs args);
-
-        public event ChatMessageDelegate OnChatMessage;
-        public event AvatarEnterDelegate OnAvatarEnter;
-        public event AvatarChangeDelegate OnAvatarChange;
-        public event AvatarLeaveDelegate OnAvatarLeave;
-        public event AvatarClickDelegate OnAvatarClick;
-        public event JoinDelegate OnJoin;
-
-        public event TeleportDelegate OnTeleport;
-        public event UserAttributesDelegate OnUserAttributes;
-
-        public event ObjectCreateDelegate OnObjectCreate;
-        public event ObjectChangeDelegate OnObjectChange;
-        public event ObjectDeleteDelegate OnObjectDelete;
-        public event ObjectClickDelegate OnObjectClick;
-        public event ObjectBumpDelegate OnObjectBump;
-
-
-        public event WorldListEventDelegate OnWorldList;
-        public event WorldSettingsChangedDelegate OnWorldSettingsChanged;
-        public event FriendAddCallbackDelegate OnFriendAddCallback;
-        public event FriendsGetCallbackDelegate OnFriendsGetCallback;
-
-        public event WorldDisconnectDelegate OnWorldDisconnect;
-        public event UniverseDisconnectDelegate OnUniverseDisconnect;
-
-        public event QueryCellResultDelegate OnQueryCellResult;
-        public event QueryCellEndDelegate OnQueryCellEnd;
-
-        public event WorldEnterDelegate OnWorldEnter;
-        
-        public event WorldLeaveDelegate OnWorldLeave;
+        public event VpEventHandler<WorldLeaveEventArgs> OnWorldLeave;
         
         
         internal event EventDelegate OnChatNativeEvent;
