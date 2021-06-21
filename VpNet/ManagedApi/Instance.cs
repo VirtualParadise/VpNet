@@ -139,6 +139,8 @@ namespace VpNet
         internal event CallbackDelegate OnWorldPermissionUserSetCallbackNativeEvent;
         internal event CallbackDelegate OnWorldPermissionSessionSetCallbackNativeEvent;
         internal event CallbackDelegate OnWorldSettingsSetCallbackNativeEvent;
+   
+        public InstanceConfiguration Configuration { get; set; }
 
         /// <summary>
         ///     Gets a read-only view of the avatars currently seen by this instance.
@@ -1830,8 +1832,6 @@ namespace VpNet
         #region Implementation of IInstanceEvents
         
         #endregion
-   
-        public InstanceConfiguration Configuration { get; private set; }
 
 
     }
