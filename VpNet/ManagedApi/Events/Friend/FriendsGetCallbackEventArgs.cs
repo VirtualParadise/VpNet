@@ -1,9 +1,11 @@
-﻿namespace VpNet
+﻿using System;
+
+namespace VpNet
 {
     /// <summary>
     ///     Provides event arguments for <see cref="Instance.OnFriendsGetCallback" />.
     /// </summary>
-    public sealed class FriendsGetCallbackEventArgs
+    public sealed class FriendsGetCallbackEventArgs : EventArgs
     {
         /// <summary>
         ///     Initializes a new instance of the <see cref="FriendsGetCallbackEventArgs" /> class.
