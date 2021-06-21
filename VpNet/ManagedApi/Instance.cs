@@ -1305,7 +1305,7 @@ namespace VpNet
                 
                 if (type == ChatMessageTypes.Console)
                 {
-                    byte r = (byte)Functions.vp_int(sender, IntegerAttribute.ChatRolorRed);
+                    byte r = (byte)Functions.vp_int(sender, IntegerAttribute.ChatColorRed);
                     byte g = (byte)Functions.vp_int(sender, IntegerAttribute.ChatColorGreen);
                     byte b = (byte)Functions.vp_int(sender, IntegerAttribute.ChatColorBlue);
 

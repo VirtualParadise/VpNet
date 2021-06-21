@@ -132,7 +132,7 @@ namespace VpNet.NativeApi
         /// <summary>
         /// Chat Color Red
         /// </summary>
-        ChatRolorRed,
+        ChatColorRed,
         /// <summary>
         /// Chat Color Green
         /// </summary>
