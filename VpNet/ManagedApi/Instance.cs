@@ -28,6 +28,136 @@ namespace VpNet
         private NetConfig _netConfig;
         private GCHandle _instanceHandle;
 
+        public Instance()
+        {
+            Configuration = new InstanceConfiguration();
+            _objectCompletionSources = new Dictionary<int, TaskCompletionSource<object>>();
+            _worlds = new Dictionary<string, World>();
+            _avatars = new Dictionary<int, Avatar>();
+            InitOnce();
+            InitVpNative();
+        }
+        
+        public delegate void ChatMessageDelegate(Instance sender, ChatMessageEventArgs args);
+
+        public delegate void AvatarChangeDelegate(Instance sender, AvatarChangeEventArgs args);
+        public delegate void AvatarEnterDelegate(Instance sender, AvatarEnterEventArgs args);
+        public delegate void AvatarLeaveDelegate(Instance sender, AvatarLeaveEventArgs args);
+        public delegate void AvatarClickDelegate(Instance sender, AvatarClickEventArgs args);
+
+        public delegate void TeleportDelegate(Instance sender, TeleportEventArgs args);
+
+        public delegate void UserAttributesDelegate(Instance sender, UserAttributesEventArgs args);
+
+        public delegate void WorldListEventDelegate(Instance sender, WorldListEventArgs args);
+
+        public delegate void ObjectCreateDelegate(Instance sender, ObjectCreateArgs args);
+        public delegate void ObjectChangeDelegate(Instance sender, ObjectChangeArgs args);
+        public delegate void ObjectDeleteDelegate(Instance sender, ObjectDeleteArgs args);
+        public delegate void ObjectClickDelegate(Instance sender, ObjectClickArgs args);
+        public delegate void ObjectBumpDelegate(Instance sender, ObjectBumpArgs args);
+
+        public delegate void QueryCellResultDelegate(Instance sender, QueryCellResultArgs args);
+        public delegate void QueryCellEndDelegate(Instance sender, QueryCellEndArgs args);
+
+        public delegate void WorldSettingsChangedDelegate(Instance sender, WorldSettingsChangedEventArgs args);
+        public delegate void WorldDisconnectDelegate(Instance sender, WorldDisconnectEventArgs args);
+
+        public delegate void UniverseDisconnectDelegate(Instance sender, UniverseDisconnectEventArgs args);
+        public delegate void JoinDelegate(Instance sender, JoinEventArgs args);
+
+        public delegate void FriendAddCallbackDelegate(Instance sender, FriendAddCallbackEventArgs args);
+        public delegate void FriendDeleteCallbackDelegate(Instance sender, FriendDeleteCallbackEventArgs args);
+        public delegate void FriendsGetCallbackDelegate(Instance sender, FriendsGetCallbackEventArgs args);
+
+        public delegate void WorldLeaveDelegate(Instance sender, WorldLeaveEventArgs args);
+        
+        public delegate void WorldEnterDelegate(Instance sender, WorldEnterEventArgs args);
+
+        public event ChatMessageDelegate OnChatMessage;
+        public event AvatarEnterDelegate OnAvatarEnter;
+        public event AvatarChangeDelegate OnAvatarChange;
+        public event AvatarLeaveDelegate OnAvatarLeave;
+        public event AvatarClickDelegate OnAvatarClick;
+        public event JoinDelegate OnJoin;
+
+        public event TeleportDelegate OnTeleport;
+        public event UserAttributesDelegate OnUserAttributes;
+
+        public event ObjectCreateDelegate OnObjectCreate;
+        public event ObjectChangeDelegate OnObjectChange;
+        public event ObjectDeleteDelegate OnObjectDelete;
+        public event ObjectClickDelegate OnObjectClick;
+        public event ObjectBumpDelegate OnObjectBump;
+
+
+        public event WorldListEventDelegate OnWorldList;
+        public event WorldSettingsChangedDelegate OnWorldSettingsChanged;
+        public event FriendAddCallbackDelegate OnFriendAddCallback;
+        public event FriendsGetCallbackDelegate OnFriendsGetCallback;
+
+        public event WorldDisconnectDelegate OnWorldDisconnect;
+        public event UniverseDisconnectDelegate OnUniverseDisconnect;
+
+        public event QueryCellResultDelegate OnQueryCellResult;
+        public event QueryCellEndDelegate OnQueryCellEnd;
+
+        public event WorldEnterDelegate OnWorldEnter;
+        
+        public event WorldLeaveDelegate OnWorldLeave;
+        
+        
+        internal event EventDelegate OnChatNativeEvent;
+        internal event EventDelegate OnAvatarAddNativeEvent;
+        internal event EventDelegate OnAvatarDeleteNativeEvent;
+        internal event EventDelegate OnAvatarChangeNativeEvent;
+        internal event EventDelegate OnAvatarClickNativeEvent;
+        internal event EventDelegate OnWorldListNativeEvent;
+        internal event EventDelegate OnObjectChangeNativeEvent;
+        internal event EventDelegate OnObjectCreateNativeEvent;
+        internal event EventDelegate OnObjectDeleteNativeEvent;
+        internal event EventDelegate OnObjectClickNativeEvent;
+        internal event EventDelegate OnObjectBumpNativeEvent;
+        internal event EventDelegate OnObjectBumpEndNativeEvent;
+        internal event EventDelegate OnQueryCellEndNativeEvent;
+        internal event EventDelegate OnUniverseDisconnectNativeEvent;
+        internal event EventDelegate OnWorldDisconnectNativeEvent;
+        internal event EventDelegate OnTeleportNativeEvent;
+        internal event EventDelegate OnUserAttributesNativeEvent;
+        internal event EventDelegate OnJoinNativeEvent;
+
+        internal event CallbackDelegate OnObjectCreateCallbackNativeEvent;
+        internal event CallbackDelegate OnObjectChangeCallbackNativeEvent;
+        internal event CallbackDelegate OnObjectDeleteCallbackNativeEvent;
+        internal event CallbackDelegate OnObjectGetCallbackNativeEvent;
+        internal event CallbackDelegate OnObjectLoadCallbackNativeEvent;
+        internal event CallbackDelegate OnFriendAddCallbackNativeEvent;
+        internal event CallbackDelegate OnFriendDeleteCallbackNativeEvent;
+        internal event CallbackDelegate OnGetFriendsCallbackNativeEvent;
+
+        internal event CallbackDelegate OnJoinCallbackNativeEvent;
+        internal event CallbackDelegate OnWorldPermissionUserSetCallbackNativeEvent;
+        internal event CallbackDelegate OnWorldPermissionSessionSetCallbackNativeEvent;
+        internal event CallbackDelegate OnWorldSettingsSetCallbackNativeEvent;
+
+        /// <summary>
+        ///     Gets a read-only view of the avatars currently seen by this instance.
+        /// </summary>
+        /// <value>A read-only view of the avatars currently seen by this instance.</value>
+        public IReadOnlyCollection<Avatar> Avatars => _avatars.Values;
+
+        /// <summary>
+        ///     Gets the universe to which this instance is currently connected.
+        /// </summary>
+        /// <value>The universe to which this instance is currently connected.</value>
+        public Universe Universe { get; private set; }
+
+        /// <summary>
+        ///     Gets the world to which this instance is currently connected.
+        /// </summary>
+        /// <value>The world to which this instance is currently connected.</value>
+        public World World { get; private set; }
+
         internal void InitOnce()
         {
             _instanceHandle = GCHandle.Alloc(this);
@@ -70,34 +200,6 @@ namespace VpNet
             OnFriendDeleteCallbackNativeEvent += OnFriendDeleteCallbackNative;
             OnGetFriendsCallbackNativeEvent += OnGetFriendsCallbackNative;
         }
-
-        public Instance()
-        {
-            Configuration = new InstanceConfiguration();
-            _objectCompletionSources = new Dictionary<int, TaskCompletionSource<object>>();
-            _worlds = new Dictionary<string, World>();
-            _avatars = new Dictionary<int, Avatar>();
-            InitOnce();
-            InitVpNative();
-        }
-
-        /// <summary>
-        ///     Gets a read-only view of the avatars currently seen by this instance.
-        /// </summary>
-        /// <value>A read-only view of the avatars currently seen by this instance.</value>
-        public IReadOnlyCollection<Avatar> Avatars => _avatars.Values;
-        
-        /// <summary>
-        ///     Gets the universe to which this instance is currently connected.
-        /// </summary>
-        /// <value>The universe to which this instance is currently connected.</value>
-        public Universe Universe { get; private set; }
-        
-        /// <summary>
-        ///     Gets the world to which this instance is currently connected.
-        /// </summary>
-        /// <value>The world to which this instance is currently connected.</value>
-        public World World { get; private set; }
 
         private void InitVpNative()
         {
@@ -1079,74 +1181,6 @@ namespace VpNet
             Functions.vp_callback_set(_instance, (int)callbackType, callbackFunction);
         }
 
-        //public delegate void Event(T sender);
-        public delegate void ChatMessageDelegate(Instance sender, ChatMessageEventArgs args);
-
-        public delegate void AvatarChangeDelegate(Instance sender, AvatarChangeEventArgs args);
-        public delegate void AvatarEnterDelegate(Instance sender, AvatarEnterEventArgs args);
-        public delegate void AvatarLeaveDelegate(Instance sender, AvatarLeaveEventArgs args);
-        public delegate void AvatarClickDelegate(Instance sender, AvatarClickEventArgs args);
-
-        public delegate void TeleportDelegate(Instance sender, TeleportEventArgs args);
-
-        public delegate void UserAttributesDelegate(Instance sender, UserAttributesEventArgs args);
-
-        public delegate void WorldListEventDelegate(Instance sender, WorldListEventArgs args);
-
-        public delegate void ObjectCreateDelegate(Instance sender, ObjectCreateArgs args);
-        public delegate void ObjectChangeDelegate(Instance sender, ObjectChangeArgs args);
-        public delegate void ObjectDeleteDelegate(Instance sender, ObjectDeleteArgs args);
-        public delegate void ObjectClickDelegate(Instance sender, ObjectClickArgs args);
-        public delegate void ObjectBumpDelegate(Instance sender, ObjectBumpArgs args);
-
-        public delegate void QueryCellResultDelegate(Instance sender, QueryCellResultArgs args);
-        public delegate void QueryCellEndDelegate(Instance sender, QueryCellEndArgs args);
-
-        public delegate void WorldSettingsChangedDelegate(Instance sender, WorldSettingsChangedEventArgs args);
-        public delegate void WorldDisconnectDelegate(Instance sender, WorldDisconnectEventArgs args);
-
-        public delegate void UniverseDisconnectDelegate(Instance sender, UniverseDisconnectEventArgs args);
-        public delegate void JoinDelegate(Instance sender, JoinEventArgs args);
-
-        public delegate void FriendAddCallbackDelegate(Instance sender, FriendAddCallbackEventArgs args);
-        public delegate void FriendDeleteCallbackDelegate(Instance sender, FriendDeleteCallbackEventArgs args);
-        public delegate void FriendsGetCallbackDelegate(Instance sender, FriendsGetCallbackEventArgs args);
-
-        public event ChatMessageDelegate OnChatMessage;
-        public event AvatarEnterDelegate OnAvatarEnter;
-        public event AvatarChangeDelegate OnAvatarChange;
-        public event AvatarLeaveDelegate OnAvatarLeave;
-        public event AvatarClickDelegate OnAvatarClick;
-        public event JoinDelegate OnJoin;
-
-        public event TeleportDelegate OnTeleport;
-        public event UserAttributesDelegate OnUserAttributes;
-
-        public event ObjectCreateDelegate OnObjectCreate;
-        public event ObjectChangeDelegate OnObjectChange;
-        public event ObjectDeleteDelegate OnObjectDelete;
-        public event ObjectClickDelegate OnObjectClick;
-        public event ObjectBumpDelegate OnObjectBump;
-
-
-        public event WorldListEventDelegate OnWorldList;
-        public event WorldSettingsChangedDelegate OnWorldSettingsChanged;
-        public event FriendAddCallbackDelegate OnFriendAddCallback;
-        public event FriendsGetCallbackDelegate OnFriendsGetCallback;
-
-        public event WorldDisconnectDelegate OnWorldDisconnect;
-        public event UniverseDisconnectDelegate OnUniverseDisconnect;
-
-        public event QueryCellResultDelegate OnQueryCellResult;
-        public event QueryCellEndDelegate OnQueryCellEnd;
-
-        /* Events indirectly assosicated with VP */
-
-        public delegate void WorldEnterDelegate(Instance sender, WorldEnterEventArgs args);
-        public event WorldEnterDelegate OnWorldEnter;
-        public delegate void WorldLeaveDelegate(Instance sender, WorldLeaveEventArgs args);
-        public event WorldLeaveDelegate OnWorldLeave;
-
         #endregion
 
         #region CallbackHandlers
@@ -1794,39 +1828,6 @@ namespace VpNet
         #endregion
 
         #region Implementation of IInstanceEvents
-        
-        internal event EventDelegate OnChatNativeEvent;
-        internal event EventDelegate OnAvatarAddNativeEvent;
-        internal event EventDelegate OnAvatarDeleteNativeEvent;
-        internal event EventDelegate OnAvatarChangeNativeEvent;
-        internal event EventDelegate OnAvatarClickNativeEvent;
-        internal event EventDelegate OnWorldListNativeEvent;
-        internal event EventDelegate OnObjectChangeNativeEvent;
-        internal event EventDelegate OnObjectCreateNativeEvent;
-        internal event EventDelegate OnObjectDeleteNativeEvent;
-        internal event EventDelegate OnObjectClickNativeEvent;
-        internal event EventDelegate OnObjectBumpNativeEvent;
-        internal event EventDelegate OnObjectBumpEndNativeEvent;
-        internal event EventDelegate OnQueryCellEndNativeEvent;
-        internal event EventDelegate OnUniverseDisconnectNativeEvent;
-        internal event EventDelegate OnWorldDisconnectNativeEvent;
-        internal event EventDelegate OnTeleportNativeEvent;
-        internal event EventDelegate OnUserAttributesNativeEvent;
-        internal event EventDelegate OnJoinNativeEvent;
-
-        internal event CallbackDelegate OnObjectCreateCallbackNativeEvent;
-        internal event CallbackDelegate OnObjectChangeCallbackNativeEvent;
-        internal event CallbackDelegate OnObjectDeleteCallbackNativeEvent;
-        internal event CallbackDelegate OnObjectGetCallbackNativeEvent;
-        internal event CallbackDelegate OnObjectLoadCallbackNativeEvent;
-        internal event CallbackDelegate OnFriendAddCallbackNativeEvent;
-        internal event CallbackDelegate OnFriendDeleteCallbackNativeEvent;
-        internal event CallbackDelegate OnGetFriendsCallbackNativeEvent;
-
-        internal event CallbackDelegate OnJoinCallbackNativeEvent;
-        internal event CallbackDelegate OnWorldPermissionUserSetCallbackNativeEvent;
-        internal event CallbackDelegate OnWorldPermissionSessionSetCallbackNativeEvent;
-        internal event CallbackDelegate OnWorldSettingsSetCallbackNativeEvent;
         
         #endregion
    
