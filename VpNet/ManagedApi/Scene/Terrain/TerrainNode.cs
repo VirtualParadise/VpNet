@@ -10,7 +10,7 @@ namespace VpNet
         /// </summary>
         public TerrainNode()
         {
-            Cells = new TerrainCell[8,8];
+            Cells = new TerrainCell[8, 8];
         }
 
         /// <summary>
@@ -22,9 +22,9 @@ namespace VpNet
             X = Functions.vp_int(instanceHandle, IntegerAttribute.TerrainNodeX);
             Z = Functions.vp_int(instanceHandle, IntegerAttribute.TerrainNodeZ);
             Revision = Functions.vp_int(instanceHandle, IntegerAttribute.TerrainNodeRevision);
-            
+
             var data = Functions.GetData(instanceHandle, DataAttribute.TerrainNodeData);
-            Cells    = DataConverters.NodeDataTo2DArray(data);
+            Cells = DataConverters.NodeDataTo2DArray(data);
         }
 
         /// <summary>

@@ -1,6 +1,4 @@
-﻿using VpNet.Interfaces;
-
-namespace VpNet.Extensions
+﻿namespace VpNet.Extensions
 {
     public static class CompassExtensions
     {

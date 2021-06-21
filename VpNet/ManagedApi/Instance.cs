@@ -5,8 +5,6 @@ using System.Net;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
-using VpNet.Extensions;
-using VpNet.Interfaces;
 using VpNet.ManagedApi.System;
 using VpNet.NativeApi;
 
@@ -15,7 +13,6 @@ namespace VpNet
     /// <summary>
     ///     Provides a managed API which offers full encapsulation of the native SDK.
     /// </summary>
-    [Serializable]
     public partial class Instance
     {
         private const string DefaultUniverseHost = "universe.virtualparadise.org";
