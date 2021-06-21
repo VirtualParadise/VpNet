@@ -1423,8 +1423,8 @@ namespace VpNet
                     clickedSession = avatarSession;
 
                 double hitX = Functions.vp_double(sender, FloatAttribute.ClickHitX);
-                double hitY = Functions.vp_double(sender, FloatAttribute.ClickHitX);
-                double hitZ = Functions.vp_double(sender, FloatAttribute.ClickHitX);
+                double hitY = Functions.vp_double(sender, FloatAttribute.ClickHitY);
+                double hitZ = Functions.vp_double(sender, FloatAttribute.ClickHitZ);
                 hitPoint = new Vector3(hitX, hitY, hitZ);
             }
             
@@ -1450,8 +1450,8 @@ namespace VpNet
                 session = Functions.vp_int(sender, IntegerAttribute.AvatarSession);
                 objectId = Functions.vp_int(sender, IntegerAttribute.ObjectId);
                 double hitX = Functions.vp_double(sender, FloatAttribute.ClickHitX);
-                double hitY = Functions.vp_double(sender, FloatAttribute.ClickHitX);
-                double hitZ = Functions.vp_double(sender, FloatAttribute.ClickHitX);
+                double hitY = Functions.vp_double(sender, FloatAttribute.ClickHitY);
+                double hitZ = Functions.vp_double(sender, FloatAttribute.ClickHitZ);
                 hitPoint = new Vector3(hitX, hitY, hitZ);
             }
 
