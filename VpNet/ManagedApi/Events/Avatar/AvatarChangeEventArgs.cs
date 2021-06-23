@@ -3,7 +3,7 @@
 namespace VpNet
 {
     /// <summary>
-    ///     Provides event arguments for <see cref="VirtualParadiseClient.OnAvatarChange" />.
+    ///     Provides event arguments for <see cref="VirtualParadiseClient.AvatarChanged" />.
     /// </summary>
     public sealed class AvatarChangeEventArgs : TimedEventArgs
     {

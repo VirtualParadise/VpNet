@@ -1,7 +1,7 @@
 ﻿namespace VpNet
 {
     /// <summary>
-    ///     Provides event arguments for <see cref="VirtualParadiseClient.OnObjectClick" />.
+    ///     Provides event arguments for <see cref="VirtualParadiseClient.ObjectClicked" />.
     /// </summary>
     public sealed class ObjectClickArgs : TimedEventArgs
     {

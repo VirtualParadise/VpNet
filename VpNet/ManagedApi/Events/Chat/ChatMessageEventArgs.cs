@@ -1,7 +1,7 @@
 ﻿namespace VpNet
 {
     /// <summary>
-    ///     Provides event arguments for <see cref="VirtualParadiseClient.OnChatMessage" />.
+    ///     Provides event arguments for <see cref="VirtualParadiseClient.ChatMessageReceived" />.
     /// </summary>
     public sealed class ChatMessageEventArgs : TimedEventArgs
     {

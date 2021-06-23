@@ -1,7 +1,7 @@
 ﻿namespace VpNet
 {
     /// <summary>
-    ///     Provides event arguments for <see cref="VirtualParadiseClient.OnObjectCreate" />.
+    ///     Provides event arguments for <see cref="VirtualParadiseClient.ObjectCreated" />.
     /// </summary>
     public sealed class ObjectCreateArgs : TimedEventArgs
     {

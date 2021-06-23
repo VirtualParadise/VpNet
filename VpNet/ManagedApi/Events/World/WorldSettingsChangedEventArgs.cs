@@ -1,7 +1,7 @@
 ﻿namespace VpNet
 {
     /// <summary>
-    ///     Provides event arguments for <see cref="VirtualParadiseClient.OnWorldSettingsChanged" />.
+    ///     Provides event arguments for <see cref="VirtualParadiseClient.WorldSettingsChanged" />.
     /// </summary>
     public sealed class WorldSettingsChangedEventArgs : TimedEventArgs
     {

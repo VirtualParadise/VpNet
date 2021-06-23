@@ -1,7 +1,7 @@
 ﻿namespace VpNet
 {
     /// <summary>
-    /// Default Event Arguments implementation mapping. You can define your own mappings when implementing VpNet.Abstract.BaseInstanceT
+    ///     Provides event arguments for <see cref="VirtualParadiseClient.AvatarLeft" />.
     /// </summary>
     public sealed class AvatarLeaveEventArgs : TimedEventArgs
     {

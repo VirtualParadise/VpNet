@@ -1,7 +1,7 @@
 ﻿namespace VpNet
 {
     /// <summary>
-    ///     Provides event arguments for <see cref="VirtualParadiseClient.OnWorldEnter" />.
+    ///     Provides event arguments for <see cref="VirtualParadiseClient.WorldEntered" />.
     /// </summary>
     public sealed class WorldEnterEventArgs : TimedEventArgs
     {

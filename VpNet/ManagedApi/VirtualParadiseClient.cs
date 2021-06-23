@@ -40,39 +40,38 @@ namespace VpNet
             InitVpNative();
         }
 
-        public event VpEventHandler<ChatMessageEventArgs> OnChatMessage;
-        public event VpEventHandler<AvatarEnterEventArgs> OnAvatarEnter;
-        public event VpEventHandler<AvatarChangeEventArgs> OnAvatarChange;
-        public event VpEventHandler<AvatarLeaveEventArgs> OnAvatarLeave;
-        public event VpEventHandler<AvatarClickEventArgs> OnAvatarClick;
-        public event VpEventHandler<JoinEventArgs> OnJoin;
+        public event VpEventHandler<ChatMessageEventArgs> ChatMessageReceived;
+        public event VpEventHandler<AvatarEnterEventArgs> AvatarEntered;
+        public event VpEventHandler<AvatarChangeEventArgs> AvatarChanged;
+        public event VpEventHandler<AvatarLeaveEventArgs> AvatarLeft;
+        public event VpEventHandler<AvatarClickEventArgs> AvatarClicked;
+        public event VpEventHandler<JoinEventArgs> JoinRequestReceived;
 
-        public event VpEventHandler<TeleportEventArgs> OnTeleport;
-        public event VpEventHandler<UserAttributesEventArgs> OnUserAttributes;
+        public event VpEventHandler<TeleportEventArgs> Teleported;
+        public event VpEventHandler<UserAttributesEventArgs> UserAttributesReceived;
 
-        public event VpEventHandler<ObjectCreateArgs> OnObjectCreate;
-        public event VpEventHandler<ObjectChangeArgs> OnObjectChange;
-        public event VpEventHandler<ObjectDeleteArgs> OnObjectDelete;
-        public event VpEventHandler<ObjectClickArgs> OnObjectClick;
-        public event VpEventHandler<ObjectBumpArgs> OnObjectBump;
+        public event VpEventHandler<ObjectCreateArgs> ObjectCreated;
+        public event VpEventHandler<ObjectChangeArgs> ObjectChanged;
+        public event VpEventHandler<ObjectDeleteArgs> ObjectDeleted;
+        public event VpEventHandler<ObjectClickArgs> ObjectClicked;
+        public event VpEventHandler<ObjectBumpArgs> ObjectBumped;
 
 
-        public event VpEventHandler<WorldListEventArgs> OnWorldList;
-        public event VpEventHandler<WorldSettingsChangedEventArgs> OnWorldSettingsChanged;
-        public event VpEventHandler<FriendAddCallbackEventArgs> OnFriendAddCallback;
-        public event VpEventHandler<FriendDeleteCallbackEventArgs> OnFriendDeleteCallback; 
-        public event VpEventHandler<FriendsGetCallbackEventArgs> OnFriendsGetCallback;
+        public event VpEventHandler<WorldListEventArgs> WorldListEntryReceived;
+        public event VpEventHandler<WorldSettingsChangedEventArgs> WorldSettingsChanged;
+        public event VpEventHandler<FriendAddCallbackEventArgs> FriendAdded;
+        public event VpEventHandler<FriendDeleteCallbackEventArgs> FriendDeleted; 
+        public event VpEventHandler<FriendsGetCallbackEventArgs> FriendReceived;
 
-        public event VpEventHandler<WorldDisconnectEventArgs> OnWorldDisconnect;
-        public event VpEventHandler<UniverseDisconnectEventArgs> OnUniverseDisconnect;
+        public event VpEventHandler<WorldDisconnectEventArgs> WorldDisconnected;
+        public event VpEventHandler<UniverseDisconnectEventArgs> UniverseDisconnected;
 
-        public event VpEventHandler<QueryCellResultArgs> OnQueryCellResult;
-        public event VpEventHandler<QueryCellEndArgs> OnQueryCellEnd;
+        public event VpEventHandler<QueryCellResultArgs> QueryCellResult;
+        public event VpEventHandler<QueryCellEndArgs> QueryCellEnd;
 
-        public event VpEventHandler<WorldEnterEventArgs> OnWorldEnter;
+        public event VpEventHandler<WorldEnterEventArgs> WorldEntered;
         
-        public event VpEventHandler<WorldLeaveEventArgs> OnWorldLeave;
-        
+        public event VpEventHandler<WorldLeaveEventArgs> WorldLeft;
         
         internal event EventDelegate OnChatNativeEvent;
         internal event EventDelegate OnAvatarAddNativeEvent;
@@ -244,7 +243,7 @@ namespace VpNet
             lock (this)
             {
                 SetCompletionResult(_enterCompletionSource, rc, null);
-                OnWorldEnter?.Invoke(this, new WorldEnterEventArgs(World));
+                WorldEntered?.Invoke(this, new WorldEnterEventArgs(World));
             }
         }
         internal void OnJoinCallbackNativeEvent1(IntPtr instance, int rc, int reference) { lock (this) { OnJoinCallbackNativeEvent(instance, rc, reference); } }
@@ -500,7 +499,7 @@ namespace VpNet
             lock (this)
             {
                 CheckReasonCode(Functions.vp_leave(InternalInstance));
-                OnWorldLeave?.Invoke(this, new WorldLeaveEventArgs(Configuration.World));
+                WorldLeft?.Invoke(this, new WorldLeaveEventArgs(Configuration.World));
             }
         }
 
@@ -509,7 +508,7 @@ namespace VpNet
             _avatars.Clear();
             Functions.vp_destroy(InternalInstance);
             InitVpNative();
-            OnUniverseDisconnect?.Invoke(this, new UniverseDisconnectEventArgs(Universe, DisconnectType.UserDisconnected));
+            UniverseDisconnected?.Invoke(this, new UniverseDisconnectEventArgs(Universe, DisconnectType.UserDisconnected));
 
             Universe = null;
         }
@@ -1158,7 +1157,7 @@ namespace VpNet
 
         private void OnUserAttributesNative(IntPtr sender)
         {
-            if (OnUserAttributes == null)
+            if (UserAttributesReceived == null)
                 return;
             
             UserAttributes attributes;
@@ -1180,12 +1179,12 @@ namespace VpNet
             }
 
             var args = new UserAttributesEventArgs(attributes);
-            OnUserAttributes(this, args);
+            UserAttributesReceived(this, args);
         }
 
         private void OnTeleportNative(IntPtr sender)
         {
-            if (OnTeleport == null) return;
+            if (Teleported == null) return;
             
             TeleportEventArgs args;
             
@@ -1213,13 +1212,13 @@ namespace VpNet
                 args = new TeleportEventArgs(avatar, location);
             }
             
-            Debug.Assert(!(OnTeleport is null), $"{nameof(OnTeleport)} != null");
-            OnTeleport.Invoke(this, args);
+            Debug.Assert(!(Teleported is null), $"{nameof(Teleported)} != null");
+            Teleported.Invoke(this, args);
         }
 
         private void OnGetFriendsCallbackNative(IntPtr sender, int rc, int reference)
         {
-            if (OnFriendAddCallback == null)
+            if (FriendAdded == null)
                 return;
 
             int userId;
@@ -1236,8 +1235,8 @@ namespace VpNet
             var friend = new Friend(userId, name, isOnline);
             var args = new FriendsGetCallbackEventArgs(friend);
             
-            Debug.Assert(!(OnFriendsGetCallback is null), $"{nameof(OnFriendsGetCallback)} != null");
-            OnFriendsGetCallback.Invoke(this, args);
+            Debug.Assert(!(FriendReceived is null), $"{nameof(FriendReceived)} != null");
+            FriendReceived.Invoke(this, args);
         }
 
         private void OnFriendDeleteCallbackNative(IntPtr sender, int rc, int reference)
@@ -1252,7 +1251,7 @@ namespace VpNet
 
         private void OnChatNative(IntPtr sender)
         {
-            if (OnChatMessage is null)
+            if (ChatMessageReceived is null)
                 return;
 
             Avatar avatar;
@@ -1283,7 +1282,7 @@ namespace VpNet
             }
 
             var args = new ChatMessageEventArgs(avatar, message);
-            OnChatMessage.Invoke(this, args);
+            ChatMessageReceived.Invoke(this, args);
         }
 
         private void OnAvatarAddNative(IntPtr sender)
@@ -1318,10 +1317,10 @@ namespace VpNet
                     _avatars.Add(session, avatar);
             }
             
-            if (OnAvatarEnter is null) return;
+            if (AvatarEntered is null) return;
 
             var args = new AvatarEnterEventArgs(avatar);
-            OnAvatarEnter?.Invoke(this, args);
+            AvatarEntered?.Invoke(this, args);
         }
 
         private void OnAvatarChangeNative(IntPtr sender)
@@ -1350,7 +1349,7 @@ namespace VpNet
                 avatar.Rotation = new Vector3(pitch, yaw, 0);
                 avatar.LastChanged = DateTimeOffset.Now;
             }
-            OnAvatarChange?.Invoke(this, new AvatarChangeEventArgs(avatar, oldAvatar));
+            AvatarChanged?.Invoke(this, new AvatarChangeEventArgs(avatar, oldAvatar));
         }
 
         private void OnAvatarDeleteNative(IntPtr sender)
@@ -1366,12 +1365,12 @@ namespace VpNet
                 _avatars.Remove(session);
             }
             
-            OnAvatarLeave?.Invoke(this, new AvatarLeaveEventArgs(avatar));
+            AvatarLeft?.Invoke(this, new AvatarLeaveEventArgs(avatar));
         }
 
         private void OnAvatarClickNative(IntPtr sender)
         {
-            if (OnAvatarClick is null)
+            if (AvatarClicked is null)
                 return;
             
             int avatarSession;
@@ -1396,13 +1395,13 @@ namespace VpNet
             var clickedAvatar = GetAvatar(clickedSession);
             var args = new AvatarClickEventArgs(avatar, clickedAvatar, hitPoint);
             
-            Debug.Assert(!(OnAvatarClick is null), $"{nameof(OnAvatarClick)} != null");
-            OnAvatarClick.Invoke(this, args);
+            Debug.Assert(!(AvatarClicked is null), $"{nameof(AvatarClicked)} != null");
+            AvatarClicked.Invoke(this, args);
         }
 
         private void OnObjectClickNative(IntPtr sender)
         {
-            if (OnObjectClick is null)
+            if (ObjectClicked is null)
                 return;
             
             int session;
@@ -1423,13 +1422,13 @@ namespace VpNet
             var vpObject = new VpObject { Id = objectId };
             var args = new ObjectClickArgs(avatar, vpObject, hitPoint);
             
-            Debug.Assert(!(OnObjectClick is null), $"{nameof(OnObjectClick)} != null");
-            OnObjectClick.Invoke(this, args);
+            Debug.Assert(!(ObjectClicked is null), $"{nameof(ObjectClicked)} != null");
+            ObjectClicked.Invoke(this, args);
         }
 
         private void OnObjectBumpNative(IntPtr sender)
         {
-            if (OnObjectBump == null)
+            if (ObjectBumped == null)
                 return;
 
             int session;
@@ -1445,13 +1444,13 @@ namespace VpNet
             var vpObject = new VpObject { Id = objectId };
             var args = new ObjectBumpArgs(avatar, vpObject, BumpType.BumpBegin);
 
-            Debug.Assert(!(OnObjectBump is null), $"{nameof(OnObjectBump)} != null");
-            OnObjectBump.Invoke(this, args);
+            Debug.Assert(!(ObjectBumped is null), $"{nameof(ObjectBumped)} != null");
+            ObjectBumped.Invoke(this, args);
         }
 
         private void OnObjectBumpEndNative(IntPtr sender)
         {
-            if (OnObjectBump == null)
+            if (ObjectBumped == null)
                 return;
             
             int session;
@@ -1467,13 +1466,13 @@ namespace VpNet
             var vpObject = new VpObject { Id = objectId };
             var args = new ObjectBumpArgs(avatar, vpObject, BumpType.BumpEnd);
 
-            Debug.Assert(!(OnObjectBump is null), $"{nameof(OnObjectBump)} != null");
-            OnObjectBump.Invoke(this, args);
+            Debug.Assert(!(ObjectBumped is null), $"{nameof(ObjectBumped)} != null");
+            ObjectBumped.Invoke(this, args);
         }
 
         private void OnObjectDeleteNative(IntPtr sender)
         {
-            if (OnObjectDelete == null)
+            if (ObjectDeleted == null)
                 return;
             
             int session;
@@ -1489,13 +1488,13 @@ namespace VpNet
             var vpObject = new VpObject { Id = objectId };
             var args = new ObjectDeleteArgs(avatar, vpObject);
             
-            Debug.Assert(!(OnObjectDelete is null), $"{nameof(OnObjectDelete)} != null");
-            OnObjectDelete.Invoke(this, args);
+            Debug.Assert(!(ObjectDeleted is null), $"{nameof(ObjectDeleted)} != null");
+            ObjectDeleted.Invoke(this, args);
         }
 
         private void OnObjectCreateNative(IntPtr sender)
         {
-            if (OnObjectCreate is null && OnQueryCellResult is null)
+            if (ObjectCreated is null && QueryCellResult is null)
                 return;
             
             int session;
@@ -1510,9 +1509,9 @@ namespace VpNet
             GetVpObject(sender, out VpObject vpObject);
             
             if (session == 0)
-                OnQueryCellResult?.Invoke(this, new QueryCellResultArgs(vpObject));
+                QueryCellResult?.Invoke(this, new QueryCellResultArgs(vpObject));
             else
-                OnObjectCreate?.Invoke(this, new ObjectCreateArgs(avatar, vpObject));
+                ObjectCreated?.Invoke(this, new ObjectCreateArgs(avatar, vpObject));
         }
 
         public Avatar GetAvatar(int session)
@@ -1553,7 +1552,7 @@ namespace VpNet
 
         private void OnObjectChangeNative(IntPtr sender)
         {
-            if (OnObjectChange == null) return;
+            if (ObjectChanged == null) return;
             VpObject vpObject;
             int sessionId;
             lock (this)
@@ -1561,12 +1560,12 @@ namespace VpNet
                 GetVpObject(sender, out vpObject);
                 sessionId = Functions.vp_int(sender, IntegerAttribute.AvatarSession);
             }
-            OnObjectChange(this, new ObjectChangeArgs(GetAvatar(sessionId), vpObject));
+            ObjectChanged(this, new ObjectChangeArgs(GetAvatar(sessionId), vpObject));
         }
 
         private void OnQueryCellEndNative(IntPtr sender)
         {
-            if (OnQueryCellEnd == null) return;
+            if (QueryCellEnd == null) return;
             int x;
             int z;
             lock (this)
@@ -1574,12 +1573,12 @@ namespace VpNet
                 x = Functions.vp_int(sender, IntegerAttribute.CellX);
                 z = Functions.vp_int(sender, IntegerAttribute.CellZ);
             }
-            OnQueryCellEnd(this, new QueryCellEndArgs(new Cell(x, z)));
+            QueryCellEnd(this, new QueryCellEndArgs(new Cell(x, z)));
         }
 
         private void OnWorldListNative(IntPtr sender)
         {
-            if (OnWorldList == null)
+            if (WorldListEntryReceived == null)
                 return;
 
             World data;
@@ -1596,7 +1595,7 @@ namespace VpNet
             if (_worlds.ContainsKey(data.Name))
                 _worlds.Remove(data.Name);
             _worlds.Add(data.Name,data);
-            OnWorldList(this, new WorldListEventArgs(data));
+            WorldListEntryReceived(this, new WorldListEventArgs(data));
         }
 
         private void OnWorldSettingNativeEvent(IntPtr instance)
@@ -1617,24 +1616,24 @@ namespace VpNet
             // TODO: some world, such as Test do not specify a objectpath, maybe there's a default search path we dont know of.
             var world = _worlds[Configuration.World.Name];
 
-            OnWorldSettingsChanged?.Invoke(this, new WorldSettingsChangedEventArgs(_worlds[Configuration.World.Name]));
+            WorldSettingsChanged?.Invoke(this, new WorldSettingsChangedEventArgs(_worlds[Configuration.World.Name]));
         }
 
         private void OnUniverseDisconnectNative(IntPtr sender)
         {
-            if (OnUniverseDisconnect == null) return;
-            OnUniverseDisconnect(this, new UniverseDisconnectEventArgs(Universe));
+            if (UniverseDisconnected == null) return;
+            UniverseDisconnected(this, new UniverseDisconnectEventArgs(Universe));
         }
 
         private void OnWorldDisconnectNative(IntPtr sender)
         {
-            if (OnWorldDisconnect == null) return;
-            OnWorldDisconnect(this, new WorldDisconnectEventArgs(World));
+            if (WorldDisconnected == null) return;
+            WorldDisconnected(this, new WorldDisconnectEventArgs(World));
         }
 
         private void OnJoinNative(IntPtr sender)
         {
-            if (OnJoin == null) return;
+            if (JoinRequestReceived == null) return;
 
             lock (this)
             {
@@ -1644,7 +1643,7 @@ namespace VpNet
 
                 var request = new JoinRequest(this, requestId, userId, name);
                 var args = new JoinEventArgs(request);
-                OnJoin?.Invoke(this, args);
+                JoinRequestReceived?.Invoke(this, args);
             }
         }
 
@@ -1656,25 +1655,25 @@ namespace VpNet
         {
             lock (this)
             {
-                OnChatMessage = null;
-                OnAvatarEnter = null;
-                OnAvatarChange = null;
-                OnAvatarLeave = null;
-                OnObjectCreate = null;
-                OnObjectChange = null;
-                OnObjectDelete = null;
-                OnObjectClick = null;
-                OnObjectBump = null;
-                OnWorldList = null;
-                OnWorldDisconnect = null;
-                OnWorldSettingsChanged = null;
-                OnWorldDisconnect = null;
-                OnUniverseDisconnect = null;
-                OnUserAttributes = null;
-                OnQueryCellResult = null;
-                OnQueryCellEnd = null;
-                OnFriendAddCallback = null;
-                OnFriendsGetCallback = null;
+                ChatMessageReceived = null;
+                AvatarEntered = null;
+                AvatarChanged = null;
+                AvatarLeft = null;
+                ObjectCreated = null;
+                ObjectChanged = null;
+                ObjectDeleted = null;
+                ObjectClicked = null;
+                ObjectBumped = null;
+                WorldListEntryReceived = null;
+                WorldDisconnected = null;
+                WorldSettingsChanged = null;
+                WorldDisconnected = null;
+                UniverseDisconnected = null;
+                UserAttributesReceived = null;
+                QueryCellResult = null;
+                QueryCellEnd = null;
+                FriendAdded = null;
+                FriendReceived = null;
             }
         }
 

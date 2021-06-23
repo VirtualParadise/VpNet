@@ -1,7 +1,7 @@
 ﻿namespace VpNet
 {
     /// <summary>
-    ///     Provides event arguments for <see cref="VirtualParadiseClient.OnQueryCellResult" />.
+    ///     Provides event arguments for <see cref="VirtualParadiseClient.QueryCellResult" />.
     /// </summary>
     public sealed class QueryCellResultArgs : TimedEventArgs
     {

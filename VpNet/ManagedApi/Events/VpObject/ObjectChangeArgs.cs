@@ -1,7 +1,7 @@
 ﻿namespace VpNet
 {
     /// <summary>
-    ///     Provides event arguments for <see cref="VirtualParadiseClient.OnObjectChange" />.
+    ///     Provides event arguments for <see cref="VirtualParadiseClient.ObjectChanged" />.
     /// </summary>
     public sealed class ObjectChangeArgs : TimedEventArgs
     {

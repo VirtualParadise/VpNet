@@ -1,7 +1,7 @@
 ﻿namespace VpNet
 {
     /// <summary>
-    ///     Provides event arguments for <see cref="VirtualParadiseClient.OnJoin" />.
+    ///     Provides event arguments for <see cref="VirtualParadiseClient.JoinRequestReceived" />.
     /// </summary>
     public sealed class JoinEventArgs : TimedEventArgs
     {

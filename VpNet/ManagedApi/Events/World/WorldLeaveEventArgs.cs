@@ -1,7 +1,7 @@
 ﻿namespace VpNet
 {
     /// <summary>
-    ///     Provides event arguments for <see cref="VirtualParadiseClient.OnWorldLeave" />.
+    ///     Provides event arguments for <see cref="VirtualParadiseClient.WorldLeft" />.
     /// </summary>
     public sealed class WorldLeaveEventArgs : TimedEventArgs
     {

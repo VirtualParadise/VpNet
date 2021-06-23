@@ -1,7 +1,7 @@
 ﻿namespace VpNet
 {
     /// <summary>
-    ///     Represents a class which contains information about an avatar click event.
+    ///     Provides event arguments for <see cref="VirtualParadiseClient.AvatarClicked" />.
     /// </summary>
     public sealed class AvatarClickEventArgs : TimedEventArgs
     {

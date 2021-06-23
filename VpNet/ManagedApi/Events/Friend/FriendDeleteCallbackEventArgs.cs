@@ -3,7 +3,7 @@
 namespace VpNet
 {
     /// <summary>
-    ///     Provides event arguments for <see cref="VirtualParadiseClient.OnFriendDeleteCallback" />
+    ///     Provides event arguments for <see cref="VirtualParadiseClient.FriendDeleted" />
     /// </summary>
     public sealed class FriendDeleteCallbackEventArgs : EventArgs
     {

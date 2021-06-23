@@ -44,17 +44,17 @@ namespace VpNet
                     _cacheScanned = new List<Cell>();
                     _cacheScanning = new List<Cell>();
 
-                    OnQueryCellResult += BaseInstanceT_CellCache_OnQueryCellResult;
-                    OnQueryCellEnd += BaseInstanceT_CellCache_OnQueryCellEnd;
-                    OnObjectChange += BaseInstanceT_CellCache_OnObjectChange;
-                    OnObjectDelete += BaseInstanceT_OnObjectDelete;
-                    OnObjectCreate += BaseInstanceT_OnObjectCreate;
+                    QueryCellResult += BaseInstanceTCellCacheQueryCellResult;
+                    QueryCellEnd += BaseInstanceTCellCacheQueryCellEnd;
+                    ObjectChanged += BaseInstanceTCellCacheObjectChanged;
+                    ObjectDeleted += BaseInstanceTObjectDeleted;
+                    ObjectCreated += BaseInstanceTObjectCreated;
                 }
                 else
                 {
-                    OnQueryCellResult -= BaseInstanceT_CellCache_OnQueryCellResult;
-                    OnQueryCellEnd -= BaseInstanceT_CellCache_OnQueryCellEnd;
-                    OnObjectChange -= BaseInstanceT_CellCache_OnObjectChange;
+                    QueryCellResult -= BaseInstanceTCellCacheQueryCellResult;
+                    QueryCellEnd -= BaseInstanceTCellCacheQueryCellEnd;
+                    ObjectChanged -= BaseInstanceTCellCacheObjectChanged;
                 }
                 _useCellCache = value;
             }
@@ -65,7 +65,7 @@ namespace VpNet
             return  _cacheScanned.Exists(p => p.X == vpObject.Cell.X && p.Z == vpObject.Cell.Z);
         }
 
-        void BaseInstanceT_OnObjectCreate(VirtualParadiseClient sender, ObjectCreateArgs args)
+        void BaseInstanceTObjectCreated(VirtualParadiseClient sender, ObjectCreateArgs args)
         {
             if (!IsInCellCacheRange(args.Object))
                 return;
@@ -73,7 +73,7 @@ namespace VpNet
 
         }
 
-        void BaseInstanceT_OnObjectDelete(VirtualParadiseClient sender, ObjectDeleteArgs args)
+        void BaseInstanceTObjectDeleted(VirtualParadiseClient sender, ObjectDeleteArgs args)
         {
             if (!IsInCellCacheRange(args.Object))
                 return;
@@ -81,7 +81,7 @@ namespace VpNet
             _objects.Remove(o);
         }
 
-        void BaseInstanceT_CellCache_OnObjectChange(VirtualParadiseClient sender, ObjectChangeArgs args)
+        void BaseInstanceTCellCacheObjectChanged(VirtualParadiseClient sender, ObjectChangeArgs args)
         {
             lock (this)
             {
@@ -99,7 +99,7 @@ namespace VpNet
             }
         }
 
-        void BaseInstanceT_CellCache_OnQueryCellEnd(VirtualParadiseClient sender, QueryCellEndArgs args)
+        void BaseInstanceTCellCacheQueryCellEnd(VirtualParadiseClient sender, QueryCellEndArgs args)
         {
             lock (this)
             {
@@ -119,7 +119,7 @@ namespace VpNet
             }
         }
 
-        void BaseInstanceT_CellCache_OnQueryCellResult(VirtualParadiseClient sender, QueryCellResultArgs args)
+        void BaseInstanceTCellCacheQueryCellResult(VirtualParadiseClient sender, QueryCellResultArgs args)
         {
             lock (this)
             {

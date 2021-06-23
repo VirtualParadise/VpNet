@@ -1,7 +1,7 @@
 ﻿namespace VpNet
 {
     /// <summary>
-    ///     Provides event arguments for <see cref="VirtualParadiseClient.OnUserAttributes" />.
+    ///     Provides event arguments for <see cref="VirtualParadiseClient.UserAttributesReceived" />.
     /// </summary>
     public sealed class UserAttributesEventArgs : TimedEventArgs
     {

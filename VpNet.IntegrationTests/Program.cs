@@ -11,8 +11,8 @@ namespace VpNet.IntegrationTests
             Console.WriteLine("Hello World!");
             s_client = new VirtualParadiseClient();
             MainAsync(args);
-            s_client.OnAvatarEnter += VirtualParadiseClientOnAvatarEnter;
-            s_client.OnAvatarLeave += VirtualParadiseClientOnAvatarLeave;
+            s_client.AvatarEntered += VirtualParadiseClientOnAvatarEnter;
+            s_client.AvatarLeft += VirtualParadiseClientOnAvatarLeave;
             Console.ReadKey();
 
         }

@@ -1,7 +1,7 @@
 ﻿namespace VpNet
 {
     /// <summary>
-    ///     Provides event arguments for <see cref="VirtualParadiseClient.OnObjectBump" />.
+    ///     Provides event arguments for <see cref="VirtualParadiseClient.ObjectBumped" />.
     /// </summary>
     public sealed class ObjectBumpArgs : TimedEventArgs
     {
