@@ -281,8 +281,6 @@ namespace VpNet
         internal void OnUserAttributesNative1(IntPtr instance) { lock (this){OnUserAttributesNativeEvent(instance);} }
         internal void OnJoinNative1(IntPtr instance) { lock (this) { OnJoinNativeEvent(instance); } }
 
-        #region Methods
-
         private void SetCompletionResult(int referenceNumber, int rc, object result)
         {
             var tcs = _objectCompletionSources[referenceNumber];
@@ -308,8 +306,6 @@ namespace VpNet
                 throw new VpException((ReasonCode)rc);
             }
         }
-
-        #region IUniverseFunctions Implementations
 
         /// <summary>
         ///     Establishes a connection to default Virtual Paradise universe.
@@ -425,10 +421,6 @@ namespace VpNet
             }
         }
 
-        #endregion
-
-        #region WorldFunctions Implementations
-
         public virtual Task EnterAsync(string worldname)
         {
             return EnterAsync(new World { Name = worldname });
@@ -521,10 +513,6 @@ namespace VpNet
             }
         }
 
-        #endregion
-
-        #region IQueryCellFunctions Implementation
-
         public virtual void QueryCell(int cellX, int cellZ)
         {
             lock (this)
@@ -540,10 +528,6 @@ namespace VpNet
                 CheckReasonCode(Functions.vp_query_cell_revision(InternalInstance, cellX, cellZ, revision));
             }
         }
-
-        #endregion
-
-        #region VpObjectFunctions implementations
 
         public void ClickObject(VpObject vpObject)
         {
@@ -756,10 +740,6 @@ namespace VpNet
             return obj;
         }
 
-        #endregion
-
-        #region ITeleportFunctions Implementations
-
         /// <summary>
         ///     Teleports an avatar to a specified location.
         /// </summary>
@@ -789,10 +769,6 @@ namespace VpNet
                 CheckReasonCode(rc);
             }
         }
-
-        #endregion
-
-        #region AvatarFunctions Implementations.
 
         public virtual void GetUserProfile(int userId)
         {
@@ -852,10 +828,6 @@ namespace VpNet
         {
             AvatarClick(avatar.Session);
         }
-
-        #endregion
-
-        #region IChatFunctions Implementations
 
         public virtual void Say(string message)
         {
@@ -957,9 +929,6 @@ namespace VpNet
             UrlSend(avatarSession, url.AbsoluteUri);
         }
 
-        #endregion
-
-        #region IJoinFunctions Implementations
         public virtual void Join(Avatar avatar)
         {
             lock (this)
@@ -975,10 +944,6 @@ namespace VpNet
                 CheckReasonCode(Functions.vp_join(InternalInstance, userId));
             }
         }
-
-        #endregion
-
-        #region  WorldPermissionFunctions Implementations
 
         public virtual void WorldPermissionUser(string permission, int userId, int enable)
         {
@@ -1061,10 +1026,6 @@ namespace VpNet
             }
         }
 
-        #endregion
-
-        #region WorldSettingsFunctions Implementations
-
         public virtual void WorldSettingSession(string setting, string value, Avatar toAvatar)
         {
             lock (this)
@@ -1080,12 +1041,6 @@ namespace VpNet
                 CheckReasonCode(Functions.vp_world_setting_set(InternalInstance, setting, value, toSession));
             }
         }
-
-        #endregion
-
-        #endregion
-
-        #region Events
 
         private readonly Dictionary<Events, EventDelegate> _nativeEvents = new Dictionary<Events, EventDelegate>();
         private readonly Dictionary<Callbacks, CallbackDelegate> _nativeCallbacks = new Dictionary<Callbacks, CallbackDelegate>();
@@ -1105,10 +1060,6 @@ namespace VpNet
             _nativeCallbacks[callbackType] = callbackFunction;
             Functions.vp_callback_set(InternalInstance, (int)callbackType, callbackFunction);
         }
-
-        #endregion
-
-        #region CallbackHandlers
 
         private void OnObjectCreateCallbackNative(IntPtr sender, int rc, int reference)
         {
@@ -1151,10 +1102,6 @@ namespace VpNet
                 SetCompletionResult(reference, rc, Functions.vp_int(sender, IntegerAttribute.ObjectId));
             }
         }
-        #endregion
-
-        #region Event handlers
-
         private void OnUserAttributesNative(IntPtr sender)
         {
             if (UserAttributesReceived == null)
@@ -1647,10 +1594,6 @@ namespace VpNet
             }
         }
 
-        #endregion
-
-        #region Cleanup
-
         public void ReleaseEvents()
         {
             lock (this)
@@ -1692,10 +1635,6 @@ namespace VpNet
             GC.SuppressFinalize(this);
         }
 
-        #endregion
-
-        #region Friend Functions
-
         public void GetFriends()
         {
             lock (this)
@@ -1736,10 +1675,6 @@ namespace VpNet
             }
         }
 
-        #endregion
-
-        #region ITerrainFunctions Implementation
-
         public void TerrianQuery(int tileX, int tileZ, int[,] nodes)
         {
             lock (this)
@@ -1755,13 +1690,5 @@ namespace VpNet
                 CheckReasonCode(Functions.vp_terrain_node_set(InternalInstance, tileX, tileZ, nodeX, nodeZ, cells));
             }
         }
-
-        #endregion
-
-        #region Implementation of IInstanceEvents
-        
-        #endregion
-
-
     }
 }
