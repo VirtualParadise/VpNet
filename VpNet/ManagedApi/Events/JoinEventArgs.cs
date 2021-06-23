@@ -8,16 +8,16 @@
         /// <summary>
         ///     Initializes a new instance of the <see cref="JoinEventArgs" /> class.
         /// </summary>
-        /// <param name="avatar">The avatar responsible for the join request.</param>
-        public JoinEventArgs(Avatar avatar)
+        /// <param name="joinRequest">The incoming join request.</param>
+        public JoinEventArgs(JoinRequest joinRequest)
         {
-            Avatar = avatar;
+            Request = joinRequest;
         }
 
         /// <summary>
-        ///     Gets the avatar responsible for the join request.
+        ///     Gets the join request.
         /// </summary>
-        /// <value>The avatar responsible for the join request</value>
-        public Avatar Avatar { get; }
+        /// <value>The join request.</value>
+        public JoinRequest Request { get; }
     }
 }

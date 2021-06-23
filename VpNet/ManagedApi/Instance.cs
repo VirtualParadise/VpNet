@@ -24,7 +24,6 @@ namespace VpNet
         private TaskCompletionSource<object> _connectCompletionSource;
         private TaskCompletionSource<object> _loginCompletionSource;
         private TaskCompletionSource<object> _enterCompletionSource;
-        private IntPtr _instance;
         private NetConfig _netConfig;
         private GCHandle _instanceHandle;
 
@@ -124,6 +123,8 @@ namespace VpNet
         /// </summary>
         /// <value>The world to which this instance is currently connected.</value>
         public World World { get; private set; }
+        
+        internal IntPtr InternalInstance { get; private set; }
 
         internal void InitOnce()
         {
@@ -177,7 +178,7 @@ namespace VpNet
                 throw new VpException((ReasonCode)rc);
             }
 
-            _instance = Functions.vp_create(ref _netConfig);
+            InternalInstance = Functions.vp_create(ref _netConfig);
 
             SetNativeEvent(Events.Chat, OnChatNative1);
             SetNativeEvent(Events.AvatarAdd, OnAvatarAddNative1);
@@ -294,7 +295,7 @@ namespace VpNet
             }
         }
 
-        private static void CheckReasonCode(int rc)
+        internal static void CheckReasonCode(int rc)
         {
             if (rc != 0)
             {
@@ -362,7 +363,7 @@ namespace VpNet
             lock (this)
             {
                 _connectCompletionSource = new TaskCompletionSource<object>();
-                int reason = Functions.vp_connect_universe(_instance, host, port);
+                int reason = Functions.vp_connect_universe(InternalInstance, host, port);
                 if (reason != 0)
                 {
                     return Task.FromException<VpException>(new VpException((ReasonCode) reason));
@@ -404,11 +405,11 @@ namespace VpNet
                 Configuration.BotName = botname;
                 Configuration.UserName = username;
                 Configuration.Password = password;
-                Functions.vp_string_set(_instance, StringAttribute.ApplicationName, Configuration.ApplicationName);
-                Functions.vp_string_set(_instance, StringAttribute.ApplicationVersion, Configuration.ApplicationVersion);
+                Functions.vp_string_set(InternalInstance, StringAttribute.ApplicationName, Configuration.ApplicationName);
+                Functions.vp_string_set(InternalInstance, StringAttribute.ApplicationVersion, Configuration.ApplicationVersion);
 
                 _loginCompletionSource = new TaskCompletionSource<object>();
-                var rc = Functions.vp_login(_instance, username, password, botname);
+                var rc = Functions.vp_login(InternalInstance, username, password, botname);
                 if (rc != 0)
                 {
                     return Task.FromException(new VpException((ReasonCode)rc));
@@ -441,7 +442,7 @@ namespace VpNet
                 Configuration.World = world;
 
                 _enterCompletionSource = new TaskCompletionSource<object>();
-                var rc = Functions.vp_enter(_instance, world.Name);
+                var rc = Functions.vp_enter(InternalInstance, world.Name);
                 if (rc != 0)
                 {
                     return Task.FromException(new VpException((ReasonCode)rc));
@@ -463,16 +464,16 @@ namespace VpNet
             
             lock (this)
             {
-                int userId = Functions.vp_int(_instance, IntegerAttribute.MyUserId);
-                int type = Functions.vp_int(_instance, IntegerAttribute.MyType);
+                int userId = Functions.vp_int(InternalInstance, IntegerAttribute.MyUserId);
+                int type = Functions.vp_int(InternalInstance, IntegerAttribute.MyType);
                 string name = Configuration.BotName;
 
-                double x = Functions.vp_double(_instance, FloatAttribute.MyX);
-                double y = Functions.vp_double(_instance, FloatAttribute.MyY);
-                double z = Functions.vp_double(_instance, FloatAttribute.MyZ);
+                double x = Functions.vp_double(InternalInstance, FloatAttribute.MyX);
+                double y = Functions.vp_double(InternalInstance, FloatAttribute.MyY);
+                double z = Functions.vp_double(InternalInstance, FloatAttribute.MyZ);
                 
-                double pitch = Functions.vp_double(_instance, FloatAttribute.MyPitch);
-                double yaw = Functions.vp_double(_instance, FloatAttribute.MyYaw);
+                double pitch = Functions.vp_double(InternalInstance, FloatAttribute.MyPitch);
+                double yaw = Functions.vp_double(InternalInstance, FloatAttribute.MyYaw);
 
                 var position = new Vector3(x, y, z);
                 var rotation = new Vector3(pitch, yaw, 0);
@@ -491,7 +492,7 @@ namespace VpNet
         {
             lock (this)
             {
-                CheckReasonCode(Functions.vp_leave(_instance));
+                CheckReasonCode(Functions.vp_leave(InternalInstance));
                 OnWorldLeave?.Invoke(this, new WorldLeaveEventArgs(Configuration.World));
             }
         }
@@ -499,7 +500,7 @@ namespace VpNet
         public virtual void Disconnect()
         {
             _avatars.Clear();
-            Functions.vp_destroy(_instance);
+            Functions.vp_destroy(InternalInstance);
             InitVpNative();
             OnUniverseDisconnect?.Invoke(this, new UniverseDisconnectEventArgs(Universe, DisconnectType.UserDisconnected));
 
@@ -510,7 +511,7 @@ namespace VpNet
         {
             lock (this)
             {
-                CheckReasonCode(Functions.vp_world_list(_instance, 0));
+                CheckReasonCode(Functions.vp_world_list(InternalInstance, 0));
             }
         }
 
@@ -522,7 +523,7 @@ namespace VpNet
         {
             lock (this)
             {
-                CheckReasonCode(Functions.vp_query_cell(_instance, cellX, cellZ));
+                CheckReasonCode(Functions.vp_query_cell(InternalInstance, cellX, cellZ));
             }
         }
 
@@ -530,7 +531,7 @@ namespace VpNet
         {
             lock (this)
             {
-                CheckReasonCode(Functions.vp_query_cell_revision(_instance, cellX, cellZ, revision));
+                CheckReasonCode(Functions.vp_query_cell_revision(InternalInstance, cellX, cellZ, revision));
             }
         }
 
@@ -550,7 +551,7 @@ namespace VpNet
         {
             lock (this)
             {
-                CheckReasonCode(Functions.vp_object_click(_instance, objectId, 0, 0, 0, 0));
+                CheckReasonCode(Functions.vp_object_click(InternalInstance, objectId, 0, 0, 0, 0));
             }
         }
 
@@ -566,7 +567,7 @@ namespace VpNet
         {
             lock (this)
             {
-                CheckReasonCode(Functions.vp_object_click(_instance, vpObject.Id, avatar.Session, (float)worldHit.X, (float)worldHit.Y, (float)worldHit.Z));
+                CheckReasonCode(Functions.vp_object_click(InternalInstance, vpObject.Id, avatar.Session, (float)worldHit.X, (float)worldHit.Y, (float)worldHit.Z));
             }
         }
 
@@ -574,7 +575,7 @@ namespace VpNet
         {
             lock (this)
             {
-                CheckReasonCode(Functions.vp_object_click(_instance, vpObject.Id, 0, (float)worldHit.X, (float)worldHit.Y, (float)worldHit.Z));
+                CheckReasonCode(Functions.vp_object_click(InternalInstance, vpObject.Id, 0, (float)worldHit.X, (float)worldHit.Y, (float)worldHit.Z));
             }
         }
 
@@ -582,7 +583,7 @@ namespace VpNet
         {
             lock (this)
             {
-                CheckReasonCode(Functions.vp_object_click(_instance, objectId, toSession, (float)worldHitX, (float)worldHitY, (float)worldHitZ));
+                CheckReasonCode(Functions.vp_object_click(InternalInstance, objectId, toSession, (float)worldHitX, (float)worldHitY, (float)worldHitZ));
             }
         }
 
@@ -590,7 +591,7 @@ namespace VpNet
         {
             lock (this)
             {
-                CheckReasonCode(Functions.vp_object_click(_instance, objectId, 0, (float)worldHitX, (float)worldHitY, (float)worldHitZ));
+                CheckReasonCode(Functions.vp_object_click(InternalInstance, objectId, 0, (float)worldHitX, (float)worldHitY, (float)worldHitZ));
             }
         }
 
@@ -598,7 +599,7 @@ namespace VpNet
         {
             lock (this)
             {
-                CheckReasonCode(Functions.vp_object_click(_instance, objectId, toSession, 0, 0, 0));
+                CheckReasonCode(Functions.vp_object_click(InternalInstance, objectId, toSession, 0, 0, 0));
             }
         }
 
@@ -609,9 +610,9 @@ namespace VpNet
             lock (this)
             {
                 _objectCompletionSources.Add(referenceNumber, tcs);
-                Functions.vp_int_set(_instance, IntegerAttribute.ReferenceNumber, referenceNumber);
+                Functions.vp_int_set(InternalInstance, IntegerAttribute.ReferenceNumber, referenceNumber);
 
-                int rc = Functions.vp_object_delete(_instance,vpObject.Id);
+                int rc = Functions.vp_object_delete(InternalInstance,vpObject.Id);
                 if (rc != 0)
                 {
                     _objectCompletionSources.Remove(referenceNumber);
@@ -629,24 +630,24 @@ namespace VpNet
             lock (this)
             {
                 _objectCompletionSources.Add(referenceNumber, tcs);
-                Functions.vp_int_set(_instance, IntegerAttribute.ReferenceNumber, referenceNumber);
-                Functions.vp_int_set(_instance, IntegerAttribute.ObjectId, vpObject.Id);
-                Functions.vp_string_set(_instance, StringAttribute.ObjectAction, vpObject.Action);
-                Functions.vp_string_set(_instance, StringAttribute.ObjectDescription, vpObject.Description);
-                Functions.vp_string_set(_instance, StringAttribute.ObjectModel, vpObject.Model);
-                Functions.SetData(_instance, DataAttribute.ObjectData, vpObject.Data);
-                Functions.vp_double_set(_instance, FloatAttribute.ObjectRotationX, vpObject.Rotation.X);
-                Functions.vp_double_set(_instance, FloatAttribute.ObjectRotationY, vpObject.Rotation.Y);
-                Functions.vp_double_set(_instance, FloatAttribute.ObjectRotationZ, vpObject.Rotation.Z);
-                Functions.vp_double_set(_instance, FloatAttribute.ObjectX, vpObject.Position.X);
-                Functions.vp_double_set(_instance, FloatAttribute.ObjectY, vpObject.Position.Y);
-                Functions.vp_double_set(_instance, FloatAttribute.ObjectZ, vpObject.Position.Z);
-                Functions.vp_double_set(_instance, FloatAttribute.ObjectRotationAngle, vpObject.Angle);
-                Functions.vp_int_set(_instance, IntegerAttribute.ObjectType, vpObject.ObjectType);
-                Functions.vp_int_set(_instance, IntegerAttribute.ObjectUserId, vpObject.Owner);
-                Functions.vp_int_set(_instance, IntegerAttribute.ObjectTime, (int)vpObject.Time.ToUnixTimeSeconds());
+                Functions.vp_int_set(InternalInstance, IntegerAttribute.ReferenceNumber, referenceNumber);
+                Functions.vp_int_set(InternalInstance, IntegerAttribute.ObjectId, vpObject.Id);
+                Functions.vp_string_set(InternalInstance, StringAttribute.ObjectAction, vpObject.Action);
+                Functions.vp_string_set(InternalInstance, StringAttribute.ObjectDescription, vpObject.Description);
+                Functions.vp_string_set(InternalInstance, StringAttribute.ObjectModel, vpObject.Model);
+                Functions.SetData(InternalInstance, DataAttribute.ObjectData, vpObject.Data);
+                Functions.vp_double_set(InternalInstance, FloatAttribute.ObjectRotationX, vpObject.Rotation.X);
+                Functions.vp_double_set(InternalInstance, FloatAttribute.ObjectRotationY, vpObject.Rotation.Y);
+                Functions.vp_double_set(InternalInstance, FloatAttribute.ObjectRotationZ, vpObject.Rotation.Z);
+                Functions.vp_double_set(InternalInstance, FloatAttribute.ObjectX, vpObject.Position.X);
+                Functions.vp_double_set(InternalInstance, FloatAttribute.ObjectY, vpObject.Position.Y);
+                Functions.vp_double_set(InternalInstance, FloatAttribute.ObjectZ, vpObject.Position.Z);
+                Functions.vp_double_set(InternalInstance, FloatAttribute.ObjectRotationAngle, vpObject.Angle);
+                Functions.vp_int_set(InternalInstance, IntegerAttribute.ObjectType, vpObject.ObjectType);
+                Functions.vp_int_set(InternalInstance, IntegerAttribute.ObjectUserId, vpObject.Owner);
+                Functions.vp_int_set(InternalInstance, IntegerAttribute.ObjectTime, (int)vpObject.Time.ToUnixTimeSeconds());
 
-                int rc = Functions.vp_object_load(_instance);
+                int rc = Functions.vp_object_load(InternalInstance);
                 if (rc != 0)
                 {
                     _objectCompletionSources.Remove(referenceNumber);
@@ -667,22 +668,22 @@ namespace VpNet
             lock (this)
             {
                 _objectCompletionSources.Add(referenceNumber, tcs);
-                Functions.vp_int_set(_instance, IntegerAttribute.ReferenceNumber, referenceNumber);
-                Functions.vp_int_set(_instance, IntegerAttribute.ObjectId, vpObject.Id);
-                Functions.vp_string_set(_instance, StringAttribute.ObjectAction, vpObject.Action);
-                Functions.vp_string_set(_instance, StringAttribute.ObjectDescription, vpObject.Description);
-                Functions.vp_string_set(_instance, StringAttribute.ObjectModel, vpObject.Model);
-                Functions.SetData(_instance, DataAttribute.ObjectData, vpObject.Data);
-                Functions.vp_double_set(_instance, FloatAttribute.ObjectRotationX, vpObject.Rotation.X);
-                Functions.vp_double_set(_instance, FloatAttribute.ObjectRotationY, vpObject.Rotation.Y);
-                Functions.vp_double_set(_instance, FloatAttribute.ObjectRotationZ, vpObject.Rotation.Z);
-                Functions.vp_double_set(_instance, FloatAttribute.ObjectX, vpObject.Position.X);
-                Functions.vp_double_set(_instance, FloatAttribute.ObjectY, vpObject.Position.Y);
-                Functions.vp_double_set(_instance, FloatAttribute.ObjectZ, vpObject.Position.Z);
-                Functions.vp_double_set(_instance, FloatAttribute.ObjectRotationAngle, vpObject.Angle);
-                Functions.vp_int_set(_instance, IntegerAttribute.ObjectType, vpObject.ObjectType);
+                Functions.vp_int_set(InternalInstance, IntegerAttribute.ReferenceNumber, referenceNumber);
+                Functions.vp_int_set(InternalInstance, IntegerAttribute.ObjectId, vpObject.Id);
+                Functions.vp_string_set(InternalInstance, StringAttribute.ObjectAction, vpObject.Action);
+                Functions.vp_string_set(InternalInstance, StringAttribute.ObjectDescription, vpObject.Description);
+                Functions.vp_string_set(InternalInstance, StringAttribute.ObjectModel, vpObject.Model);
+                Functions.SetData(InternalInstance, DataAttribute.ObjectData, vpObject.Data);
+                Functions.vp_double_set(InternalInstance, FloatAttribute.ObjectRotationX, vpObject.Rotation.X);
+                Functions.vp_double_set(InternalInstance, FloatAttribute.ObjectRotationY, vpObject.Rotation.Y);
+                Functions.vp_double_set(InternalInstance, FloatAttribute.ObjectRotationZ, vpObject.Rotation.Z);
+                Functions.vp_double_set(InternalInstance, FloatAttribute.ObjectX, vpObject.Position.X);
+                Functions.vp_double_set(InternalInstance, FloatAttribute.ObjectY, vpObject.Position.Y);
+                Functions.vp_double_set(InternalInstance, FloatAttribute.ObjectZ, vpObject.Position.Z);
+                Functions.vp_double_set(InternalInstance, FloatAttribute.ObjectRotationAngle, vpObject.Angle);
+                Functions.vp_int_set(InternalInstance, IntegerAttribute.ObjectType, vpObject.ObjectType);
 
-                int rc = Functions.vp_object_add(_instance);
+                int rc = Functions.vp_object_add(InternalInstance);
                 if (rc != 0)
                 {
                     _objectCompletionSources.Remove(referenceNumber);
@@ -703,21 +704,21 @@ namespace VpNet
             lock (this)
             {
                 _objectCompletionSources.Add(referenceNumber, tcs);
-                Functions.vp_int_set(_instance, IntegerAttribute.ReferenceNumber, referenceNumber);
-                Functions.vp_int_set(_instance, IntegerAttribute.ObjectId, vpObject.Id);
-                Functions.vp_string_set(_instance, StringAttribute.ObjectAction, vpObject.Action);
-                Functions.vp_string_set(_instance, StringAttribute.ObjectDescription, vpObject.Description);
-                Functions.vp_string_set(_instance, StringAttribute.ObjectModel, vpObject.Model);
-                Functions.vp_double_set(_instance, FloatAttribute.ObjectRotationX, vpObject.Rotation.X);
-                Functions.vp_double_set(_instance, FloatAttribute.ObjectRotationY, vpObject.Rotation.Y);
-                Functions.vp_double_set(_instance, FloatAttribute.ObjectRotationZ, vpObject.Rotation.Z);
-                Functions.vp_double_set(_instance, FloatAttribute.ObjectX, vpObject.Position.X);
-                Functions.vp_double_set(_instance, FloatAttribute.ObjectY, vpObject.Position.Y);
-                Functions.vp_double_set(_instance, FloatAttribute.ObjectZ, vpObject.Position.Z);
-                Functions.vp_double_set(_instance, FloatAttribute.ObjectRotationAngle, vpObject.Angle);
-                Functions.vp_int_set(_instance, IntegerAttribute.ObjectType, vpObject.ObjectType);
+                Functions.vp_int_set(InternalInstance, IntegerAttribute.ReferenceNumber, referenceNumber);
+                Functions.vp_int_set(InternalInstance, IntegerAttribute.ObjectId, vpObject.Id);
+                Functions.vp_string_set(InternalInstance, StringAttribute.ObjectAction, vpObject.Action);
+                Functions.vp_string_set(InternalInstance, StringAttribute.ObjectDescription, vpObject.Description);
+                Functions.vp_string_set(InternalInstance, StringAttribute.ObjectModel, vpObject.Model);
+                Functions.vp_double_set(InternalInstance, FloatAttribute.ObjectRotationX, vpObject.Rotation.X);
+                Functions.vp_double_set(InternalInstance, FloatAttribute.ObjectRotationY, vpObject.Rotation.Y);
+                Functions.vp_double_set(InternalInstance, FloatAttribute.ObjectRotationZ, vpObject.Rotation.Z);
+                Functions.vp_double_set(InternalInstance, FloatAttribute.ObjectX, vpObject.Position.X);
+                Functions.vp_double_set(InternalInstance, FloatAttribute.ObjectY, vpObject.Position.Y);
+                Functions.vp_double_set(InternalInstance, FloatAttribute.ObjectZ, vpObject.Position.Z);
+                Functions.vp_double_set(InternalInstance, FloatAttribute.ObjectRotationAngle, vpObject.Angle);
+                Functions.vp_int_set(InternalInstance, IntegerAttribute.ObjectType, vpObject.ObjectType);
 
-                int rc = Functions.vp_object_change(_instance);
+                int rc = Functions.vp_object_change(InternalInstance);
                 if (rc != 0)
                 {
                     _objectCompletionSources.Remove(referenceNumber);
@@ -736,8 +737,8 @@ namespace VpNet
             lock (this)
             {
                 _objectCompletionSources.Add(referenceNumber, tcs);
-                Functions.vp_int_set(_instance, IntegerAttribute.ReferenceNumber, referenceNumber);
-                var rc = Functions.vp_object_get(_instance, id);
+                Functions.vp_int_set(InternalInstance, IntegerAttribute.ReferenceNumber, referenceNumber);
+                var rc = Functions.vp_object_get(InternalInstance, id);
                 if (rc != 0)
                 {
                     _objectCompletionSources.Remove(referenceNumber);
@@ -757,7 +758,7 @@ namespace VpNet
         {
             lock (this)
             {
-                CheckReasonCode(Functions.vp_teleport_avatar(_instance, targetSession, world, (float)x, (float)y,
+                CheckReasonCode(Functions.vp_teleport_avatar(InternalInstance, targetSession, world, (float)x, (float)y,
                                                              (float)z, (float)yaw, (float)pitch));
             }
         }
@@ -810,7 +811,7 @@ namespace VpNet
         {
             lock (this)
             {
-                CheckReasonCode(Functions.vp_user_attributes_by_id(_instance, userId));
+                CheckReasonCode(Functions.vp_user_attributes_by_id(InternalInstance, userId));
             }
         }
 
@@ -819,7 +820,7 @@ namespace VpNet
         {
             lock (this)
             {
-                CheckReasonCode(Functions.vp_user_attributes_by_name(_instance, userName));
+                CheckReasonCode(Functions.vp_user_attributes_by_name(InternalInstance, userName));
             }
         }
 
@@ -832,12 +833,12 @@ namespace VpNet
         {
             lock (this)
             {
-                Functions.vp_double_set(_instance, FloatAttribute.MyX, x);
-                Functions.vp_double_set(_instance, FloatAttribute.MyY, y);
-                Functions.vp_double_set(_instance, FloatAttribute.MyZ, z);
-                Functions.vp_double_set(_instance, FloatAttribute.MyYaw, yaw);
-                Functions.vp_double_set(_instance, FloatAttribute.MyPitch, pitch);
-                CheckReasonCode(Functions.vp_state_change(_instance));
+                Functions.vp_double_set(InternalInstance, FloatAttribute.MyX, x);
+                Functions.vp_double_set(InternalInstance, FloatAttribute.MyY, y);
+                Functions.vp_double_set(InternalInstance, FloatAttribute.MyZ, z);
+                Functions.vp_double_set(InternalInstance, FloatAttribute.MyYaw, yaw);
+                Functions.vp_double_set(InternalInstance, FloatAttribute.MyPitch, pitch);
+                CheckReasonCode(Functions.vp_state_change(InternalInstance));
 
             }
         }
@@ -856,7 +857,7 @@ namespace VpNet
         {
             lock (this)
             {
-                CheckReasonCode(Functions.vp_avatar_click(_instance, session));
+                CheckReasonCode(Functions.vp_avatar_click(InternalInstance, session));
             }
         }
 
@@ -873,7 +874,7 @@ namespace VpNet
         {
             lock (this)
             {
-                CheckReasonCode(Functions.vp_say(_instance, message));
+                CheckReasonCode(Functions.vp_say(InternalInstance, message));
             }
         }
 
@@ -881,7 +882,7 @@ namespace VpNet
         {
             lock (this)
             {
-                CheckReasonCode(Functions.vp_say(_instance, string.Format(format, arg)));
+                CheckReasonCode(Functions.vp_say(InternalInstance, string.Format(format, arg)));
             }
         }
 
@@ -889,7 +890,7 @@ namespace VpNet
         {
             lock (this)
             {
-                CheckReasonCode(Functions.vp_console_message(_instance, targetSession, name, message, (int)effects, red, green, blue));
+                CheckReasonCode(Functions.vp_console_message(InternalInstance, targetSession, name, message, (int)effects, red, green, blue));
             }
         }
 
@@ -937,7 +938,7 @@ namespace VpNet
         {
             lock (this)
             {
-                CheckReasonCode(Functions.vp_url_send(_instance, avatarSession, url, (int)UrlTarget.UrlTargetOverlay));
+                CheckReasonCode(Functions.vp_url_send(InternalInstance, avatarSession, url, (int)UrlTarget.UrlTargetOverlay));
             }
         }
 
@@ -960,7 +961,7 @@ namespace VpNet
         {
             lock (this)
             {
-                CheckReasonCode(Functions.vp_url_send(_instance, avatarSession, url, (int)UrlTarget.UrlTargetBrowser));
+                CheckReasonCode(Functions.vp_url_send(InternalInstance, avatarSession, url, (int)UrlTarget.UrlTargetBrowser));
             }
         }
 
@@ -976,7 +977,7 @@ namespace VpNet
         {
             lock (this)
             {
-                CheckReasonCode(Functions.vp_join(_instance, avatar.UserId));
+                CheckReasonCode(Functions.vp_join(InternalInstance, avatar.UserId));
             }
         }
 
@@ -984,32 +985,7 @@ namespace VpNet
         {
             lock (this)
             {
-                CheckReasonCode(Functions.vp_join(_instance, userId));
-            }
-        }
-
-
-        public virtual void JoinAccept(int requestId, string world, Vector3 location, float yaw, float pitch)
-        {
-            lock (this)
-            {
-                CheckReasonCode(Functions.vp_join_accept(_instance, requestId, world,location.X,location.Y,location.Z,yaw,pitch));
-            }
-        }
-
-        public virtual void JoinAccept(int requestId, string world, double x, double y, double z, float yaw, float pitch)
-        {
-            lock (this)
-            {
-                CheckReasonCode(Functions.vp_join_accept(_instance, requestId, world, x, y, z, yaw, pitch));
-            }
-        }
-
-        public virtual void JoinDecline(int requestId)
-        {
-            lock (this)
-            {
-                CheckReasonCode(Functions.vp_join_decline(_instance, requestId));
+                CheckReasonCode(Functions.vp_join(InternalInstance, userId));
             }
         }
 
@@ -1021,7 +997,7 @@ namespace VpNet
         {
             lock (this)
             {
-                CheckReasonCode(Functions.vp_world_permission_user_set(_instance, permission, userId, enable));
+                CheckReasonCode(Functions.vp_world_permission_user_set(InternalInstance, permission, userId, enable));
             }
         }
 
@@ -1029,7 +1005,7 @@ namespace VpNet
         {
             lock (this)
             {
-                CheckReasonCode(Functions.vp_world_permission_user_set(_instance, Enum.GetName(typeof(WorldPermissions), permission),avatar.UserId,1));
+                CheckReasonCode(Functions.vp_world_permission_user_set(InternalInstance, Enum.GetName(typeof(WorldPermissions), permission),avatar.UserId,1));
             }
         }
 
@@ -1037,7 +1013,7 @@ namespace VpNet
         {
             lock (this)
             {
-                CheckReasonCode(Functions.vp_world_permission_user_set(_instance, Enum.GetName(typeof(WorldPermissions), permission), userId, 1));
+                CheckReasonCode(Functions.vp_world_permission_user_set(InternalInstance, Enum.GetName(typeof(WorldPermissions), permission), userId, 1));
             }
         }
 
@@ -1045,7 +1021,7 @@ namespace VpNet
         {
             lock (this)
             {
-                CheckReasonCode(Functions.vp_world_permission_user_set(_instance, Enum.GetName(typeof(WorldPermissions), permission), avatar.UserId, 0));
+                CheckReasonCode(Functions.vp_world_permission_user_set(InternalInstance, Enum.GetName(typeof(WorldPermissions), permission), avatar.UserId, 0));
             }
         }
 
@@ -1053,7 +1029,7 @@ namespace VpNet
         {
             lock (this)
             {
-                CheckReasonCode(Functions.vp_world_permission_user_set(_instance, Enum.GetName(typeof(WorldPermissions), permission), userId, 0));
+                CheckReasonCode(Functions.vp_world_permission_user_set(InternalInstance, Enum.GetName(typeof(WorldPermissions), permission), userId, 0));
             }
         }
 
@@ -1061,7 +1037,7 @@ namespace VpNet
         {
             lock (this)
             {
-                CheckReasonCode(Functions.vp_world_permission_session_set(_instance, permission, sessionId, enable));
+                CheckReasonCode(Functions.vp_world_permission_session_set(InternalInstance, permission, sessionId, enable));
             }
         }
 
@@ -1069,7 +1045,7 @@ namespace VpNet
         {
             lock (this)
             {
-                CheckReasonCode(Functions.vp_world_permission_user_set(_instance, Enum.GetName(typeof(WorldPermissions), permission), avatar.Session, 1));
+                CheckReasonCode(Functions.vp_world_permission_user_set(InternalInstance, Enum.GetName(typeof(WorldPermissions), permission), avatar.Session, 1));
             }
         }
 
@@ -1077,7 +1053,7 @@ namespace VpNet
         {
             lock (this)
             {
-                CheckReasonCode(Functions.vp_world_permission_user_set(_instance, Enum.GetName(typeof(WorldPermissions), permission), session, 1));
+                CheckReasonCode(Functions.vp_world_permission_user_set(InternalInstance, Enum.GetName(typeof(WorldPermissions), permission), session, 1));
             }
         }
 
@@ -1086,7 +1062,7 @@ namespace VpNet
         {
             lock (this)
             {
-                CheckReasonCode(Functions.vp_world_permission_user_set(_instance, Enum.GetName(typeof(WorldPermissions), permission), avatar.Session, 0));
+                CheckReasonCode(Functions.vp_world_permission_user_set(InternalInstance, Enum.GetName(typeof(WorldPermissions), permission), avatar.Session, 0));
             }
         }
 
@@ -1094,7 +1070,7 @@ namespace VpNet
         {
             lock (this)
             {
-                CheckReasonCode(Functions.vp_world_permission_user_set(_instance, Enum.GetName(typeof(WorldPermissions), permission), session, 0));
+                CheckReasonCode(Functions.vp_world_permission_user_set(InternalInstance, Enum.GetName(typeof(WorldPermissions), permission), session, 0));
             }
         }
 
@@ -1106,7 +1082,7 @@ namespace VpNet
         {
             lock (this)
             {
-                CheckReasonCode(Functions.vp_world_setting_set(_instance, setting, value, toAvatar.Session));
+                CheckReasonCode(Functions.vp_world_setting_set(InternalInstance, setting, value, toAvatar.Session));
             }
         }
 
@@ -1114,7 +1090,7 @@ namespace VpNet
         {
             lock (this)
             {
-                CheckReasonCode(Functions.vp_world_setting_set(_instance, setting, value, toSession));
+                CheckReasonCode(Functions.vp_world_setting_set(InternalInstance, setting, value, toSession));
             }
         }
 
@@ -1134,13 +1110,13 @@ namespace VpNet
         private void SetNativeEvent(Events eventType, EventDelegate eventFunction)
         {
             _nativeEvents[eventType] = eventFunction;
-            Functions.vp_event_set(_instance, (int)eventType, eventFunction);
+            Functions.vp_event_set(InternalInstance, (int)eventType, eventFunction);
         }
 
         private void SetNativeCallback(Callbacks callbackType, CallbackDelegate callbackFunction)
         {
             _nativeCallbacks[callbackType] = callbackFunction;
-            Functions.vp_callback_set(_instance, (int)callbackType, callbackFunction);
+            Functions.vp_callback_set(InternalInstance, (int)callbackType, callbackFunction);
         }
 
         #endregion
@@ -1616,12 +1592,12 @@ namespace VpNet
             World data;
             lock (this)
             {
-                string worldName = Functions.vp_string(_instance, StringAttribute.WorldName);
+                string worldName = Functions.vp_string(InternalInstance, StringAttribute.WorldName);
                 data = new World()
                 {
                     Name = worldName,
-                    State = (WorldState)Functions.vp_int(_instance, IntegerAttribute.WorldState),
-                    UserCount = Functions.vp_int(_instance, IntegerAttribute.WorldUsers)
+                    State = (WorldState)Functions.vp_int(InternalInstance, IntegerAttribute.WorldState),
+                    UserCount = Functions.vp_int(InternalInstance, IntegerAttribute.WorldUsers)
                 };
             }
             if (_worlds.ContainsKey(data.Name))
@@ -1669,11 +1645,12 @@ namespace VpNet
 
             lock (this)
             {
+                int requestId = Functions.vp_int(sender, IntegerAttribute.JoinId);
                 int userId = Functions.vp_int(sender, IntegerAttribute.UserId);
                 string name = Functions.vp_string(sender, StringAttribute.JoinName);
 
-                var avatar = new Avatar(userId, -1, name, -1, Vector3.Zero, Vector3.Zero, DateTimeOffset.MinValue, string.Empty, string.Empty);
-                var args = new JoinEventArgs(avatar);
+                var request = new JoinRequest(this, requestId, userId, name);
+                var args = new JoinEventArgs(request);
                 OnJoin?.Invoke(this, args);
             }
         }
@@ -1710,9 +1687,9 @@ namespace VpNet
 
         public void Dispose()
         {
-            if (_instance != IntPtr.Zero)
+            if (InternalInstance != IntPtr.Zero)
             {
-                Functions.vp_destroy(_instance);
+                Functions.vp_destroy(InternalInstance);
             }
             
             if (_instanceHandle != GCHandle.FromIntPtr(IntPtr.Zero))
@@ -1731,7 +1708,7 @@ namespace VpNet
         {
             lock (this)
             {
-                CheckReasonCode(Functions.vp_friends_get(_instance));
+                CheckReasonCode(Functions.vp_friends_get(InternalInstance));
             }
         }
 
@@ -1739,7 +1716,7 @@ namespace VpNet
         {
             lock (this)
             {
-                CheckReasonCode(Functions.vp_friend_add_by_name(_instance, friend.Name));
+                CheckReasonCode(Functions.vp_friend_add_by_name(InternalInstance, friend.Name));
             }
         }
 
@@ -1747,7 +1724,7 @@ namespace VpNet
         {
             lock (this)
             {
-                CheckReasonCode(Functions.vp_friend_add_by_name(_instance, name));
+                CheckReasonCode(Functions.vp_friend_add_by_name(InternalInstance, name));
             }
         }
 
@@ -1755,7 +1732,7 @@ namespace VpNet
         {
             lock (this)
             {
-                CheckReasonCode(Functions.vp_friend_delete(_instance, friendId));
+                CheckReasonCode(Functions.vp_friend_delete(InternalInstance, friendId));
             }
         }
 
@@ -1763,7 +1740,7 @@ namespace VpNet
         {
             lock (this)
             {
-                CheckReasonCode(Functions.vp_friend_delete(_instance, friend.UserId));
+                CheckReasonCode(Functions.vp_friend_delete(InternalInstance, friend.UserId));
             }
         }
 
@@ -1775,7 +1752,7 @@ namespace VpNet
         {
             lock (this)
             {
-                CheckReasonCode(Functions.vp_terrain_query(_instance, tileX, tileZ, nodes));
+                CheckReasonCode(Functions.vp_terrain_query(InternalInstance, tileX, tileZ, nodes));
             }
         }
 
@@ -1783,7 +1760,7 @@ namespace VpNet
         {
             lock (this)
             {
-                CheckReasonCode(Functions.vp_terrain_node_set(_instance, tileX, tileZ, nodeX, nodeZ, cells));
+                CheckReasonCode(Functions.vp_terrain_node_set(InternalInstance, tileX, tileZ, nodeX, nodeZ, cells));
             }
         }
 
