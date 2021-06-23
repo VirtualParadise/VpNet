@@ -40,37 +40,132 @@ namespace VpNet
             InitVpNative();
         }
 
+        /// <summary>
+        ///     Occurs when a chat message has been received.
+        /// </summary>
         public event VpEventHandler<ChatMessageEventArgs> ChatMessageReceived;
+        
+        /// <summary>
+        ///     Occurs when an avatar has entered the vicinity of this bot.
+        /// </summary>
         public event VpEventHandler<AvatarEnterEventArgs> AvatarEntered;
+        
+        /// <summary>
+        ///     Occurs when an avatar changed its state.
+        /// </summary>
         public event VpEventHandler<AvatarChangeEventArgs> AvatarChanged;
+        
+        /// <summary>
+        ///     Occurs when an avatar has left the vicinity of this bot.
+        /// </summary>
         public event VpEventHandler<AvatarLeaveEventArgs> AvatarLeft;
+        
+        /// <summary>
+        ///     Occurs when an avatar has been clicked.
+        /// </summary>
         public event VpEventHandler<AvatarClickEventArgs> AvatarClicked;
+        
+        /// <summary>
+        ///     Occurs when a join request has been received. 
+        /// </summary>
         public event VpEventHandler<JoinEventArgs> JoinRequestReceived;
 
+        /// <summary>
+        ///     Occurs when this bot has been teleported.
+        /// </summary>
         public event VpEventHandler<TeleportEventArgs> Teleported;
+        
+        /// <summary>
+        ///     Occurs when user attributes have been received as a result of calling <see cref="GetUserProfile(int)" />.
+        /// </summary>
         public event VpEventHandler<UserAttributesEventArgs> UserAttributesReceived;
 
+        /// <summary>
+        ///     Occurs when an object has been created.
+        /// </summary>
         public event VpEventHandler<ObjectCreateArgs> ObjectCreated;
+        
+        /// <summary>
+        ///     Occurs when an object has been changed.
+        /// </summary>
         public event VpEventHandler<ObjectChangeArgs> ObjectChanged;
+        
+        /// <summary>
+        ///     Occurs when an object has been deleted.
+        /// </summary>
         public event VpEventHandler<ObjectDeleteArgs> ObjectDeleted;
+        
+        /// <summary>
+        ///     Occurs when an object has been clicked.
+        /// </summary>
+        /// <remarks>This event occurs whether or not the action of the object contains an <c>activate</c> trigger.</remarks>
         public event VpEventHandler<ObjectClickArgs> ObjectClicked;
+        
+        /// <summary>
+        ///     Occurs when an avatar has collided with an object.
+        /// </summary>
+        /// <remarks>This event occurs whether or not the action of the object contains a <c>bump</c> trigger.</remarks>
         public event VpEventHandler<ObjectBumpArgs> ObjectBumped;
-
-
+        
+        /// <summary>
+        ///     Occurs when a world list entry has been received as a result of calling <see cref="ListWorlds" />.
+        /// </summary>
         public event VpEventHandler<WorldListEventArgs> WorldListEntryReceived;
+        
+        /// <summary>
+        ///     Occurs when the world settings have been changed.
+        /// </summary>
         public event VpEventHandler<WorldSettingsChangedEventArgs> WorldSettingsChanged;
+        
+        /// <summary>
+        ///     Occurs when a friend has been added.
+        /// </summary>
         public event VpEventHandler<FriendAddCallbackEventArgs> FriendAdded;
+        
+        /// <summary>
+        ///     Occurs when a friend has been deleted.
+        /// </summary>
         public event VpEventHandler<FriendDeleteCallbackEventArgs> FriendDeleted; 
+        
+        /// <summary>
+        ///     Occurs when information about a friend has been received.
+        /// </summary>
         public event VpEventHandler<FriendsGetCallbackEventArgs> FriendReceived;
 
+        /// <summary>
+        ///     Occurs when the client has been disconnected from the world server.
+        /// </summary>
         public event VpEventHandler<WorldDisconnectEventArgs> WorldDisconnected;
+        
+        /// <summary>
+        ///     Occurs when the client has been disconnected from the universe server.
+        /// </summary>
         public event VpEventHandler<UniverseDisconnectEventArgs> UniverseDisconnected;
 
+        /// <summary>
+        ///     Occurs when object data has been received as a result of calling <see cref="QueryCell(int,int)" />.
+        /// </summary>
         public event VpEventHandler<QueryCellResultArgs> QueryCellResult;
+        
+        /// <summary>
+        ///     Occurs when all objects within a cell have been fetched as a result of calling <see cref="QueryCell(int,int)" />.
+        /// </summary>
         public event VpEventHandler<QueryCellEndArgs> QueryCellEnd;
 
+        /// <summary>
+        ///     Occurs when this bot has entered a world.
+        /// </summary>
+        /// <remarks>
+        ///     This event is not raised by the native SDK; it is only raised by <see cref="VirtualParadiseClient" />.
+        /// </remarks>
         public event VpEventHandler<WorldEnterEventArgs> WorldEntered;
         
+        /// <summary>
+        ///     Occurs when this bot has left a world.
+        /// </summary>
+        /// <remarks>
+        ///     This event is not raised by the native SDK; it is only raised by <see cref="VirtualParadiseClient" />.
+        /// </remarks>
         public event VpEventHandler<WorldLeaveEventArgs> WorldLeft;
         
         internal event EventDelegate OnChatNativeEvent;
