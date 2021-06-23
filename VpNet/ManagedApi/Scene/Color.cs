@@ -114,20 +114,13 @@ namespace VpNet
         /// <returns>The string representation.</returns>
         public string ToString(string format, IFormatProvider formatProvider)
         {
-            var builder = new StringBuilder();
             var separator = NumberFormatInfo.GetInstance(formatProvider).NumberGroupSeparator;
 
-            builder.Append('<')
-                   .Append(R.ToString(format, formatProvider))
-                   .Append(separator)
-                   .Append(' ')
-                   .Append(G.ToString(format, formatProvider))
-                   .Append(separator)
-                   .Append(' ')
-                   .Append(B.ToString(format, formatProvider))
-                   .Append('>');
+            string r = R.ToString(format, formatProvider);
+            string g = G.ToString(format, formatProvider);
+            string b = B.ToString(format, formatProvider);
 
-            return builder.ToString();
+            return $"<{r + separator} {g + separator} {b + separator}>";
         }
     }
 }
