@@ -421,11 +421,6 @@ namespace VpNet
         #endregion
 
         #region WorldFunctions Implementations
-        [Obsolete("No longer necessary for network IO to occur")]
-        public virtual void Wait(int milliseconds = 10)
-        {
-            Thread.Sleep(milliseconds);
-        }
 
         public virtual Task EnterAsync(string worldname)
         {
