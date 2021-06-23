@@ -79,6 +79,9 @@ namespace VpNet
             return Task.CompletedTask;
         }
 
+        /// <summary>
+        ///     Declines the join request.
+        /// </summary>
         public Task DeclineAsync()
         {
             lock (_instance)
