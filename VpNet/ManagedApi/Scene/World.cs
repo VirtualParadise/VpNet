@@ -47,15 +47,6 @@ namespace VpNet
         /// </summary>
         /// <value>The world attributes.</value>
         public Dictionary<string, string> RawAttributes { get; set; } = new Dictionary<string, string>();
-        
-        /// <summary>
-        ///     Gets or sets the local cache path.
-        /// </summary>
-        /// <value>The local cache path.</value>
-        /// <remarks>
-        ///     If this value is specified, the SDK will allow the option to cache models, unzip them and read their contents.
-        /// </remarks>
-        public string LocalCachePath { get; set; }
 
         /// <inheritdoc />
         public bool Equals(World other)
