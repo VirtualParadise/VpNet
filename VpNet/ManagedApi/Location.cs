@@ -13,9 +13,19 @@ namespace VpNet
         /// <param name="worldName">The name of the world.</param>
         /// <param name="position">The position.</param>
         public Location(string worldName, Vector3 position)
+            : this(new World(worldName), position)
         {
-            World = new World(worldName);
-            Position = position;
+        }
+
+        /// <summary>
+        ///     Initializes a new instance of the <see cref="Location" /> struct.
+        /// </summary>
+        /// <param name="worldName">The name of the world.</param>
+        /// <param name="position">The position.</param>
+        /// <param name="rotation">The rotation.</param>
+        public Location(string worldName, Vector3 position, Vector3 rotation)
+            : this(new World(worldName), position, rotation)
+        {
         }
 
         /// <summary>
@@ -24,9 +34,21 @@ namespace VpNet
         /// <param name="world">The world.</param>
         /// <param name="position">The position.</param>
         public Location(World world, Vector3 position)
+            : this(world, position, Vector3.Zero)
+        {
+        }
+
+        /// <summary>
+        ///     Initializes a new instance of the <see cref="Location" /> struct.
+        /// </summary>
+        /// <param name="world">The world.</param>
+        /// <param name="position">The position.</param>
+        /// <param name="rotation">The rotation.</param>
+        public Location(World world, Vector3 position, Vector3 rotation)
         {
             World = world;
             Position = position;
+            Rotation = rotation;
         }
 
         /// <summary>
@@ -40,6 +62,12 @@ namespace VpNet
         /// </summary>
         /// <value>The position.</value>
         public Vector3 Position { get; set; }
+        
+        /// <summary>
+        ///     Gets or sets the rotation.
+        /// </summary>
+        /// <value>The rotation.</value>
+        public Vector3 Rotation { get; set; }
 
         /// <inheritdoc />
         public bool Equals(Location other) => Equals(World, other.World) && Position.Equals(other.Position);
