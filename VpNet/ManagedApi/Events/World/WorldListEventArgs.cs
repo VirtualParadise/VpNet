@@ -1,7 +1,7 @@
 ﻿namespace VpNet
 {
     /// <summary>
-    ///     Provides event arguments for <see cref="Instance.OnWorldList" />.
+    ///     Provides event arguments for <see cref="VirtualParadiseClient.OnWorldList" />.
     /// </summary>
     public sealed class WorldListEventArgs : TimedEventArgs
     {

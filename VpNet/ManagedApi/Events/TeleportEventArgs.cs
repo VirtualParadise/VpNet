@@ -1,7 +1,7 @@
 ﻿namespace VpNet
 {
     /// <summary>
-    ///     Provides event arguments for <see cref="Instance.OnTeleport" />.
+    ///     Provides event arguments for <see cref="VirtualParadiseClient.OnTeleport" />.
     /// </summary>
     public sealed class TeleportEventArgs : TimedEventArgs
     {

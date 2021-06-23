@@ -3,7 +3,7 @@
 namespace VpNet
 {
     /// <summary>
-    ///     Provides event arguments for <see cref="Instance.OnFriendsGetCallback" />.
+    ///     Provides event arguments for <see cref="VirtualParadiseClient.OnFriendsGetCallback" />.
     /// </summary>
     public sealed class FriendsGetCallbackEventArgs : EventArgs
     {

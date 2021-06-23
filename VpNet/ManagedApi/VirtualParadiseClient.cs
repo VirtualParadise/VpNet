@@ -13,7 +13,7 @@ namespace VpNet
     /// <summary>
     ///     Provides a managed API which offers full encapsulation of the native SDK.
     /// </summary>
-    public partial class Instance
+    public partial class VirtualParadiseClient
     {
         private const string DefaultUniverseHost = "universe.virtualparadise.org";
         private const int DefaultUniversePort = 57000;
@@ -27,9 +27,12 @@ namespace VpNet
         private NetConfig _netConfig;
         private GCHandle _instanceHandle;
 
-        public Instance()
+        /// <summary>
+        ///     Initializes a new instance of the <see cref="VirtualParadiseClient" /> class.
+        /// </summary>
+        public VirtualParadiseClient()
         {
-            Configuration = new InstanceConfiguration();
+            Configuration = new VirtualParadiseClientConfiguration();
             _objectCompletionSources = new Dictionary<int, TaskCompletionSource<object>>();
             _worlds = new Dictionary<string, World>();
             _avatars = new Dictionary<int, Avatar>();
@@ -104,7 +107,11 @@ namespace VpNet
         internal event CallbackDelegate OnWorldPermissionSessionSetCallbackNativeEvent;
         internal event CallbackDelegate OnWorldSettingsSetCallbackNativeEvent;
    
-        public InstanceConfiguration Configuration { get; set; }
+        /// <summary>
+        ///     Gets or sets the configuration for this instance.
+        /// </summary>
+        /// <value>The configuration for this instance.</value>
+        public VirtualParadiseClientConfiguration Configuration { get; set; }
 
         /// <summary>
         ///     Gets a read-only view of the avatars currently seen by this instance.

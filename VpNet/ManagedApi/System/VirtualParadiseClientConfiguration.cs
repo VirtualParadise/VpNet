@@ -1,9 +1,9 @@
 ﻿namespace VpNet
 {
     /// <summary>
-    ///     Represents a class which contains a configuration for an <see cref="Instance" />.
+    ///     Represents a class which contains a configuration for <see cref="VirtualParadiseClient" />.
     /// </summary>
-    public class InstanceConfiguration
+    public class VirtualParadiseClientConfiguration
     {
         /// <summary>
         ///     Gets or sets the name of the client application.

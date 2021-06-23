@@ -8,14 +8,14 @@ namespace VpNet
     /// </summary>
     public class JoinRequest
     {
-        private readonly Instance _instance;
+        private readonly VirtualParadiseClient _virtualParadiseClient;
         private readonly int _requestId;
 
-        internal JoinRequest(Instance instance, int requestId, int userId, string userName)
+        internal JoinRequest(VirtualParadiseClient virtualParadiseClient, int requestId, int userId, string userName)
         {
             UserId = userId;
             UserName = userName;
-            _instance = instance;
+            _virtualParadiseClient = virtualParadiseClient;
             _requestId = requestId;
         }
         
@@ -36,11 +36,11 @@ namespace VpNet
         /// </summary>
         public Task AcceptAsync()
         {
-            lock (_instance)
+            lock (_virtualParadiseClient)
             {
-                World world = _instance.World;
-                Vector3 position = _instance.My().Position;
-                Vector3 rotation = _instance.My().Rotation;
+                World world = _virtualParadiseClient.World;
+                Vector3 position = _virtualParadiseClient.My().Position;
+                Vector3 rotation = _virtualParadiseClient.My().Rotation;
 
                 return AcceptAsync(new Location(world, position, rotation));
             }
@@ -52,9 +52,9 @@ namespace VpNet
         /// <param name="position">The target position, in the current world, of the join.</param>
         public Task AcceptAsync(Vector3 position)
         {
-            lock (_instance)
+            lock (_virtualParadiseClient)
             {
-                return AcceptAsync(new Location(_instance.World, position, Vector3.Zero));
+                return AcceptAsync(new Location(_virtualParadiseClient.World, position, Vector3.Zero));
             }
         }
 
@@ -64,17 +64,17 @@ namespace VpNet
         /// <param name="location">The target location of the join.</param>
         public Task AcceptAsync(Location location)
         {
-            lock (_instance)
+            lock (_virtualParadiseClient)
             {
                 World world = location.World;
                 Vector3 position = location.Position;
                 Vector3 rotation = location.Rotation;
                 
-                int rc = Functions.vp_join_accept(_instance.InternalInstance, _requestId,
+                int rc = Functions.vp_join_accept(_virtualParadiseClient.InternalInstance, _requestId,
                     world.Name,
                     position.X, position.Y, position.Z, 
                     (float) rotation.Y, (float) rotation.X);
-                Instance.CheckReasonCode(rc);
+                VirtualParadiseClient.CheckReasonCode(rc);
             }
             return Task.CompletedTask;
         }
@@ -84,10 +84,10 @@ namespace VpNet
         /// </summary>
         public Task DeclineAsync()
         {
-            lock (_instance)
+            lock (_virtualParadiseClient)
             {
-                int rc = Functions.vp_join_decline(_instance.InternalInstance, _requestId);
-                Instance.CheckReasonCode(rc);
+                int rc = Functions.vp_join_decline(_virtualParadiseClient.InternalInstance, _requestId);
+                VirtualParadiseClient.CheckReasonCode(rc);
             }
             return Task.CompletedTask;
         }

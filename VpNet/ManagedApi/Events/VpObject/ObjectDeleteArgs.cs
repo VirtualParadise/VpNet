@@ -1,7 +1,7 @@
 ﻿namespace VpNet
 {
     /// <summary>
-    ///     Provides event arguments for <see cref="Instance.OnObjectDelete" />.
+    ///     Provides event arguments for <see cref="VirtualParadiseClient.OnObjectDelete" />.
     /// </summary>
     public sealed class ObjectDeleteArgs : TimedEventArgs
     {

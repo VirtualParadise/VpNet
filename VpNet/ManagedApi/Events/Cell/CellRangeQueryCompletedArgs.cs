@@ -5,7 +5,7 @@ using System.Linq;
 namespace VpNet
 {
     /// <summary>
-    ///     Provides event arguments for <see cref="Instance.OnObjectCellRangeChange" />.
+    ///     Provides event arguments for <see cref="VirtualParadiseClient.OnObjectCellRangeChange" />.
     /// </summary>
     public sealed class CellRangeQueryCompletedArgs : EventArgs
     {
