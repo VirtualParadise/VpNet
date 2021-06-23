@@ -1203,25 +1203,35 @@ namespace VpNet
             lock (this)
             {
                 teleport = new Teleport
+                {
+                    Avatar = GetAvatar(Functions.vp_int(sender, IntegerAttribute.AvatarSession)),
+                    Location = new Location
                     {
-                        Avatar = GetAvatar(Functions.vp_int(sender, IntegerAttribute.AvatarSession)),
                         Position = new Vector3
-                            {
-                                X = Functions.vp_double(sender, FloatAttribute.TeleportX),
-                                Y = Functions.vp_double(sender, FloatAttribute.TeleportY),
-                                Z = Functions.vp_double(sender, FloatAttribute.TeleportZ)
-                            },
+                        {
+                            X = Functions.vp_double(sender, FloatAttribute.TeleportX),
+                            Y = Functions.vp_double(sender, FloatAttribute.TeleportY),
+                            Z = Functions.vp_double(sender, FloatAttribute.TeleportZ)
+                        },
                         Rotation = new Vector3
-                            {
-                                X = Functions.vp_double(sender, FloatAttribute.TeleportPitch),
-                                Y = Functions.vp_double(sender, FloatAttribute.TeleportYaw),
-                                Z = 0 /* Roll not implemented yet */
-                            },
-                            // TODO: maintain user count and world state statistics.
-                        World = new World { Name = Functions.vp_string(sender, StringAttribute.TeleportWorld),State = WorldState.Unknown, UserCount=-1 }
-                    };
+                        {
+                            X = Functions.vp_double(sender, FloatAttribute.TeleportPitch),
+                            Y = Functions.vp_double(sender, FloatAttribute.TeleportYaw),
+                            Z = 0 /* Roll not implemented yet */
+                        },
+                        // TODO: maintain user count and world state statistics.
+                        World = new World
+                        {
+                            Name = Functions.vp_string(sender, StringAttribute.TeleportWorld),
+                            State = WorldState.Unknown,
+                            UserCount = -1
+                        }
+                    }
+                };
             }
-            OnTeleport(this, new TeleportEventArgs(teleport));
+            
+            Debug.Assert(!(OnTeleport is null), $"{nameof(OnTeleport)} != null");
+            OnTeleport.Invoke(this, new TeleportEventArgs(teleport));
         }
 
         private void OnGetFriendsCallbackNative(IntPtr sender, int rc, int reference)

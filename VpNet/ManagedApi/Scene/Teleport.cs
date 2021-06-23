@@ -8,38 +8,23 @@ namespace VpNet
     public class Teleport : IEquatable<Teleport>
     {
         /// <summary>
-        ///     Gets or sets the target world of the teleport.
+        ///     Gets or sets the avatar sending the teleport.
         /// </summary>
-        /// <value>The target world of the teleport.</value>
-        public World World { get; set; }
-        
-        /// <summary>
-        ///     Gets or sets the target avatar of the teleport.
-        /// </summary>
-        /// <value>The target avatar of the teleport.</value>
+        /// <value>The avatar sending the teleport.</value>
         public Avatar Avatar { get; set; }
         
         /// <summary>
-        ///     Gets or sets the target position of the teleport.
+        ///     Gets or sets the location of the teleport.
         /// </summary>
-        /// <value>The target position of the teleport.</value>
-        public Vector3 Position { get; set; }
-        
-        /// <summary>
-        ///     Gets or sets the target rotation of the teleport.
-        /// </summary>
-        /// <value>The target rotation of the teleport.</value>
-        public Vector3 Rotation { get; set; }
+        /// <value>The location of the teleport.</value>
+        public Location Location { get; set; }
 
         /// <inheritdoc />
         public bool Equals(Teleport other)
         {
             if (ReferenceEquals(null, other)) return false;
             if (ReferenceEquals(this, other)) return true;
-            return Equals(World, other.World)
-                && Equals(Avatar, other.Avatar)
-                && Position.Equals(other.Position)
-                && Rotation.Equals(other.Rotation);
+            return Equals(Avatar, other.Avatar) && Location.Equals(other.Location);
         }
 
         /// <inheritdoc />
@@ -47,8 +32,7 @@ namespace VpNet
         {
             if (ReferenceEquals(null, obj)) return false;
             if (ReferenceEquals(this, obj)) return true;
-            if (obj.GetType() != this.GetType()) return false;
-            return Equals((Teleport) obj);
+            return obj is Teleport other && Equals(other);
         }
 
         /// <inheritdoc />
@@ -56,11 +40,7 @@ namespace VpNet
         {
             unchecked
             {
-                int hashCode = (World != null ? World.GetHashCode() : 0);
-                hashCode = (hashCode * 397) ^ (Avatar != null ? Avatar.GetHashCode() : 0);
-                hashCode = (hashCode * 397) ^ Position.GetHashCode();
-                hashCode = (hashCode * 397) ^ Rotation.GetHashCode();
-                return hashCode;
+                return ((Avatar != null ? Avatar.GetHashCode() : 0) * 397) ^ Location.GetHashCode();
             }
         }
 
