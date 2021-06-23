@@ -1,23 +1,31 @@
 ﻿namespace VpNet
 {
     /// <summary>
-    /// Default Event Arguments implementation mapping. You can define your own mappings when implementing VpNet.Abstract.BaseInstanceT
+    ///     Provides event arguments for <see cref="Instance.OnTeleport" />.
     /// </summary>
     public sealed class TeleportEventArgs : TimedEventArgs
     {
         /// <summary>
         ///     Initializes a new instance of the <see cref="TeleportEventArgs" /> class.
         /// </summary>
-        /// <param name="teleport">The teleport information.</param>
-        public TeleportEventArgs(Teleport teleport)
+        /// <param name="avatar">The avatar sending the teleport.</param>
+        /// <param name="location">The location of the teleport.</param>
+        public TeleportEventArgs(Avatar avatar, Location location)
         {
-            Teleport = teleport;
+            Avatar = avatar;
+            Location = location;
         }
-
+        
         /// <summary>
-        ///     Gets or sets the teleport information related to this event.
+        ///     Gets the avatar sending the teleport.
         /// </summary>
-        /// <value>The teleport information.</value>
-        public Teleport Teleport { get; }
+        /// <value>The avatar sending the teleport.</value>
+        public Avatar Avatar { get; set; }
+        
+        /// <summary>
+        ///     Gets the location of the teleport.
+        /// </summary>
+        /// <value>The location of the teleport.</value>
+        public Location Location { get; set; }
     }
 }

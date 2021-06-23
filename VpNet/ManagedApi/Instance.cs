@@ -754,53 +754,34 @@ namespace VpNet
 
         #region ITeleportFunctions Implementations
 
-        public virtual void TeleportAvatar(int targetSession, string world, double x, double y, double z, double yaw, double pitch)
+        /// <summary>
+        ///     Teleports an avatar to a specified location.
+        /// </summary>
+        /// <param name="avatar">The avatar to teleport.</param>
+        /// <param name="location">The target location of the teleport.</param>
+        /// <exception cref="ArgumentNullException"><paramref name="avatar" /> is <see langword="null" />.</exception>
+        public void Teleport(Avatar avatar, Location location)
         {
+            if (avatar is null) throw new ArgumentNullException(nameof(avatar));
+            
             lock (this)
             {
-                CheckReasonCode(Functions.vp_teleport_avatar(InternalInstance, targetSession, world, (float)x, (float)y,
-                                                             (float)z, (float)yaw, (float)pitch));
+                Vector3 position = location.Position;
+                Vector3 rotation = location.Rotation;
+
+                float x = (float) position.X;
+                float y = (float) position.Y;
+                float z = (float) position.Z;
+                float yaw = (float) rotation.Y;
+                float pitch = (float) rotation.X;
+                string worldName = location.World.Name;
+
+                if (string.IsNullOrWhiteSpace(worldName))
+                    worldName = string.Empty;
+
+                int rc = Functions.vp_teleport_avatar(InternalInstance, avatar.Session, worldName, x, y, z, yaw, pitch);
+                CheckReasonCode(rc);
             }
-        }
-
-        public virtual void TeleportAvatar(Avatar avatar, string world, double x, double y, double z, double yaw, double pitch)
-        {
-            TeleportAvatar(avatar.Session, world, (float)x, (float)y, (float)z, (float)yaw, (float)pitch);
-        }
-
-        public virtual void TeleportAvatar(Avatar avatar, string world, Vector3 position, double yaw, double pitch)
-        {
-            TeleportAvatar(avatar.Session, world, (float)position.X, (float)position.Y, (float)position.Z, (float)yaw, (float)pitch);
-        }
-
-        public virtual void TeleportAvatar(int targetSession, string world, Vector3 position, double yaw, double pitch)
-        {
-            TeleportAvatar(targetSession, world, (float)position.X, (float)position.Y, (float)position.Z, (float)yaw, (float)pitch);
-
-        }
-
-        public virtual void TeleportAvatar(Avatar avatar, string world, Vector3 position, Vector3 rotation)
-        {
-            TeleportAvatar(avatar.Session, world, (float)position.X, (float)position.Y, (float)position.Z,
-                           (float)rotation.Y, (float)rotation.X);
-        }
-
-        public void TeleportAvatar(Avatar avatar, World world, Vector3 position, Vector3 rotation)
-        {
-            TeleportAvatar(avatar.Session, world.Name, (float)position.X, (float)position.Y, (float)position.Z,
-                           (float)rotation.Y, (float)rotation.X);
-        }
-
-        public virtual void TeleportAvatar(Avatar avatar, Vector3 position, Vector3 rotation)
-        {
-            TeleportAvatar(avatar.Session, string.Empty, (float)position.X, (float)position.Y, (float)position.Z,
-                           (float)rotation.Y, (float)rotation.X);
-        }
-
-        public virtual void TeleportAvatar(Avatar avatar)
-        {
-            TeleportAvatar(avatar.Session, string.Empty, (float)avatar.Position.X, (float)avatar.Position.Y,
-                           (float)avatar.Position.Z, (float)avatar.Rotation.Y, (float)avatar.Rotation.X);
         }
 
         #endregion
@@ -1197,41 +1178,36 @@ namespace VpNet
 
         private void OnTeleportNative(IntPtr sender)
         {
-            if (OnTeleport == null)
-                return;
-            Teleport teleport;
+            if (OnTeleport == null) return;
+            
+            TeleportEventArgs args;
+            
             lock (this)
             {
-                teleport = new Teleport
+                int session = Functions.vp_int(sender, IntegerAttribute.AvatarSession);
+                Avatar avatar = GetAvatar(session);
+                
+                Vector3 position = new Vector3
                 {
-                    Avatar = GetAvatar(Functions.vp_int(sender, IntegerAttribute.AvatarSession)),
-                    Location = new Location
-                    {
-                        Position = new Vector3
-                        {
-                            X = Functions.vp_double(sender, FloatAttribute.TeleportX),
-                            Y = Functions.vp_double(sender, FloatAttribute.TeleportY),
-                            Z = Functions.vp_double(sender, FloatAttribute.TeleportZ)
-                        },
-                        Rotation = new Vector3
-                        {
-                            X = Functions.vp_double(sender, FloatAttribute.TeleportPitch),
-                            Y = Functions.vp_double(sender, FloatAttribute.TeleportYaw),
-                            Z = 0 /* Roll not implemented yet */
-                        },
-                        // TODO: maintain user count and world state statistics.
-                        World = new World
-                        {
-                            Name = Functions.vp_string(sender, StringAttribute.TeleportWorld),
-                            State = WorldState.Unknown,
-                            UserCount = -1
-                        }
-                    }
+                    X = Functions.vp_double(sender, FloatAttribute.TeleportX),
+                    Y = Functions.vp_double(sender, FloatAttribute.TeleportY),
+                    Z = Functions.vp_double(sender, FloatAttribute.TeleportZ)
                 };
+                Vector3 rotation = new Vector3
+                {
+                    X = Functions.vp_double(sender, FloatAttribute.TeleportPitch),
+                    Y = Functions.vp_double(sender, FloatAttribute.TeleportYaw),
+                    Z = 0 // roll not implemented
+                };
+
+                string worldName = Functions.vp_string(sender, StringAttribute.TeleportWorld);
+                var location = new Location(worldName, position, rotation);
+
+                args = new TeleportEventArgs(avatar, location);
             }
             
             Debug.Assert(!(OnTeleport is null), $"{nameof(OnTeleport)} != null");
-            OnTeleport.Invoke(this, new TeleportEventArgs(teleport));
+            OnTeleport.Invoke(this, args);
         }
 
         private void OnGetFriendsCallbackNative(IntPtr sender, int rc, int reference)

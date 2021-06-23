@@ -29,18 +29,18 @@ namespace VpNet
         /// </summary>
         /// <value>The name of the world.</value>
         public string Name { get; set; }
-        
+
         /// <summary>
         ///     Gets or sets the number of users currently in the world.
         /// </summary>
         /// <value>The number of users currently in the world.</value>
-        public int UserCount { get; set; }
-        
+        public int UserCount { get; set; } = -1;
+
         /// <summary>
         ///     Gets or sets the world state.
         /// </summary>
         /// <value>The world state.</value>
-        public WorldState State { get; set; }
+        public WorldState State { get; set; } = WorldState.Unknown;
 
         /// <summary>
         ///     Gets or sets a view of the world attributes.
