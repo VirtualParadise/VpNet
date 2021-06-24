@@ -304,18 +304,13 @@ namespace VpNet
         /// </remarks>
         public string ToString(string format, IFormatProvider formatProvider)
         {
-            var sb = new StringBuilder();
-            string separator = NumberFormatInfo.GetInstance(formatProvider).NumberGroupSeparator;
-            sb.Append('<');
-            sb.Append(X.ToString(format, formatProvider));
-            sb.Append(separator);
-            sb.Append(' ');
-            sb.Append(Y.ToString(format, formatProvider));
-            sb.Append(separator);
-            sb.Append(' ');
-            sb.Append(Z.ToString(format, formatProvider));
-            sb.Append('>');
-            return sb.ToString();
+            var separator = NumberFormatInfo.GetInstance(formatProvider).NumberGroupSeparator;
+
+            string x = X.ToString(format, formatProvider);
+            string y = Y.ToString(format, formatProvider);
+            string z = Z.ToString(format, formatProvider);
+
+            return $"<{x + separator} {y + separator} {z + separator}>";
         }
     }
 }
