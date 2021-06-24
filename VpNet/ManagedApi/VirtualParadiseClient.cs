@@ -570,8 +570,9 @@ namespace VpNet
 
                 var position = new Vector3(x, y, z);
                 var rotation = new Vector3(pitch, yaw, 0);
+                var location = new Location(World, position, rotation);
 
-                avatar = new Avatar(userId, 0, name, type, position, rotation, DateTimeOffset.Now,
+                avatar = new Avatar(userId, 0, name, type, location, DateTimeOffset.Now,
                     Configuration.ApplicationName, Configuration.ApplicationVersion);
             }
 
@@ -1316,9 +1317,11 @@ namespace VpNet
 
                     color = new Color(r, g, b);
                 }
+
+                var location = new Location(World, Vector3.Zero, Rotation.Zero);
                 
                 if (!_avatars.TryGetValue(session, out avatar))
-                    _avatars.Add(session, avatar = new Avatar(0, session, name, 0, Vector3.Zero, Vector3.Zero, DateTimeOffset.Now, string.Empty, string.Empty));
+                    _avatars.Add(session, avatar = new Avatar(0, session, name, 0, location, DateTimeOffset.Now, string.Empty, string.Empty));
                 
                 message = new ChatMessage(name, text, type, color, effects);
             }
@@ -1351,7 +1354,9 @@ namespace VpNet
                 var position = new Vector3(x, y, z);
                 var rotation = new Vector3(pitch, yaw, 0);
 
-                avatar = new Avatar(userId, 0, name, type, position, rotation, DateTimeOffset.Now, applicationName, applicationVersion);
+                var location = new Location(World, position, rotation);
+
+                avatar = new Avatar(userId, 0, name, type, location, DateTimeOffset.Now, applicationName, applicationVersion);
 
                 if (_avatars.ContainsKey(session))
                     _avatars[session] = avatar;
@@ -1387,8 +1392,11 @@ namespace VpNet
 
                 avatar.Name = Functions.vp_string(sender, StringAttribute.AvatarName);
                 avatar.AvatarType = Functions.vp_int(sender, IntegerAttribute.AvatarType);
-                avatar.Position = new Vector3(x, y, z);
-                avatar.Rotation = new Vector3(pitch, yaw, 0);
+
+                var location = avatar.Location;
+                location.Position = new Vector3(x, y, z);
+                location.Rotation = new Rotation(pitch, yaw);
+                avatar.Location = location;
                 avatar.LastChanged = DateTimeOffset.Now;
             }
             AvatarChanged?.Invoke(this, new AvatarChangeEventArgs(avatar, oldAvatar));

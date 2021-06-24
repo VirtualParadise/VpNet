@@ -23,7 +23,7 @@ namespace VpNet
         /// <param name="worldName">The name of the world.</param>
         /// <param name="position">The position.</param>
         /// <param name="rotation">The rotation.</param>
-        public Location(string worldName, Vector3 position, Vector3 rotation)
+        public Location(string worldName, Vector3 position, Rotation rotation)
             : this(new World(worldName), position, rotation)
         {
         }
@@ -44,7 +44,7 @@ namespace VpNet
         /// <param name="world">The world.</param>
         /// <param name="position">The position.</param>
         /// <param name="rotation">The rotation.</param>
-        public Location(World world, Vector3 position, Vector3 rotation)
+        public Location(World world, Vector3 position, Rotation rotation)
         {
             World = world;
             Position = position;
@@ -67,7 +67,7 @@ namespace VpNet
         ///     Gets or sets the rotation.
         /// </summary>
         /// <value>The rotation.</value>
-        public Vector3 Rotation { get; set; }
+        public Rotation Rotation { get; set; }
 
         /// <inheritdoc />
         public bool Equals(Location other) => Equals(World, other.World) && Position.Equals(other.Position);
