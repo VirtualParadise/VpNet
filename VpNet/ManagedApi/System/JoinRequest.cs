@@ -38,11 +38,7 @@ namespace VpNet
         {
             lock (_virtualParadiseClient)
             {
-                World world = _virtualParadiseClient.World;
-                Vector3 position = _virtualParadiseClient.My().Position;
-                Vector3 rotation = _virtualParadiseClient.My().Rotation;
-
-                return AcceptAsync(new Location(world, position, rotation));
+                return AcceptAsync(_virtualParadiseClient.My().Location);
             }
         }
 

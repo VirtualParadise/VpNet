@@ -11,14 +11,13 @@ namespace VpNet
         {
         }
         
-        internal Avatar(int userId, int session, string name, int avatarType, Vector3 position, Vector3 rotation, DateTimeOffset lastChanged, string applicationName, string applicationVersion)
+        internal Avatar(int userId, int session, string name, int avatarType, Location location, DateTimeOffset lastChanged, string applicationName, string applicationVersion)
         {
             UserId = userId;
             Session = session;
             Name = name;
             AvatarType = avatarType;
-            Position = position;
-            Rotation = rotation;
+            Location = location;
             LastChanged = lastChanged;
             ApplicationName = applicationName;
             ApplicationVersion = applicationVersion;
@@ -55,22 +54,16 @@ namespace VpNet
         public DateTimeOffset LastChanged { get; internal set; }
         
         /// <summary>
+        ///     Gets the location of this avatar.
+        /// </summary>
+        /// <value>The location of this avatar.</value>
+        public Location Location { get; internal set; }
+        
+        /// <summary>
         ///     Gets the name of this avatar.
         /// </summary>
         /// <value>The name of this avatar.</value>
         public string Name { get; internal set; }
-        
-        /// <summary>
-        ///     Gets the position of this avatar.
-        /// </summary>
-        /// <value>The position of this avatar.</value>
-        public Vector3 Position { get; internal set; }
-        
-        /// <summary>
-        ///     Gets the rotation of this avatar.
-        /// </summary>
-        /// <value>The rotation of this avatar.</value>
-        public Vector3 Rotation { get; internal set; }
         
         /// <summary>
         ///     Gets the session of this avatar.
@@ -115,8 +108,7 @@ namespace VpNet
         /// <inheritdoc />
         public object Clone()
         {
-            return new Avatar(UserId, Session, Name, AvatarType, Position, Rotation, LastChanged, ApplicationName,
-                ApplicationVersion);
+            return new Avatar(UserId, Session, Name, AvatarType, Location, LastChanged, ApplicationName, ApplicationVersion);
         }
 
         public static bool operator ==(Avatar left, Avatar right) => Equals(left, right);
