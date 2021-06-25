@@ -200,6 +200,8 @@ namespace VpNet
             lock (this)
             {
                 int session = Functions.vp_int(sender, IntegerAttribute.AvatarSession);
+                avatar = GetAvatar(session);
+                
                 var type = (ChatMessageTypes) Functions.vp_int(sender, IntegerAttribute.ChatType);
                 var effects = (TextEffectTypes) Functions.vp_int(sender, IntegerAttribute.ChatEffects);
                 string text = Functions.vp_string(sender, StringAttribute.ChatMessage);
@@ -215,12 +217,6 @@ namespace VpNet
                     color = new Color(r, g, b);
                 }
 
-                var location = new Location(World, Vector3.Zero, Rotation.Zero);
-
-                if (!_avatars.TryGetValue(session, out avatar))
-                    _avatars.Add(session,
-                        avatar = new Avatar(0, session, name, 0, location, DateTimeOffset.Now, string.Empty, string.Empty));
-
                 message = new ChatMessage(name, text, type, color, effects);
             }
 
@@ -228,14 +224,15 @@ namespace VpNet
             ChatMessageReceived.Invoke(this, args);
         }
 
-        private void OnAvatarAddNative(IntPtr sender)
+        private async void OnAvatarAddNative(IntPtr sender)
         {
             Avatar avatar;
+            int userId;
 
             lock (this)
             {
                 int session = Functions.vp_int(sender, IntegerAttribute.AvatarSession);
-                int userId = Functions.vp_int(sender, IntegerAttribute.UserId);
+                userId = Functions.vp_int(sender, IntegerAttribute.UserId);
                 int type = Functions.vp_int(sender, IntegerAttribute.AvatarType);
                 string name = Functions.vp_string(sender, StringAttribute.AvatarName);
 
@@ -254,14 +251,22 @@ namespace VpNet
 
                 var location = new Location(World, position, rotation);
 
-                avatar = new Avatar(userId, 0, name, type, location, DateTimeOffset.Now,
-                    applicationName, applicationVersion);
+                avatar = new Avatar
+                {
+                    Session = session,
+                    Name = name,
+                    AvatarType = type,
+                    Location = location,
+                    LastChanged = DateTimeOffset.Now,
+                    ApplicationName = applicationName,
+                    ApplicationVersion = applicationVersion
+                };
 
-                if (_avatars.ContainsKey(session))
-                    _avatars[session] = avatar;
-                else
-                    _avatars.Add(session, avatar);
+                if (_avatars.ContainsKey(session)) _avatars[session] = avatar;
+                else _avatars.Add(session, avatar);
             }
+
+            avatar.User = await GetUserAsync(userId); // cannot await in lock
 
             if (AvatarEntered is null) return;
 

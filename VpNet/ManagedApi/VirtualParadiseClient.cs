@@ -197,7 +197,6 @@ namespace VpNet
                 
                 lock (this)
                 {
-                    int userId = Functions.vp_int(NativeInstanceHandle, IntegerAttribute.MyUserId);
                     int type = Functions.vp_int(NativeInstanceHandle, IntegerAttribute.MyType);
                     string name = Configuration.BotName;
 
@@ -212,8 +211,17 @@ namespace VpNet
                     var rotation = new Rotation(pitch, yaw);
                     var location = new Location(World, position, rotation);
 
-                    avatar = new Avatar(userId, 0, name, type, location, DateTimeOffset.Now,
-                        Configuration.ApplicationName, Configuration.ApplicationVersion);
+                    avatar = new Avatar
+                    {
+                        Session = 0,
+                        Name = name,
+                        AvatarType = type,
+                        Location = location,
+                        LastChanged = DateTimeOffset.Now,
+                        ApplicationName = Configuration.ApplicationName,
+                        ApplicationVersion = Configuration.ApplicationVersion,
+                        User = CurrentUser
+                    };
                 }
 
                 return avatar;
@@ -936,7 +944,7 @@ namespace VpNet
         {
             lock (this)
             {
-                CheckReasonCode(Functions.vp_join(NativeInstanceHandle, avatar.UserId));
+                CheckReasonCode(Functions.vp_join(NativeInstanceHandle, avatar.User.Id));
             }
         }
 
@@ -960,7 +968,7 @@ namespace VpNet
         {
             lock (this)
             {
-                CheckReasonCode(Functions.vp_world_permission_user_set(NativeInstanceHandle, Enum.GetName(typeof(WorldPermissions), permission),avatar.UserId,1));
+                CheckReasonCode(Functions.vp_world_permission_user_set(NativeInstanceHandle, Enum.GetName(typeof(WorldPermissions), permission), avatar.User.Id, 1));
             }
         }
 
@@ -976,7 +984,7 @@ namespace VpNet
         {
             lock (this)
             {
-                CheckReasonCode(Functions.vp_world_permission_user_set(NativeInstanceHandle, Enum.GetName(typeof(WorldPermissions), permission), avatar.UserId, 0));
+                CheckReasonCode(Functions.vp_world_permission_user_set(NativeInstanceHandle, Enum.GetName(typeof(WorldPermissions), permission), avatar.User.Id, 0));
             }
         }
 

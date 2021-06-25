@@ -10,18 +10,6 @@ namespace VpNet
         internal Avatar()
         {
         }
-        
-        internal Avatar(int userId, int session, string name, int avatarType, Location location, DateTimeOffset lastChanged, string applicationName, string applicationVersion)
-        {
-            UserId = userId;
-            Session = session;
-            Name = name;
-            AvatarType = avatarType;
-            Location = location;
-            LastChanged = lastChanged;
-            ApplicationName = applicationName;
-            ApplicationVersion = applicationVersion;
-        }
 
         /// <summary>
         ///     Gets the name of the application this avatar client is using.
@@ -69,22 +57,20 @@ namespace VpNet
         ///     Gets the session of this avatar.
         /// </summary>
         /// <value>The session of this avatar.</value>
-        /// <remarks>This value is not to be confused with <see cref="UserId" />.</remarks>
         public int Session { get; internal set; }
         
         /// <summary>
-        ///     Gets the user ID of this avatar.
+        ///     Gets the user associated with this avatar.
         /// </summary>
-        /// <value>The user ID of this avatar.</value>
-        /// <remarks>This value is not to be confused with <see cref="Session" />.</remarks>
-        public int UserId { get; internal set; }
+        /// <value>The user associated with this avatar.</value>
+        public User User { get; internal set; }
 
         /// <inheritdoc />
         public bool Equals(Avatar other)
         {
             if (ReferenceEquals(null, other)) return false;
             if (ReferenceEquals(this, other)) return true;
-            return Session == other.Session && UserId == other.UserId;
+            return Session == other.Session && User == other.User;
         }
 
         /// <inheritdoc />
@@ -101,14 +87,24 @@ namespace VpNet
         {
             unchecked
             {
-                return (Session * 397) ^ UserId;
+                return (Session * 397) ^ User.Id;
             }
         }
 
         /// <inheritdoc />
         public object Clone()
         {
-            return new Avatar(UserId, Session, Name, AvatarType, Location, LastChanged, ApplicationName, ApplicationVersion);
+            return new Avatar
+            {
+                Session = Session,
+                Name = Name,
+                AvatarType = AvatarType,
+                Location = Location,
+                LastChanged = LastChanged,
+                ApplicationName = ApplicationName,
+                ApplicationVersion = ApplicationVersion,
+                User = User
+            };
         }
 
         public static bool operator ==(Avatar left, Avatar right) => Equals(left, right);
