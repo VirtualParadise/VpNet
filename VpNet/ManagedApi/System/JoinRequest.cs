@@ -66,7 +66,7 @@ namespace VpNet
                 Vector3 position = location.Position;
                 Vector3 rotation = location.Rotation;
                 
-                int rc = Functions.vp_join_accept(_virtualParadiseClient.InternalInstance, _requestId,
+                int rc = Functions.vp_join_accept(_virtualParadiseClient.NativeInstanceHandle, _requestId,
                     world.Name,
                     position.X, position.Y, position.Z, 
                     (float) rotation.Y, (float) rotation.X);
@@ -82,7 +82,7 @@ namespace VpNet
         {
             lock (_virtualParadiseClient)
             {
-                int rc = Functions.vp_join_decline(_virtualParadiseClient.InternalInstance, _requestId);
+                int rc = Functions.vp_join_decline(_virtualParadiseClient.NativeInstanceHandle, _requestId);
                 VirtualParadiseClient.CheckReasonCode(rc);
             }
             return Task.CompletedTask;
