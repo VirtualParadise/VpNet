@@ -88,7 +88,7 @@ namespace VpNet
 
         private void OnUserAttributesNative(IntPtr sender)
         {
-            UserAttributes attributes;
+            User user;
 
             lock (this)
             {
@@ -103,10 +103,18 @@ namespace VpNet
                 DateTimeOffset registrationDate = DateTimeOffset.FromUnixTimeSeconds(registrationDateTimestamp);
                 TimeSpan onlineTime = TimeSpan.FromSeconds(onlineTimeSeconds);
 
-                attributes = new UserAttributes(userId, name, email, lastLogin.UtcDateTime, onlineTime, registrationDate.UtcDateTime);
+                user = new User
+                {
+                    Id = userId,
+                    Name = name,
+                    Email = email,
+                    LastLogin = lastLogin,
+                    OnlineTime = onlineTime,
+                    RegistrationDate = registrationDate
+                };
             }
 
-            var args = new UserAttributesEventArgs(attributes);
+            var args = new UserAttributesEventArgs(user);
             UserAttributesReceived?.Invoke(this, args);
         }
 

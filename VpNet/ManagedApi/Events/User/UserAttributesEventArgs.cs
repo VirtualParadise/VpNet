@@ -8,16 +8,16 @@
         /// <summary>
         ///     Initializes a new instance of the <see cref="UserAttributesEventArgs" /> class.
         /// </summary>
-        /// <param name="userAttributes">The user attributes.</param>
-        public UserAttributesEventArgs(UserAttributes userAttributes)
+        /// <param name="user">The user.</param>
+        public UserAttributesEventArgs(User user)
         {
-            UserAttributes = userAttributes;
+            User = user;
         }
 
         /// <summary>
         ///     Gets the user attributes.
         /// </summary>
         /// <value>The user attributes.</value>
-        public UserAttributes UserAttributes { get; }
+        public User User { get; }
     }
 }
