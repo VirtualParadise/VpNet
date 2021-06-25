@@ -200,18 +200,18 @@ namespace VpNet
         internal event CallbackDelegate OnWorldPermissionUserSetCallbackNativeEvent;
         internal event CallbackDelegate OnWorldPermissionSessionSetCallbackNativeEvent;
         internal event CallbackDelegate OnWorldSettingsSetCallbackNativeEvent;
-   
-        /// <summary>
-        ///     Gets or sets the configuration for this instance.
-        /// </summary>
-        /// <value>The configuration for this instance.</value>
-        public VirtualParadiseClientConfiguration Configuration { get; set; }
 
         /// <summary>
         ///     Gets a read-only view of the avatars currently seen by this instance.
         /// </summary>
         /// <value>A read-only view of the avatars currently seen by this instance.</value>
         public IReadOnlyCollection<Avatar> Avatars => _avatars.Values;
+
+        /// <summary>
+        ///     Gets or sets the configuration for this instance.
+        /// </summary>
+        /// <value>The configuration for this instance.</value>
+        public VirtualParadiseClientConfiguration Configuration { get; set; }
 
         /// <summary>
         ///     Gets the universe to which this instance is currently connected.
