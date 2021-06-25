@@ -8,103 +8,18 @@ namespace VpNet
 {
     public partial class VirtualParadiseClient
     {
-        internal event EventDelegate OnChatNativeEvent;
-        internal event EventDelegate OnAvatarAddNativeEvent;
-        internal event EventDelegate OnAvatarDeleteNativeEvent;
-        internal event EventDelegate OnAvatarChangeNativeEvent;
-        internal event EventDelegate OnAvatarClickNativeEvent;
-        internal event EventDelegate OnWorldListNativeEvent;
-        internal event EventDelegate OnObjectChangeNativeEvent;
-        internal event EventDelegate OnObjectCreateNativeEvent;
-        internal event EventDelegate OnObjectDeleteNativeEvent;
-        internal event EventDelegate OnObjectClickNativeEvent;
-        internal event EventDelegate OnObjectBumpNativeEvent;
-        internal event EventDelegate OnObjectBumpEndNativeEvent;
-        internal event EventDelegate OnQueryCellEndNativeEvent;
-        internal event EventDelegate OnUniverseDisconnectNativeEvent;
-        internal event EventDelegate OnWorldDisconnectNativeEvent;
-        internal event EventDelegate OnTeleportNativeEvent;
-        internal event EventDelegate OnUserAttributesNativeEvent;
-        internal event EventDelegate OnJoinNativeEvent;
-
-        internal event CallbackDelegate OnObjectCreateCallbackNativeEvent;
-        internal event CallbackDelegate OnObjectChangeCallbackNativeEvent;
-        internal event CallbackDelegate OnObjectDeleteCallbackNativeEvent;
-        internal event CallbackDelegate OnObjectGetCallbackNativeEvent;
-        internal event CallbackDelegate OnObjectLoadCallbackNativeEvent;
-        internal event CallbackDelegate OnFriendAddCallbackNativeEvent;
-        internal event CallbackDelegate OnFriendDeleteCallbackNativeEvent;
-        internal event CallbackDelegate OnGetFriendsCallbackNativeEvent;
-        internal event CallbackDelegate OnJoinCallbackNativeEvent;
-        internal event CallbackDelegate OnWorldPermissionUserSetCallbackNativeEvent;
-        internal event CallbackDelegate OnWorldPermissionSessionSetCallbackNativeEvent;
-        internal event CallbackDelegate OnWorldSettingsSetCallbackNativeEvent;
-
-        internal void OnObjectCreateCallbackNative1(IntPtr instance, int rc, int reference)
+        
+        private void SetNativeEvent(Events eventType, EventDelegate eventFunction)
         {
-            lock (this)
-            {
-                OnObjectCreateCallbackNativeEvent?.Invoke(instance, rc, reference);
-            }
+            Functions.vp_event_set(NativeInstanceHandle, (int) eventType, eventFunction);
         }
 
-        internal void OnObjectChangeCallbackNative1(IntPtr instance, int rc, int reference)
+        private void SetNativeCallback(Callbacks callbackType, CallbackDelegate callbackFunction)
         {
-            lock (this)
-            {
-                OnObjectChangeCallbackNativeEvent?.Invoke(instance, rc, reference);
-            }
+            Functions.vp_callback_set(NativeInstanceHandle, (int) callbackType, callbackFunction);
         }
 
-        internal void OnObjectDeleteCallbackNative1(IntPtr instance, int rc, int reference)
-        {
-            lock (this)
-            {
-                OnObjectDeleteCallbackNativeEvent?.Invoke(instance, rc, reference);
-            }
-        }
-
-        internal void OnObjectGetCallbackNative1(IntPtr instance, int rc, int reference)
-        {
-            lock (this)
-            {
-                OnObjectGetCallbackNativeEvent?.Invoke(instance, rc, reference);
-            }
-        }
-
-        internal void OnFriendAddCallbackNative1(IntPtr instance, int rc, int reference)
-        {
-            lock (this)
-            {
-                OnFriendAddCallbackNativeEvent?.Invoke(instance, rc, reference);
-            }
-        }
-
-        internal void OnFriendDeleteCallbackNative1(IntPtr instance, int rc, int reference)
-        {
-            lock (this)
-            {
-                OnFriendDeleteCallbackNativeEvent?.Invoke(instance, rc, reference);
-            }
-        }
-
-        internal void OnGetFriendsCallbackNative1(IntPtr instance, int rc, int reference)
-        {
-            lock (this)
-            {
-                OnFriendDeleteCallbackNativeEvent?.Invoke(instance, rc, reference);
-            }
-        }
-
-        internal void OnObjectLoadCallbackNative1(IntPtr instance, int rc, int reference)
-        {
-            lock (this)
-            {
-                OnObjectLoadCallbackNativeEvent?.Invoke(instance, rc, reference);
-            }
-        }
-
-        internal void OnLoginCallbackNative1(IntPtr instance, int rc, int reference)
+        private void OnLoginCallbackNative(IntPtr instance, int rc, int reference)
         {
             lock (this)
             {
@@ -112,7 +27,7 @@ namespace VpNet
             }
         }
 
-        internal void OnEnterCallbackNativeEvent1(IntPtr instance, int rc, int reference)
+        private void OnEnterCallbackNativeEvent(IntPtr instance, int rc, int reference)
         {
             lock (this)
             {
@@ -121,220 +36,12 @@ namespace VpNet
             }
         }
 
-        internal void OnJoinCallbackNativeEvent1(IntPtr instance, int rc, int reference)
-        {
-            lock (this)
-            {
-                OnJoinCallbackNativeEvent?.Invoke(instance, rc, reference);
-            }
-        }
-
-        internal void OnConnectUniverseCallbackNative1(IntPtr instance, int rc, int reference)
+        private void OnConnectUniverseCallbackNative(IntPtr instance, int rc, int reference)
         {
             lock (this)
             {
                 SetCompletionResult(_connectCompletionSource, rc, null);
             }
-        }
-
-        internal void OnWorldPermissionUserSetCallbackNative1(IntPtr instance, int rc, int reference)
-        {
-            lock (this)
-            {
-                OnWorldPermissionUserSetCallbackNativeEvent?.Invoke(instance, rc, reference);
-            }
-        }
-
-        internal void OnWorldPermissionSessionSetCallbackNative1(IntPtr instance, int rc, int reference)
-        {
-            lock (this)
-            {
-                OnWorldPermissionSessionSetCallbackNativeEvent?.Invoke(instance, rc, reference);
-            }
-        }
-
-        internal void OnWorldSettingsSetCallbackNative1(IntPtr instance, int rc, int reference)
-        {
-            lock (this)
-            {
-                OnWorldSettingsSetCallbackNativeEvent?.Invoke(instance, rc, reference);
-            }
-        }
-
-        internal void OnChatNative1(IntPtr instance)
-        {
-            lock (this)
-            {
-                OnChatNativeEvent?.Invoke(instance);
-            }
-        }
-
-        internal void OnAvatarAddNative1(IntPtr instance)
-        {
-            lock (this)
-            {
-                OnAvatarAddNativeEvent?.Invoke(instance);
-            }
-        }
-
-        internal void OnAvatarChangeNative1(IntPtr instance)
-        {
-            lock (this)
-            {
-                OnAvatarChangeNativeEvent?.Invoke(instance);
-            }
-        }
-
-        internal void OnAvatarDeleteNative1(IntPtr instance)
-        {
-            lock (this)
-            {
-                OnAvatarDeleteNativeEvent?.Invoke(instance);
-            }
-        }
-
-        internal void OnAvatarClickNative1(IntPtr instance)
-        {
-            lock (this)
-            {
-                OnAvatarClickNativeEvent?.Invoke(instance);
-            }
-        }
-
-        internal void OnWorldListNative1(IntPtr instance)
-        {
-            lock (this)
-            {
-                OnWorldListNativeEvent?.Invoke(instance);
-            }
-        }
-
-        internal void OnWorldDisconnectNative1(IntPtr instance)
-        {
-            lock (this)
-            {
-                OnWorldDisconnectNativeEvent?.Invoke(instance);
-            }
-        }
-
-        internal void OnWorldSettingsChangedNative1(IntPtr instance)
-        {
-            lock (this)
-            {
-                OnWorldSettingsChangedNativeEvent(instance);
-            }
-        }
-
-        internal void OnWorldSettingNative1(IntPtr instance)
-        {
-            lock (this)
-            {
-                OnWorldSettingNativeEvent(instance);
-            }
-        }
-
-        internal void OnObjectChangeNative1(IntPtr instance)
-        {
-            lock (this)
-            {
-                OnObjectChangeNativeEvent?.Invoke(instance);
-            }
-        }
-
-        internal void OnObjectCreateNative1(IntPtr instance)
-        {
-            lock (this)
-            {
-                OnObjectCreateNativeEvent?.Invoke(instance);
-            }
-        }
-
-        internal void OnObjectClickNative1(IntPtr instance)
-        {
-            lock (this)
-            {
-                OnObjectClickNativeEvent?.Invoke(instance);
-            }
-        }
-
-        internal void OnObjectBumpNative1(IntPtr instance)
-        {
-            lock (this)
-            {
-                OnObjectBumpNativeEvent?.Invoke(instance);
-            }
-        }
-
-        internal void OnObjectBumpEndNative1(IntPtr instance)
-        {
-            lock (this)
-            {
-                OnObjectBumpEndNativeEvent?.Invoke(instance);
-            }
-        }
-
-        internal void OnObjectDeleteNative1(IntPtr instance)
-        {
-            lock (this)
-            {
-                OnObjectDeleteNativeEvent?.Invoke(instance);
-            }
-        }
-
-        internal void OnQueryCellEndNative1(IntPtr instance)
-        {
-            lock (this)
-            {
-                OnQueryCellEndNativeEvent?.Invoke(instance);
-            }
-        }
-
-        internal void OnUniverseDisconnectNative1(IntPtr instance)
-        {
-            lock (this)
-            {
-                OnUniverseDisconnectNativeEvent?.Invoke(instance);
-            }
-        }
-
-        internal void OnTeleportNative1(IntPtr instance)
-        {
-            lock (this)
-            {
-                OnTeleportNativeEvent?.Invoke(instance);
-            }
-        }
-
-        internal void OnUserAttributesNative1(IntPtr instance)
-        {
-            lock (this)
-            {
-                OnUserAttributesNativeEvent?.Invoke(instance);
-            }
-        }
-
-        internal void OnJoinNative1(IntPtr instance)
-        {
-            lock (this)
-            {
-                OnJoinNativeEvent?.Invoke(instance);
-            }
-        }
-
-        private readonly Dictionary<Events, EventDelegate> _nativeEvents = new Dictionary<Events, EventDelegate>();
-
-        private readonly Dictionary<Callbacks, CallbackDelegate> _nativeCallbacks = new Dictionary<Callbacks, CallbackDelegate>();
-
-        private void SetNativeEvent(Events eventType, EventDelegate eventFunction)
-        {
-            _nativeEvents[eventType] = eventFunction;
-            Functions.vp_event_set(NativeInstanceHandle, (int) eventType, eventFunction);
-        }
-
-        private void SetNativeCallback(Callbacks callbackType, CallbackDelegate callbackFunction)
-        {
-            _nativeCallbacks[callbackType] = callbackFunction;
-            Functions.vp_callback_set(NativeInstanceHandle, (int) callbackType, callbackFunction);
         }
 
         private void OnObjectCreateCallbackNative(IntPtr sender, int rc, int reference)
@@ -796,7 +503,7 @@ namespace VpNet
             WorldListEntryReceived(this, new WorldListEventArgs(data));
         }
 
-        private void OnWorldSettingNativeEvent(IntPtr instance)
+        private void OnWorldSettingNative(IntPtr instance)
         {
             if (!_worlds.ContainsKey(Configuration.World.Name))
             {
@@ -809,7 +516,7 @@ namespace VpNet
             world.RawAttributes[key] = value;
         }
 
-        private void OnWorldSettingsChangedNativeEvent(IntPtr instance)
+        private void OnWorldSettingsChangedNative(IntPtr instance)
         {
             // Initialize World Object Cache if a local object path has been specified and a objectpath is speficied in the world attributes.
             // TODO: some world, such as Test do not specify a objectpath, maybe there's a default search path we dont know of.

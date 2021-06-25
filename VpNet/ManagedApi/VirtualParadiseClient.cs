@@ -244,37 +244,6 @@ namespace VpNet
             _netConfig.Receive = Connection.ReceiveNative;
             _netConfig.Send = Connection.SendNative;
             _netConfig.Timeout = Connection.TimeoutNative;
-
-            OnChatNativeEvent += OnChatNative;
-            OnAvatarAddNativeEvent += OnAvatarAddNative;
-            OnAvatarChangeNativeEvent += OnAvatarChangeNative;
-            OnAvatarDeleteNativeEvent += OnAvatarDeleteNative;
-            OnAvatarClickNativeEvent += OnAvatarClickNative;
-            OnWorldListNativeEvent += OnWorldListNative;
-            OnWorldDisconnectNativeEvent += OnWorldDisconnectNative;
-
-            OnObjectChangeNativeEvent += OnObjectChangeNative;
-            OnObjectCreateNativeEvent += OnObjectCreateNative;
-            OnObjectClickNativeEvent += OnObjectClickNative;
-            OnObjectBumpNativeEvent += OnObjectBumpNative;
-            OnObjectBumpEndNativeEvent += OnObjectBumpEndNative;
-            OnObjectDeleteNativeEvent += OnObjectDeleteNative;
-
-            OnQueryCellEndNativeEvent += OnQueryCellEndNative;
-            OnUniverseDisconnectNativeEvent += OnUniverseDisconnectNative;
-            OnTeleportNativeEvent += OnTeleportNative;
-            OnUserAttributesNativeEvent += OnUserAttributesNative;
-            OnJoinNativeEvent += OnJoinNative;
-
-            OnObjectCreateCallbackNativeEvent += OnObjectCreateCallbackNative;
-            OnObjectChangeCallbackNativeEvent += OnObjectChangeCallbackNative;
-            OnObjectDeleteCallbackNativeEvent += OnObjectDeleteCallbackNative;
-            OnObjectGetCallbackNativeEvent += OnObjectGetCallbackNative;
-            this.OnObjectLoadCallbackNativeEvent += this.OnObjectLoadCallbackNative;
-
-            OnFriendAddCallbackNativeEvent += OnFriendAddCallbackNative;
-            OnFriendDeleteCallbackNativeEvent += OnFriendDeleteCallbackNative;
-            OnGetFriendsCallbackNativeEvent += OnGetFriendsCallbackNative;
         }
 
         private void InitVpNative()
@@ -288,41 +257,41 @@ namespace VpNet
 
             NativeInstanceHandle = Functions.vp_create(ref _netConfig);
 
-            SetNativeEvent(Events.Chat, OnChatNative1);
-            SetNativeEvent(Events.AvatarAdd, OnAvatarAddNative1);
-            SetNativeEvent(Events.AvatarChange, OnAvatarChangeNative1);
-            SetNativeEvent(Events.AvatarDelete, OnAvatarDeleteNative1);
-            SetNativeEvent(Events.AvatarClick, OnAvatarClickNative1);
-            SetNativeEvent(Events.WorldList, OnWorldListNative1);
-            SetNativeEvent(Events.WorldSetting, OnWorldSettingNative1);
-            SetNativeEvent(Events.WorldSettingsChanged, OnWorldSettingsChangedNative1);
-            SetNativeEvent(Events.ObjectChange, OnObjectChangeNative1);
-            SetNativeEvent(Events.Object, OnObjectCreateNative1);
-            SetNativeEvent(Events.ObjectClick, OnObjectClickNative1);
-            SetNativeEvent(Events.ObjectBumpBegin, OnObjectBumpNative1);
-            SetNativeEvent(Events.ObjectBumpEnd, OnObjectBumpEndNative1);
-            SetNativeEvent(Events.ObjectDelete, OnObjectDeleteNative1);
-            SetNativeEvent(Events.QueryCellEnd, OnQueryCellEndNative1);
-            SetNativeEvent(Events.UniverseDisconnect, OnUniverseDisconnectNative1);
-            SetNativeEvent(Events.WorldDisconnect, OnWorldDisconnectNative1);
-            SetNativeEvent(Events.Teleport, OnTeleportNative1);
-            SetNativeEvent(Events.UserAttributes, OnUserAttributesNative1);
-            SetNativeEvent(Events.Join, OnJoinNative1);
-            SetNativeCallback(Callbacks.ObjectAdd, OnObjectCreateCallbackNative1);
-            SetNativeCallback(Callbacks.ObjectChange, OnObjectChangeCallbackNative1);
-            SetNativeCallback(Callbacks.ObjectDelete, OnObjectDeleteCallbackNative1);
-            SetNativeCallback(Callbacks.ObjectGet, OnObjectGetCallbackNative1);
-            SetNativeCallback(Callbacks.ObjectLoad, this.OnObjectLoadCallbackNative1);
-            SetNativeCallback(Callbacks.FriendAdd, OnFriendAddCallbackNative1);
-            SetNativeCallback(Callbacks.FriendDelete, OnFriendDeleteCallbackNative1);
-            SetNativeCallback(Callbacks.GetFriends, OnGetFriendsCallbackNative1);
-            SetNativeCallback(Callbacks.Login, OnLoginCallbackNative1);
-            SetNativeCallback(Callbacks.Enter, OnEnterCallbackNativeEvent1);
-            //SetNativeCallback(Callbacks.Join, OnJoinCallbackNativeEvent1);
-            SetNativeCallback(Callbacks.ConnectUniverse, OnConnectUniverseCallbackNative1);
-            //SetNativeCallback(Callbacks.WorldPermissionUserSet, OnWorldPermissionUserSetCallbackNative1);
-            //SetNativeCallback(Callbacks.WorldPermissionSessionSet, OnWorldPermissionSessionSetCallbackNative1);
-            //SetNativeCallback(Callbacks.WorldSettingSet, OnWorldSettingsSetCallbackNative1);
+            SetNativeEvent(Events.Chat, OnChatNative);
+            SetNativeEvent(Events.AvatarAdd, OnAvatarAddNative);
+            SetNativeEvent(Events.AvatarChange, OnAvatarChangeNative);
+            SetNativeEvent(Events.AvatarDelete, OnAvatarDeleteNative);
+            SetNativeEvent(Events.AvatarClick, OnAvatarClickNative);
+            SetNativeEvent(Events.WorldList, OnWorldListNative);
+            SetNativeEvent(Events.WorldSetting, OnWorldSettingNative);
+            SetNativeEvent(Events.WorldSettingsChanged, OnWorldSettingsChangedNative);
+            SetNativeEvent(Events.ObjectChange, OnObjectChangeNative);
+            SetNativeEvent(Events.Object, OnObjectCreateNative);
+            SetNativeEvent(Events.ObjectClick, OnObjectClickNative);
+            SetNativeEvent(Events.ObjectBumpBegin, OnObjectBumpNative);
+            SetNativeEvent(Events.ObjectBumpEnd, OnObjectBumpEndNative);
+            SetNativeEvent(Events.ObjectDelete, OnObjectDeleteNative);
+            SetNativeEvent(Events.QueryCellEnd, OnQueryCellEndNative);
+            SetNativeEvent(Events.UniverseDisconnect, OnUniverseDisconnectNative);
+            SetNativeEvent(Events.WorldDisconnect, OnWorldDisconnectNative);
+            SetNativeEvent(Events.Teleport, OnTeleportNative);
+            SetNativeEvent(Events.UserAttributes, OnUserAttributesNative);
+            SetNativeEvent(Events.Join, OnJoinNative);
+            SetNativeCallback(Callbacks.ObjectAdd, OnObjectCreateCallbackNative);
+            SetNativeCallback(Callbacks.ObjectChange, OnObjectChangeCallbackNative);
+            SetNativeCallback(Callbacks.ObjectDelete, OnObjectDeleteCallbackNative);
+            SetNativeCallback(Callbacks.ObjectGet, OnObjectGetCallbackNative);
+            SetNativeCallback(Callbacks.ObjectLoad, this.OnObjectLoadCallbackNative);
+            SetNativeCallback(Callbacks.FriendAdd, OnFriendAddCallbackNative);
+            SetNativeCallback(Callbacks.FriendDelete, OnFriendDeleteCallbackNative);
+            SetNativeCallback(Callbacks.GetFriends, OnGetFriendsCallbackNative);
+            SetNativeCallback(Callbacks.Login, OnLoginCallbackNative);
+            SetNativeCallback(Callbacks.Enter, OnEnterCallbackNativeEvent);
+            //SetNativeCallback(Callbacks.Join, OnJoinCallbackNativeEvent);
+            SetNativeCallback(Callbacks.ConnectUniverse, OnConnectUniverseCallbackNative);
+            //SetNativeCallback(Callbacks.WorldPermissionUserSet, OnWorldPermissionUserSetCallbackNative);
+            //SetNativeCallback(Callbacks.WorldPermissionSessionSet, OnWorldPermissionSessionSetCallbackNative);
+            //SetNativeCallback(Callbacks.WorldSettingSet, OnWorldSettingsSetCallbackNative);
         }
 
         private void SetCompletionResult(int referenceNumber, int rc, object result)
