@@ -44,7 +44,7 @@ namespace VpNet
         {
             lock (this)
             {
-                OnObjectCreateCallbackNativeEvent(instance, rc, reference);
+                OnObjectCreateCallbackNativeEvent?.Invoke(instance, rc, reference);
             }
         }
 
@@ -52,7 +52,7 @@ namespace VpNet
         {
             lock (this)
             {
-                OnObjectChangeCallbackNativeEvent(instance, rc, reference);
+                OnObjectChangeCallbackNativeEvent?.Invoke(instance, rc, reference);
             }
         }
 
@@ -60,7 +60,7 @@ namespace VpNet
         {
             lock (this)
             {
-                OnObjectDeleteCallbackNativeEvent(instance, rc, reference);
+                OnObjectDeleteCallbackNativeEvent?.Invoke(instance, rc, reference);
             }
         }
 
@@ -68,7 +68,7 @@ namespace VpNet
         {
             lock (this)
             {
-                OnObjectGetCallbackNativeEvent(instance, rc, reference);
+                OnObjectGetCallbackNativeEvent?.Invoke(instance, rc, reference);
             }
         }
 
@@ -76,7 +76,7 @@ namespace VpNet
         {
             lock (this)
             {
-                OnFriendAddCallbackNativeEvent(instance, rc, reference);
+                OnFriendAddCallbackNativeEvent?.Invoke(instance, rc, reference);
             }
         }
 
@@ -84,7 +84,7 @@ namespace VpNet
         {
             lock (this)
             {
-                OnFriendDeleteCallbackNativeEvent(instance, rc, reference);
+                OnFriendDeleteCallbackNativeEvent?.Invoke(instance, rc, reference);
             }
         }
 
@@ -92,7 +92,7 @@ namespace VpNet
         {
             lock (this)
             {
-                OnFriendDeleteCallbackNativeEvent(instance, rc, reference);
+                OnFriendDeleteCallbackNativeEvent?.Invoke(instance, rc, reference);
             }
         }
 
@@ -100,7 +100,7 @@ namespace VpNet
         {
             lock (this)
             {
-                OnObjectLoadCallbackNativeEvent(instance, rc, reference);
+                OnObjectLoadCallbackNativeEvent?.Invoke(instance, rc, reference);
             }
         }
 
@@ -125,7 +125,7 @@ namespace VpNet
         {
             lock (this)
             {
-                OnJoinCallbackNativeEvent(instance, rc, reference);
+                OnJoinCallbackNativeEvent?.Invoke(instance, rc, reference);
             }
         }
 
@@ -141,7 +141,7 @@ namespace VpNet
         {
             lock (this)
             {
-                OnWorldPermissionUserSetCallbackNativeEvent(instance, rc, reference);
+                OnWorldPermissionUserSetCallbackNativeEvent?.Invoke(instance, rc, reference);
             }
         }
 
@@ -149,7 +149,7 @@ namespace VpNet
         {
             lock (this)
             {
-                OnWorldPermissionSessionSetCallbackNativeEvent(instance, rc, reference);
+                OnWorldPermissionSessionSetCallbackNativeEvent?.Invoke(instance, rc, reference);
             }
         }
 
@@ -157,7 +157,7 @@ namespace VpNet
         {
             lock (this)
             {
-                OnWorldSettingsSetCallbackNativeEvent(instance, rc, reference);
+                OnWorldSettingsSetCallbackNativeEvent?.Invoke(instance, rc, reference);
             }
         }
 
@@ -165,7 +165,7 @@ namespace VpNet
         {
             lock (this)
             {
-                OnChatNativeEvent(instance);
+                OnChatNativeEvent?.Invoke(instance);
             }
         }
 
@@ -173,7 +173,7 @@ namespace VpNet
         {
             lock (this)
             {
-                OnAvatarAddNativeEvent(instance);
+                OnAvatarAddNativeEvent?.Invoke(instance);
             }
         }
 
@@ -181,7 +181,7 @@ namespace VpNet
         {
             lock (this)
             {
-                OnAvatarChangeNativeEvent(instance);
+                OnAvatarChangeNativeEvent?.Invoke(instance);
             }
         }
 
@@ -189,7 +189,7 @@ namespace VpNet
         {
             lock (this)
             {
-                OnAvatarDeleteNativeEvent(instance);
+                OnAvatarDeleteNativeEvent?.Invoke(instance);
             }
         }
 
@@ -197,7 +197,7 @@ namespace VpNet
         {
             lock (this)
             {
-                OnAvatarClickNativeEvent(instance);
+                OnAvatarClickNativeEvent?.Invoke(instance);
             }
         }
 
@@ -205,7 +205,7 @@ namespace VpNet
         {
             lock (this)
             {
-                OnWorldListNativeEvent(instance);
+                OnWorldListNativeEvent?.Invoke(instance);
             }
         }
 
@@ -213,7 +213,7 @@ namespace VpNet
         {
             lock (this)
             {
-                OnWorldDisconnectNativeEvent(instance);
+                OnWorldDisconnectNativeEvent?.Invoke(instance);
             }
         }
 
@@ -237,7 +237,7 @@ namespace VpNet
         {
             lock (this)
             {
-                OnObjectChangeNativeEvent(instance);
+                OnObjectChangeNativeEvent?.Invoke(instance);
             }
         }
 
@@ -245,7 +245,7 @@ namespace VpNet
         {
             lock (this)
             {
-                OnObjectCreateNativeEvent(instance);
+                OnObjectCreateNativeEvent?.Invoke(instance);
             }
         }
 
@@ -253,7 +253,7 @@ namespace VpNet
         {
             lock (this)
             {
-                OnObjectClickNativeEvent(instance);
+                OnObjectClickNativeEvent?.Invoke(instance);
             }
         }
 
@@ -261,7 +261,7 @@ namespace VpNet
         {
             lock (this)
             {
-                OnObjectBumpNativeEvent(instance);
+                OnObjectBumpNativeEvent?.Invoke(instance);
             }
         }
 
@@ -269,7 +269,7 @@ namespace VpNet
         {
             lock (this)
             {
-                OnObjectBumpEndNativeEvent(instance);
+                OnObjectBumpEndNativeEvent?.Invoke(instance);
             }
         }
 
@@ -277,7 +277,7 @@ namespace VpNet
         {
             lock (this)
             {
-                OnObjectDeleteNativeEvent(instance);
+                OnObjectDeleteNativeEvent?.Invoke(instance);
             }
         }
 
@@ -285,7 +285,7 @@ namespace VpNet
         {
             lock (this)
             {
-                OnQueryCellEndNativeEvent(instance);
+                OnQueryCellEndNativeEvent?.Invoke(instance);
             }
         }
 
@@ -293,7 +293,7 @@ namespace VpNet
         {
             lock (this)
             {
-                OnUniverseDisconnectNativeEvent(instance);
+                OnUniverseDisconnectNativeEvent?.Invoke(instance);
             }
         }
 
@@ -301,7 +301,7 @@ namespace VpNet
         {
             lock (this)
             {
-                OnTeleportNativeEvent(instance);
+                OnTeleportNativeEvent?.Invoke(instance);
             }
         }
 
@@ -309,7 +309,7 @@ namespace VpNet
         {
             lock (this)
             {
-                OnUserAttributesNativeEvent(instance);
+                OnUserAttributesNativeEvent?.Invoke(instance);
             }
         }
 
@@ -317,7 +317,7 @@ namespace VpNet
         {
             lock (this)
             {
-                OnJoinNativeEvent(instance);
+                OnJoinNativeEvent?.Invoke(instance);
             }
         }
 
