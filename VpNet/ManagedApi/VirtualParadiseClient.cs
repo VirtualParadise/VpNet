@@ -19,8 +19,10 @@ namespace VpNet
         private const int DefaultUniversePort = 57000;
 
         private readonly Dictionary<int, TaskCompletionSource<object>> _objectCompletionSources;
+        private readonly Dictionary<int, TaskCompletionSource<object>> _userCompletionSources;
         private readonly Dictionary<int, Avatar> _avatars;
         private readonly Dictionary<string, World> _worlds;
+        private readonly Dictionary<int, User> _users;
         private TaskCompletionSource<object> _connectCompletionSource;
         private TaskCompletionSource<object> _loginCompletionSource;
         private TaskCompletionSource<object> _enterCompletionSource;
@@ -34,8 +36,11 @@ namespace VpNet
         {
             Configuration = new VirtualParadiseClientConfiguration();
             _objectCompletionSources = new Dictionary<int, TaskCompletionSource<object>>();
+            _userCompletionSources = new Dictionary<int, TaskCompletionSource<object>>();
             _worlds = new Dictionary<string, World>();
             _avatars = new Dictionary<int, Avatar>();
+            _users = new Dictionary<int, User>();
+            
             InitOnce();
             InitVpNative();
         }
@@ -74,11 +79,6 @@ namespace VpNet
         ///     Occurs when this bot has been teleported.
         /// </summary>
         public event VpEventHandler<TeleportEventArgs> Teleported;
-        
-        /// <summary>
-        ///     Occurs when user attributes have been received as a result of calling <see cref="GetUserProfile(int)" />.
-        /// </summary>
-        public event VpEventHandler<UserAttributesEventArgs> UserAttributesReceived;
 
         /// <summary>
         ///     Occurs when an object has been created.
@@ -218,6 +218,40 @@ namespace VpNet
 
                 return avatar;
             }
+        }
+
+        /// <summary>
+        ///     Gets the details about a user with a specific ID.
+        /// </summary>
+        /// <param name="userId">The ID of the user.</param>
+        /// <returns>A <see cref="User" /> containing details about the specified user.</returns>
+        public async Task<User> GetUserAsync(int userId)
+        {
+            if (_users.TryGetValue(userId, out User user))
+                return user;
+            
+            var taskCompletionSource = new TaskCompletionSource<object>();
+
+            lock (this)
+            {
+                _userCompletionSources.Add(userId, taskCompletionSource);
+                // Functions.vp_int_set(NativeInstanceHandle, IntegerAttribute.ReferenceNumber, referenceNumber);
+                // (may be necessary if the native SDK is ever refactored to use a callback rather than event)
+                int rc = Functions.vp_user_attributes_by_id(NativeInstanceHandle, userId);
+                if (rc != 0)
+                {
+                    _userCompletionSources.Remove(userId);
+                    throw new VpException((ReasonCode) rc);
+                }
+            }
+
+            user = (User) await taskCompletionSource.Task.ConfigureAwait(false);
+            
+            if (_users.ContainsKey(userId)) _users[userId] = user;
+            else _users.Add(userId, user);
+
+            _userCompletionSources.Remove(userId);
+            return user;
         }
 
         /// <summary>
@@ -750,28 +784,6 @@ namespace VpNet
             }
         }
 
-        public virtual void GetUserProfile(int userId)
-        {
-            lock (this)
-            {
-                CheckReasonCode(Functions.vp_user_attributes_by_id(NativeInstanceHandle, userId));
-            }
-        }
-
-        [Obsolete]
-        public virtual void GetUserProfile(string userName)
-        {
-            lock (this)
-            {
-                CheckReasonCode(Functions.vp_user_attributes_by_name(NativeInstanceHandle, userName));
-            }
-        }
-
-        public virtual void GetUserProfile(Avatar profile)
-        {
-            GetUserProfile(profile.UserId);
-        }
-
         public virtual void UpdateAvatar(double x = 0.0f, double y = 0.0f, double z = 0.0f,double yaw = 0.0f, double pitch = 0.0f)
         {
             lock (this)
@@ -1076,7 +1088,6 @@ namespace VpNet
                 WorldSettingsChanged = null;
                 WorldDisconnected = null;
                 UniverseDisconnected = null;
-                UserAttributesReceived = null;
                 QueryCellResult = null;
                 QueryCellEnd = null;
                 FriendAdded = null;

@@ -89,10 +89,11 @@ namespace VpNet
         private void OnUserAttributesNative(IntPtr sender)
         {
             User user;
+            int userId;
 
             lock (this)
             {
-                int userId = Functions.vp_int(sender, IntegerAttribute.UserId);
+                userId = Functions.vp_int(sender, IntegerAttribute.UserId);
                 string name = Functions.vp_string(sender, StringAttribute.UserName);
                 string email = Functions.vp_string(sender, StringAttribute.UserEmail);
                 int lastLoginTimestamp = Functions.vp_int(sender, IntegerAttribute.UserLastLogin);
@@ -114,8 +115,11 @@ namespace VpNet
                 };
             }
 
-            var args = new UserAttributesEventArgs(user);
-            UserAttributesReceived?.Invoke(this, args);
+            if (_userCompletionSources.TryGetValue(userId, out TaskCompletionSource<object> taskCompletionSource))
+            {
+                // can't use SetCompletionSource
+                SetCompletionResult(taskCompletionSource, 0, user);
+            }
         }
 
         private void OnTeleportNative(IntPtr sender)
