@@ -221,6 +221,12 @@ namespace VpNet
         }
 
         /// <summary>
+        ///     Gets the user associated with the current instance.
+        /// </summary>
+        /// <value>The user associated with the current instance.</value>
+        public User CurrentUser { get; private set; }
+
+        /// <summary>
         ///     Gets the details about a user with a specific ID.
         /// </summary>
         /// <param name="userId">The ID of the user.</param>
@@ -447,7 +453,7 @@ namespace VpNet
             await LoginAsync(Configuration.UserName, Configuration.Password, Configuration.BotName);
         }
 
-        public virtual Task LoginAsync(string username, string password, string botname)
+        public virtual async Task LoginAsync(string username, string password, string botname)
         {
             lock (this)
             {
@@ -461,11 +467,14 @@ namespace VpNet
                 var rc = Functions.vp_login(NativeInstanceHandle, username, password, botname);
                 if (rc != 0)
                 {
-                    return Task.FromException(new VpException((ReasonCode)rc));
+                    throw new VpException((ReasonCode)rc);
                 }
-
-                return _loginCompletionSource.Task;
             }
+
+            await _loginCompletionSource.Task;
+
+            int myUserId = Functions.vp_int(NativeInstanceHandle, IntegerAttribute.MyUserId);
+            CurrentUser = await GetUserAsync(myUserId);
         }
 
         public virtual Task EnterAsync(string worldname)
@@ -514,8 +523,10 @@ namespace VpNet
             _avatars.Clear();
             Functions.vp_destroy(NativeInstanceHandle);
             InitVpNative();
+            WorldLeft?.Invoke(this, new WorldLeaveEventArgs(Configuration.World));
             UniverseDisconnected?.Invoke(this, new UniverseDisconnectEventArgs(Universe, DisconnectType.UserDisconnected));
 
+            CurrentUser = null;
             Universe = null;
         }
 

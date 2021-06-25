@@ -539,6 +539,8 @@ namespace VpNet
 
         private void OnUniverseDisconnectNative(IntPtr sender)
         {
+            CurrentUser = null;
+            
             if (UniverseDisconnected == null) return;
             UniverseDisconnected(this, new UniverseDisconnectEventArgs(Universe));
         }
