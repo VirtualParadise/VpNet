@@ -214,6 +214,46 @@ namespace VpNet
         public VirtualParadiseClientConfiguration Configuration { get; set; }
 
         /// <summary>
+        ///     Gets the current avatar for this instance, if any.
+        /// </summary>
+        /// <value>
+        ///     An <see cref="Avatar" /> encapsulating the state of the avatar for this instance, or <see langword="null" /> if
+        ///     this instance is not in a world.
+        /// </value>
+        public Avatar CurrentAvatar
+        {
+            get
+            {
+                if (World is null) return null;
+
+                Avatar avatar;
+                
+                lock (this)
+                {
+                    int userId = Functions.vp_int(InternalInstance, IntegerAttribute.MyUserId);
+                    int type = Functions.vp_int(InternalInstance, IntegerAttribute.MyType);
+                    string name = Configuration.BotName;
+
+                    double x = Functions.vp_double(InternalInstance, FloatAttribute.MyX);
+                    double y = Functions.vp_double(InternalInstance, FloatAttribute.MyY);
+                    double z = Functions.vp_double(InternalInstance, FloatAttribute.MyZ);
+
+                    double pitch = Functions.vp_double(InternalInstance, FloatAttribute.MyPitch);
+                    double yaw = Functions.vp_double(InternalInstance, FloatAttribute.MyYaw);
+
+                    var position = new Vector3(x, y, z);
+                    var rotation = new Rotation(pitch, yaw);
+                    var location = new Location(World, position, rotation);
+
+                    avatar = new Avatar(userId, 0, name, type, location, DateTimeOffset.Now,
+                        Configuration.ApplicationName, Configuration.ApplicationVersion);
+                }
+
+                return avatar;
+            }
+        }
+
+        /// <summary>
         ///     Gets the universe to which this instance is currently connected.
         /// </summary>
         /// <value>The universe to which this instance is currently connected.</value>
@@ -543,40 +583,6 @@ namespace VpNet
 
                 return _enterCompletionSource.Task;
             }
-        }
-
-        /// <summary>
-        ///     If connected to a world, returns the state of this instance's avatar.
-        /// </summary>
-        /// <returns>An instance of <see cref="Avatar" />, encapsulating the state of this instance.</returns>
-        public Avatar My()
-        {
-            Avatar avatar;
-
-            if (World is null) return null;
-            
-            lock (this)
-            {
-                int userId = Functions.vp_int(InternalInstance, IntegerAttribute.MyUserId);
-                int type = Functions.vp_int(InternalInstance, IntegerAttribute.MyType);
-                string name = Configuration.BotName;
-
-                double x = Functions.vp_double(InternalInstance, FloatAttribute.MyX);
-                double y = Functions.vp_double(InternalInstance, FloatAttribute.MyY);
-                double z = Functions.vp_double(InternalInstance, FloatAttribute.MyZ);
-                
-                double pitch = Functions.vp_double(InternalInstance, FloatAttribute.MyPitch);
-                double yaw = Functions.vp_double(InternalInstance, FloatAttribute.MyYaw);
-
-                var position = new Vector3(x, y, z);
-                var rotation = new Vector3(pitch, yaw, 0);
-                var location = new Location(World, position, rotation);
-
-                avatar = new Avatar(userId, 0, name, type, location, DateTimeOffset.Now,
-                    Configuration.ApplicationName, Configuration.ApplicationVersion);
-            }
-
-            return avatar;
         }
 
         /// <summary>
@@ -1140,10 +1146,6 @@ namespace VpNet
 
         private readonly Dictionary<Events, EventDelegate> _nativeEvents = new Dictionary<Events, EventDelegate>();
         private readonly Dictionary<Callbacks, CallbackDelegate> _nativeCallbacks = new Dictionary<Callbacks, CallbackDelegate>();
-
-
-
-
 
         private void SetNativeEvent(Events eventType, EventDelegate eventFunction)
         {

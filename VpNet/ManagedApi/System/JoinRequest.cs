@@ -38,7 +38,7 @@ namespace VpNet
         {
             lock (_virtualParadiseClient)
             {
-                return AcceptAsync(_virtualParadiseClient.My().Location);
+                return AcceptAsync(_virtualParadiseClient.CurrentAvatar.Location);
             }
         }
 
