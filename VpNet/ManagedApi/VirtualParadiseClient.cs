@@ -208,7 +208,7 @@ namespace VpNet
                     double yaw = Functions.vp_double(NativeInstanceHandle, FloatAttribute.MyYaw);
 
                     var position = new Vector3(x, y, z);
-                    var rotation = new Rotation(pitch, yaw);
+                    var rotation = new Vector3(pitch, yaw, 0);
                     var location = new Location(World, position, rotation);
 
                     avatar = new Avatar

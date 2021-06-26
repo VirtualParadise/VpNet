@@ -4,7 +4,7 @@
     {
         public static string ToCompassLongString(this Avatar avatar)
         {
-            var direction = (avatar.Location.Rotation.Yaw % 360 + 360) % 360;
+            var direction = (avatar.Location.Rotation.Y % 360 + 360) % 360;
             if (direction <= 22.5f) return "South";
             if (direction <= 67.5f) return "South-West";
             if (direction <= 112.5f) return "West";
@@ -17,7 +17,7 @@
 
         public static string ToCompassString(Avatar avatar)
         {
-            var direction = (avatar.Location.Rotation.Yaw % 360 + 360) % 360;
+            var direction = (avatar.Location.Rotation.Y % 360 + 360) % 360;
             if (direction <= 22.5f) return "S";
             if (direction <= 67.5f) return "SE";
             if (direction <= 112.5f) return "W";
@@ -31,7 +31,7 @@
         public static CompassDirectionType ToCompassType<TAvatar>(Avatar avatar)
              where TAvatar : Avatar
         {
-            var direction = (avatar.Location.Rotation.Yaw % 360 + 360) % 360;
+            var direction = (avatar.Location.Rotation.Y % 360 + 360) % 360;
             if (direction <= 22.5f) return CompassDirectionType.S;
             if (direction <= 67.5f) return CompassDirectionType.SW;
             if (direction <= 112.5f) return CompassDirectionType.W;

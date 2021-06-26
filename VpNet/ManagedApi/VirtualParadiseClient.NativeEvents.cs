@@ -299,7 +299,7 @@ namespace VpNet
 
                 var location = avatar.Location;
                 location.Position = new Vector3(x, y, z);
-                location.Rotation = new Rotation(pitch, yaw);
+                location.Rotation = new Vector3(pitch, yaw, 0);
                 avatar.Location = location;
                 avatar.LastChanged = DateTimeOffset.Now;
             }
