@@ -1,7 +1,6 @@
 ﻿using System;
 using System.IO;
 using System.Runtime.InteropServices;
-using VpNet.Interfaces;
 
 namespace VpNet.NativeApi
 {
@@ -10,10 +9,9 @@ namespace VpNet.NativeApi
         /// <summary>
         /// Converts terrain node data to a 2D TerrainCell array
         /// </summary>
-        public static TTerrainCell[,] NodeDataTo2DArray<TTerrainCell>(byte[] data)
-            where TTerrainCell : class, ITerrainCell, new()
+        public static TerrainCell[,] NodeDataTo2DArray(byte[] data)
         {
-            var cells = new TTerrainCell[8, 8];
+            var cells = new TerrainCell[8, 8];
 
             using (var memStream = new MemoryStream(data))
             {
@@ -23,7 +21,7 @@ namespace VpNet.NativeApi
                 {
                     if (memStream.Read(array, 0, 8) < 8)
                         throw new Exception("Unexpected end of byte array");
-                    var cell = (TTerrainCell)Marshal.PtrToStructure(pin.AddrOfPinnedObject(), typeof(TTerrainCell));
+                    var cell = (TerrainCell)Marshal.PtrToStructure(pin.AddrOfPinnedObject(), typeof(TerrainCell));
 
 
                     var x = i % 8;

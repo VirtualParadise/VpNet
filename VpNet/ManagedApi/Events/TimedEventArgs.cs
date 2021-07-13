@@ -1,24 +1,16 @@
 using System;
-using System.ComponentModel;
-using System.Xml.Serialization;
 
 namespace VpNet
 {
-    public abstract class TimedEventArgs : EventArgs, ITimedEventArgs
+    /// <summary>
+    ///     Provides an additional timestamp as an event argument.
+    /// </summary>
+    public abstract class TimedEventArgs : EventArgs
     {
-        private DateTime _creationDate = DateTime.UtcNow;
-
-        [XmlAttribute]
-        public DateTime CreationDateUtc
-        {
-            get { return _creationDate; }
-            set { _creationDate = value; }
-        }
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public virtual void Initialize() { }
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        [XmlIgnore]
-        public virtual object Implementor { get; set; }
-
+        /// <summary>
+        ///     Gets the date and time at which this event was fired.
+        /// </summary>
+        /// <value>The date and time at which this event was fired.</value>
+        public DateTimeOffset CreationTimestamp { get; } = DateTimeOffset.Now;
     }
 }

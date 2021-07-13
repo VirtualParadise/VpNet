@@ -1,11 +1,8 @@
-using System;
-
 namespace VpNet
 {
     /// <summary>
     /// World state types.
     /// </summary>
-    [Serializable]
     public enum WorldState
     {
         /// <summary>

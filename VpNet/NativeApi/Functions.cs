@@ -3,7 +3,7 @@ using System.Runtime.InteropServices;
 
 namespace VpNet.NativeApi
 {
-    internal class Functions
+    internal static class Functions
     {
         [DllImport("vpsdk", CallingConvention = CallingConvention.Cdecl)]
         public static extern int vp_init(int build);
