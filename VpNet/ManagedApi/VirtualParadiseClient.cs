@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Net;
@@ -350,13 +350,13 @@ namespace VpNet
 
         private static void SetCompletionResult(TaskCompletionSource<object> tcs, int rc, object result)
         {
-            if (rc != 0)
+            if (rc == 0)
             {
-                tcs.SetException(new VpException((ReasonCode)rc));
+                tcs.SetResult(result);
             }
             else
             {
-                tcs.SetResult(result);
+                tcs.SetException(new VpException((ReasonCode) rc));
             }
         }
 
