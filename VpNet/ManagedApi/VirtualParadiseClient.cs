@@ -481,7 +481,11 @@ namespace VpNet
 
             await _loginCompletionSource.Task;
 
-            int myUserId = Functions.vp_int(NativeInstanceHandle, IntegerAttribute.MyUserId);
+            int myUserId;
+            lock (this)
+            {
+                myUserId = Functions.vp_int(NativeInstanceHandle, IntegerAttribute.MyUserId);
+            }
             CurrentUser = await GetUserAsync(myUserId);
         }
 
