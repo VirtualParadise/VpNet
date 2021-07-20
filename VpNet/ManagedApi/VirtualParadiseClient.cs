@@ -436,10 +436,10 @@ namespace VpNet
             }
         }
 
-        public virtual async Task LoginAndEnterAsync(bool announceAvatar = true)
+        public virtual async Task LoginAndEnterAsync(string password, bool announceAvatar = true)
         {
             await ConnectAsync();
-            await LoginAsync();
+            await LoginAsync(password);
             await EnterAsync();
             if (announceAvatar)
             {
@@ -447,27 +447,26 @@ namespace VpNet
             }
         }
 
-        public virtual async Task LoginAsync()
+        public async Task LoginAsync(string password)
         {
             if (Configuration == null ||
                 string.IsNullOrEmpty(Configuration.BotName) ||
-                string.IsNullOrEmpty(Configuration.Password) ||
+                string.IsNullOrEmpty(password) ||
                 string.IsNullOrEmpty(Configuration.UserName)
                 )
             {
                 throw new ArgumentException("Can't login because of Incomplete login configuration.");
             }
 
-            await LoginAsync(Configuration.UserName, Configuration.Password, Configuration.BotName);
+            await LoginAsync(Configuration.UserName, password, Configuration.BotName);
         }
 
-        public virtual async Task LoginAsync(string username, string password, string botname)
+        public async Task LoginAsync(string username, string password, string botname)
         {
             lock (this)
             {
                 Configuration.BotName = botname;
                 Configuration.UserName = username;
-                Configuration.Password = password;
                 Functions.vp_string_set(NativeInstanceHandle, StringAttribute.ApplicationName, Configuration.ApplicationName);
                 Functions.vp_string_set(NativeInstanceHandle, StringAttribute.ApplicationVersion, Configuration.ApplicationVersion);
 
