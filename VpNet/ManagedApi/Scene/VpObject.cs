@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 
 namespace VpNet
 {
@@ -17,21 +17,21 @@ namespace VpNet
         }
 
         /// <summary>
-        ///     Gets or sets the object angle.
+        ///     Gets the object angle.
         /// </summary>
         /// <value>The object angle.</value>
-        public double Angle { get; set; } = double.PositiveInfinity;
-        
+        public double Angle { get; internal set; } = double.PositiveInfinity;
+
         /// <summary>
-        ///     Gets or sets the object action.
+        ///     Gets the <c>Action</c> field of this object.
         /// </summary>
-        /// <value>The object action.</value>
-        public string Action { get; set; } = string.Empty;
+        /// <value>The value of the <c>Action</c> field.</value>
+        public string Action { get; internal set; } = string.Empty;
 
         /// <summary>
         ///     Gets the cell in which this object is located.
         /// </summary>
-        /// <value>The cell  in which this object is located.</value>
+        /// <value>The cell in which this object is located.</value>
         public Cell Cell
         {
             get
@@ -41,66 +41,62 @@ namespace VpNet
                 return new Cell(x, z);
             }
         }
-        
+
         /// <summary>
-        ///     Gets or sets the object description.
+        ///     Gets the <c>Description</c> field of this object.
         /// </summary>
-        /// <value>The object description.</value>
-        public string Description { get; set; } = string.Empty;
-        
+        /// <value>The value of the <c>Description</c> field.</value>
+        public string Description { get; internal set; } = string.Empty;
+
         /// <summary>
-        ///     Gets or sets the object data.
+        ///     Gets the object data.
         /// </summary>
         /// <value>The object data.</value>
-        public byte[] Data { get; set; }
-        
+        public byte[] Data { get; internal set; }
+
         /// <summary>
         ///     Gets the object ID.
         /// </summary>
         /// <value>The object ID.</value>
         public int Id { get; internal set; }
-        
+
         /// <summary>
-        ///     Gets or sets the object model name.
+        ///     Gets the <c>Model</c> field of this object.
         /// </summary>
-        /// <value>The object model name.</value>
-        public string Model { get; set; } = string.Empty;
-        
-        /// <summary>
-        ///     Gets or sets the object type.
-        /// </summary>
-        /// <value>The object type.</value>
-        public int ObjectType { get; set; }
-        
+        /// <value>The value of the <c>Model</c> field.</value>
+        public string Model { get; internal set; } = string.Empty;
+
         /// <summary>
         ///     Gets the owner of the object.
         /// </summary>
         /// <value>The owner of the object.</value>
-        public int Owner { get; set; }
-        
+        public int Owner { get; internal set; }
+
         /// <summary>
-        ///     Gets or sets the object position.
+        ///     Gets the position of this object.
         /// </summary>
-        /// <value>The object position.</value>
+        /// <value>A <see cref="Vector3" /> representing the position.</value>
         public Vector3 Position { get; set; }
-        
+
         /// <summary>
-        ///     Gets or sets the object reference number.
+        ///     Gets the rotation of this object.
         /// </summary>
-        /// <value>The object reference number.</value>
-        public int ReferenceNumber { get; set; }
-        
+        /// <value>A <see cref="Vector3" /> representing the rotation.</value>
+        public Vector3 Rotation { get; internal set; }
+
         /// <summary>
-        ///     Gets or sets the object rotation. 
+        ///     Gets the date and time at which this object was last modified.
         /// </summary>
-        /// <value>The object rotation.</value>
-        public Vector3 Rotation { get; set; }
-        
+        /// <value>The <see cref="DateTimeOffset" /> representing the date and time at which this object was last modified.</value>
+        public DateTimeOffset Time { get; internal set; }
+
         /// <summary>
-        ///     Gets or sets the time at which this object was last modified.
+        ///     Gets the object type.
         /// </summary>
-        /// <value>The time at which this object was last modified.</value>
-        public DateTimeOffset Time { get; set; }
+        /// <value>The object type.</value>
+        public int Type { get; internal set; }
+
+        internal int ReferenceNumber { get; set; }
 
         /// <inheritdoc />
         public bool Equals(VpObject other)
