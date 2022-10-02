@@ -4,35 +4,35 @@ namespace VpNet.IntegrationTests
 {
     class Program
     {
-        static ManagedApi.Instance instance;
+        static VirtualParadiseClient s_client;
 
         static void Main(string[] args)
         {
             Console.WriteLine("Hello World!");
-            instance = new ManagedApi.Instance();
+            s_client = new VirtualParadiseClient();
             MainAsync(args);
-            instance.OnAvatarEnter += Instance_OnAvatarEnter;
-            instance.OnAvatarLeave += Instance_OnAvatarLeave;
+            s_client.AvatarEntered += VirtualParadiseClientOnAvatarEnter;
+            s_client.AvatarLeft += VirtualParadiseClientOnAvatarLeave;
             Console.ReadKey();
 
         }
 
-        private static void Instance_OnAvatarLeave(ManagedApi.Instance sender, AvatarLeaveEventArgs args)
+        private static void VirtualParadiseClientOnAvatarLeave(VirtualParadiseClient sender, AvatarLeaveEventArgs args)
         {
-            sender.ConsoleMessage($"{args.Avatar.Name} has left {instance.Configuration.World.Name}");
+            sender.ConsoleMessage($"{args.Avatar.Name} has left {s_client.Configuration.World.Name}");
         }
 
-        private static void Instance_OnAvatarEnter(ManagedApi.Instance sender, AvatarEnterEventArgs args)
+        private static void VirtualParadiseClientOnAvatarEnter(VirtualParadiseClient sender, AvatarEnterEventArgs args)
         {
-            sender.ConsoleMessage(args.Avatar, "greetings", $"Welcome to {instance.Configuration.World.Name}, {args.Avatar.Name}.");
+            sender.ConsoleMessage(args.Avatar, "greetings", $"Welcome to {s_client.Configuration.World.Name}, {args.Avatar.Name}.");
         }
 
         static async void MainAsync(string[] args)
         {
-            await instance.ConnectAsync();
-            await instance.LoginAsync("<<your username here>>", "<<yourpassword>>", "<<yourbotname>>");
-            await instance.EnterAsync("<<world here>>");
-            instance.UpdateAvatar();
+            await s_client.ConnectAsync();
+            await s_client.LoginAsync("<<your username here>>", "<<yourpassword>>", "<<yourbotname>>");
+            await s_client.EnterAsync("<<world here>>");
+            s_client.UpdateAvatar();
         }
     }
 }

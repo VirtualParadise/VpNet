@@ -3,122 +3,163 @@
 namespace VpNet.NativeApi
 {
     /// <summary>
-    /// Reason Codes
+    ///     An enumeration of native return codes.
     /// </summary>
+    /// <value>This enumeration directly corresponds to the <c>VPReturnCode</c> enumeration in the native SDK.</value>
     public enum ReasonCode
     {
         /// <summary>
-        /// Operation Successfull
+        ///     The operation was successful.
         /// </summary>
         Success = 0,
+        
         /// <summary>
-        /// Incorrect API Version
+        ///     The versions of the API and SDK do not match.
         /// </summary>
-        VersionMismatch=1,
+        VersionMismatch,
+        
         /// <summary>
-        /// Instance not initalized
+        ///     The instance has not yet been initialized.
         /// </summary>
-        [Obsolete]
-        NotInitialized=2,
+        [Obsolete("This value is no longer returned by the native SDK.")]
+        NotInitialized,
+        
         /// <summary>
-        /// Instance already initialized
+        ///     The instance has already been initialized.
         /// </summary>
-        [Obsolete]
-        AlreadyInitialized=3,
+        [Obsolete("This value is no longer returned by the native SDK.")]
+        AlreadyInitialized,
+        
         /// <summary>
-        /// String too long
+        ///     The specified string value is too long.
         /// </summary>
-        StringTooLong=4,
+        StringTooLong,
+        
         /// <summary>
-        /// Invalid password
+        ///     The specified username and password constitute an invalid login request.
         /// </summary>
-        InvalidPassword=5,
+        InvalidLogin,
+        
         /// <summary>
-        /// World not found
+        ///     The specified world was not found.
         /// </summary>
-        WorldNotFound=6,
+        WorldNotFound,
+        
         /// <summary>
-        /// World login error
+        ///     There was an error logging into the world.
         /// </summary>
-        WorldLoginError=7,
+        WorldLoginError,
+        
         /// <summary>
-        /// Not in world
+        ///     A world request was made while not being connected to a world server. 
         /// </summary>
-        NotInWorld=8,
+        NotInWorld,
+        
         /// <summary>
-        /// Connection error
+        ///     An error occured in connection.
         /// </summary>
-        ConnectionError=9,
+        ConnectionError,
+        
         /// <summary>
-        /// No instance
+        ///     An operation was attempted when no instance was created.
         /// </summary>
-        NoInstance=10,
+        [Obsolete("This value is no longer returned by the native SDK.")]
+        NoInstance,
+        
         /// <summary>
-        /// Not immplemented
+        ///     The requested operation is not implemented.
         /// </summary>
-        NotImplemented=11,
+        NotImplemented,
+        
         /// <summary>
-        /// No such attribute available
+        ///     The requested attribute does not exist.
         /// </summary>
-        NoSuchAttribute=12,
+        NoSuchAttribute,
+        
         /// <summary>
-        /// Operation not allowed
+        ///     The requested operation is not allowed.
         /// </summary>
-        NotAllowed=13,
+        NotAllowed,
+        
         /// <summary>
-        /// Universe database error
+        ///     An error occurred in the Universe database.
         /// </summary>
-        DatabaseError=14,
+        DatabaseError,
+        
         /// <summary>
-        /// No such user exists
+        ///     The user does not exist.
         /// </summary>
-        NoSuchUser=15,
+        NoSuchUser,
+        
         /// <summary>
         /// Timeout
         /// </summary>
-        Timeout=16,
+        Timeout,
+        
         /// <summary>
-        /// Not in universe
+        ///     The instance is not connected to a universe. 
         /// </summary>
-        NotInUniverse=17,
+        NotInUniverse,
+        
         /// <summary>
-        /// Invalid arguments
+        ///     A function was called with invalid arguments.
         /// </summary>
-        InvalidArguments = 18,
+        InvalidArguments,
+        
         /// <summary>
-        /// Used when querying an object by an unknown ID.
+        ///     The queried ID does not belong to an object.
         /// </summary>
-        ObjectNotFound = 19,
+        ObjectNotFound,
+        
         /// <summary>
-        /// Unknown error
+        ///     An unknown error occurred.
         /// </summary>
-        UnknownError = 20,
+        UnknownError,
+        
         /// <summary>
-        /// The recursive wait
+        ///     <c>vp_wait</c> was called recursively.
         /// </summary>
-        RecursiveWait = 21,
+        [Obsolete("This value is not returned by the managed SDK.")]
+        RecursiveWait,
+        
         /// <summary>
-        /// The join declined
+        ///     The join request was declined.
         /// </summary>
-        JoinDeclined = 22,
+        JoinDeclined,
+        
         /// <summary>
-        /// The secure connection required
+        ///     A secure connection is required for the operation.
         /// </summary>
-        SecureConnectionRequired = 23,
+        SecureConnectionRequired,
+        
         /// <summary>
-        /// The handshake failed
+        ///     An error occurred when attempting to initiate a secure handshake.
         /// </summary>
-        HandshakeFailed = 24,
+        HandshakeFailed,
+        
         /// <summary>
-        /// The verifciation failed
+        ///     Verification failed.
         /// </summary>
-        VerificationFailed = 25,
+        VerificationFailed,
+        
         /// <summary>
-        /// The no such session
+        ///     The queried session does not belong to an avatar.
         /// </summary>
-        NoSuchSession = 26,
-        NotSupported = 27,
-        InviteDeclined = 28,
-        OutOfBounds = 29
+        NoSuchSession,
+        
+        /// <summary>
+        ///     The operation is not supported.
+        /// </summary>
+        NotSupported,
+        
+        /// <summary>
+        ///     The invite request was declined.
+        /// </summary>
+        InviteDeclined,
+        
+        /// <summary>
+        ///     The created or modified object was placed beyond the bounds of the world.
+        /// </summary>
+        OutOfBounds
     }
 }

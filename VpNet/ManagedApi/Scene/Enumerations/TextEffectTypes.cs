@@ -6,7 +6,6 @@ namespace VpNet
     /// Text effect type flags for in world chat font.
     /// </summary>
     [Flags]
-    [Serializable]
     public enum TextEffectTypes
     {
         /// <summary>
