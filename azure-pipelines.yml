@@ -1,0 +1,18 @@
+trigger:
+- develop
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+variables:
+  buildConfiguration: 'Release'
+
+steps:
+- bash: dotnet restore VpNet.sln
+  displayName: Restore packages
+- bash: dotnet build VpNet.sln -c $(buildConfiguration) --no-restore
+  displayName: Build solution
+- bash: dotnet pack VpNet/VpNet.csproj --no-build --output $(Build.ArtifactStagingDirectory)/packages
+  displayName: Pack
+- publish: $(Build.ArtifactStagingDirectory)/packages
+  artifact: packages
