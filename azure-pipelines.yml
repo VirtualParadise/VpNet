@@ -23,7 +23,7 @@ steps:
   displayName: Restore packages
 - bash: dotnet build VpNet.sln -c $(buildConfiguration) --no-restore -p:Version=$(GitVersion.NuGetVersion)
   displayName: Build solution
-- bash: dotnet pack VpNet/VpNet.csproj --no-build --output $(Build.ArtifactStagingDirectory)/packages -p:Version=$(GitVersion.NuGetVersion)
+- bash: dotnet pack VpNet/VpNet.csproj --no-build -c $(buildConfiguration) --output $(Build.ArtifactStagingDirectory)/packages -p:Version=$(GitVersion.NuGetVersion)
   displayName: Pack
 - publish: $(Build.ArtifactStagingDirectory)/packages
   artifact: packages
