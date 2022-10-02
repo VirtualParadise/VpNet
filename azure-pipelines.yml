@@ -12,7 +12,7 @@ steps:
   displayName: Install GitVersion
   inputs:
     versionSpec: '5.x'
-    configFilePath: GitVersion.yml
+    configFilePath: $(Build.SourcesDirectory)/GitVersion.yml
 - task: gitversion/execute@0
   displayName: Determine Version
   inputs:
