@@ -1,19 +1,9 @@
 ﻿using System;
-using System.Threading.Tasks;
-using VpNet.NativeApi;
-using static VpNet.NativeApi.Functions;
 
 namespace VpNet
 {
     public class VpObject : IEquatable<VpObject>
     {
-        private readonly VirtualParadiseClient _client;
-
-        internal VpObject(VirtualParadiseClient client)
-        {
-            _client = client;
-        }
-
         /// <summary>
         ///     Gets the object angle.
         /// </summary>
@@ -115,71 +105,6 @@ namespace VpNet
 
         /// <inheritdoc />
         public override int GetHashCode() => Id;
-
-        /// <summary>
-        ///     Modifies the object.
-        /// </summary>
-        /// <param name="builder">The builder of the object to modify.</param>
-        public async Task ModifyAsync(Action<VpObjectBuilder> builder)
-        {
-            await Task.Run(() =>
-            {
-                var model = new VpObjectBuilder();
-                builder(model);
-                lock (_client)
-                {
-                    IntPtr handle = _client.NativeInstanceHandle;
-                    if (!(model.Action is null))
-                    {
-                        vp_string_set(handle, StringAttribute.ObjectAction, model.Action);
-                    }
-
-                    if (!(model.Description is null))
-                    {
-                        vp_string_set(handle, StringAttribute.ObjectDescription, model.Description);
-                    }
-
-                    if (!(model.Model is null))
-                    {
-                        vp_string_set(handle, StringAttribute.ObjectModel, model.Model);
-                    }
-
-                    if (!(model.Type is null))
-                    {
-                        vp_int_set(handle, IntegerAttribute.ObjectType, model.Type.Value);
-                    }
-
-                    if (!(model.Angle is null))
-                    {
-                        vp_double_set(handle, FloatAttribute.ObjectRotationAngle, model.Angle.Value);
-                    }
-
-                    if (!(model.Position is null))
-                    {
-                        Vector3 position = model.Position.Value;
-                        vp_double_set(handle, FloatAttribute.ObjectX, position.X);
-                        vp_double_set(handle, FloatAttribute.ObjectY, position.Y);
-                        vp_double_set(handle, FloatAttribute.ObjectZ, position.Z);
-                    }
-
-                    if (!(model.Rotation is null))
-                    {
-                        Vector3 rotation = model.Rotation.Value;
-                        vp_double_set(handle, FloatAttribute.ObjectRotationX, rotation.X);
-                        vp_double_set(handle, FloatAttribute.ObjectRotationY, rotation.Y);
-                        vp_double_set(handle, FloatAttribute.ObjectRotationZ, rotation.Z);
-                    }
-
-                    if (!(model.Data is null))
-                    {
-                        SetData(handle, DataAttribute.ObjectData, model.Data);
-                    }
-
-                    int reason = vp_object_change(handle);
-                    VirtualParadiseClient.CheckReasonCode(reason);
-                }
-            });
-        }
 
         public static bool operator ==(VpObject left, VpObject right) => Equals(left, right);
 

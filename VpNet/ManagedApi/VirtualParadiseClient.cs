@@ -669,7 +669,7 @@ namespace VpNet
                 Functions.vp_double_set(NativeInstanceHandle, FloatAttribute.ObjectY, vpObject.Position.Y);
                 Functions.vp_double_set(NativeInstanceHandle, FloatAttribute.ObjectZ, vpObject.Position.Z);
                 Functions.vp_double_set(NativeInstanceHandle, FloatAttribute.ObjectRotationAngle, vpObject.Angle);
-                Functions.vp_int_set(NativeInstanceHandle, IntegerAttribute.ObjectType, vpObject.ObjectType);
+                Functions.vp_int_set(NativeInstanceHandle, IntegerAttribute.ObjectType, vpObject.Type);
                 Functions.vp_int_set(NativeInstanceHandle, IntegerAttribute.ObjectUserId, vpObject.Owner);
                 Functions.vp_int_set(NativeInstanceHandle, IntegerAttribute.ObjectTime, (int)vpObject.Time.ToUnixTimeSeconds());
 
@@ -707,7 +707,7 @@ namespace VpNet
                 Functions.vp_double_set(NativeInstanceHandle, FloatAttribute.ObjectY, vpObject.Position.Y);
                 Functions.vp_double_set(NativeInstanceHandle, FloatAttribute.ObjectZ, vpObject.Position.Z);
                 Functions.vp_double_set(NativeInstanceHandle, FloatAttribute.ObjectRotationAngle, vpObject.Angle);
-                Functions.vp_int_set(NativeInstanceHandle, IntegerAttribute.ObjectType, vpObject.ObjectType);
+                Functions.vp_int_set(NativeInstanceHandle, IntegerAttribute.ObjectType, vpObject.Type);
 
                 int rc = Functions.vp_object_add(NativeInstanceHandle);
                 if (rc != 0)
@@ -742,7 +742,7 @@ namespace VpNet
                 Functions.vp_double_set(NativeInstanceHandle, FloatAttribute.ObjectY, vpObject.Position.Y);
                 Functions.vp_double_set(NativeInstanceHandle, FloatAttribute.ObjectZ, vpObject.Position.Z);
                 Functions.vp_double_set(NativeInstanceHandle, FloatAttribute.ObjectRotationAngle, vpObject.Angle);
-                Functions.vp_int_set(NativeInstanceHandle, IntegerAttribute.ObjectType, vpObject.ObjectType);
+                Functions.vp_int_set(NativeInstanceHandle, IntegerAttribute.ObjectType, vpObject.Type);
 
                 int rc = Functions.vp_object_change(NativeInstanceHandle);
                 if (rc != 0)
@@ -1062,7 +1062,7 @@ namespace VpNet
             return avatar;
         }
 
-        private static void GetVpObject(IntPtr sender, out VpObject vpObject)
+        private void GetVpObject(IntPtr sender, out VpObject vpObject)
         {
             vpObject = new VpObject
             {
@@ -1080,7 +1080,7 @@ namespace VpNet
                 },
 
                 Time = DateTimeOffset.FromUnixTimeSeconds(Functions.vp_int(sender, IntegerAttribute.ObjectTime)).UtcDateTime,
-                ObjectType = Functions.vp_int(sender, IntegerAttribute.ObjectType),
+                Type = Functions.vp_int(sender, IntegerAttribute.ObjectType),
                 Owner = Functions.vp_int(sender, IntegerAttribute.ObjectUserId),
                 Position = new Vector3
                 {
