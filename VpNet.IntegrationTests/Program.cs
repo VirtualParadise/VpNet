@@ -1,38 +1,31 @@
 ﻿using System;
+using System.Threading.Tasks;
+using VpNet;
 
-namespace VpNet.IntegrationTests
+Console.WriteLine("Hello World!");
+
+VirtualParadiseClient client = new();
+client.AvatarEntered += VirtualParadiseClientOnAvatarEnter;
+client.AvatarLeft += VirtualParadiseClientOnAvatarLeave;
+
+await client.ConnectAsync();
+await client.LoginAsync("<<your username here>>", "<<yourpassword>>", "<<yourbotname>>");
+await client.EnterAsync("<<world here>>");
+client.UpdateAvatar();
+
+while (true)
 {
-    class Program
-    {
-        static VirtualParadiseClient s_client;
-
-        static void Main(string[] args)
-        {
-            Console.WriteLine("Hello World!");
-            s_client = new VirtualParadiseClient();
-            MainAsync(args);
-            s_client.AvatarEntered += VirtualParadiseClientOnAvatarEnter;
-            s_client.AvatarLeft += VirtualParadiseClientOnAvatarLeave;
-            Console.ReadKey();
-
-        }
-
-        private static void VirtualParadiseClientOnAvatarLeave(VirtualParadiseClient sender, AvatarLeaveEventArgs args)
-        {
-            sender.ConsoleMessage($"{args.Avatar.Name} has left {s_client.Configuration.World.Name}");
-        }
-
-        private static void VirtualParadiseClientOnAvatarEnter(VirtualParadiseClient sender, AvatarEnterEventArgs args)
-        {
-            sender.ConsoleMessage(args.Avatar, "greetings", $"Welcome to {s_client.Configuration.World.Name}, {args.Avatar.Name}.");
-        }
-
-        static async void MainAsync(string[] args)
-        {
-            await s_client.ConnectAsync();
-            await s_client.LoginAsync("<<your username here>>", "<<yourpassword>>", "<<yourbotname>>");
-            await s_client.EnterAsync("<<world here>>");
-            s_client.UpdateAvatar();
-        }
-    }
+    await Task.Delay(10000);
 }
+
+
+void VirtualParadiseClientOnAvatarLeave(VirtualParadiseClient sender, AvatarLeaveEventArgs args)
+{
+    sender.ConsoleMessage($"{args.Avatar.Name} has left {client.Configuration.World.Name}");
+}
+
+void VirtualParadiseClientOnAvatarEnter(VirtualParadiseClient sender, AvatarEnterEventArgs args)
+{
+    sender.ConsoleMessage(args.Avatar, "greetings", $"Welcome to {client.Configuration.World.Name}, {args.Avatar.Name}.");
+}
+
