@@ -1,11 +1,8 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Net;
 using System.Runtime.InteropServices;
-using System.Threading;
 using System.Threading.Tasks;
-using VpNet.ManagedApi.System;
 using VpNet.NativeApi;
 
 namespace VpNet
@@ -18,6 +15,7 @@ namespace VpNet
         private const string DefaultUniverseHost = "universe.virtualparadise.org";
         private const int DefaultUniversePort = 57000;
 
+        private int _lastReferenceNumber = 0;
         private readonly Dictionary<int, TaskCompletionSource<object>> _objectCompletionSources;
         private readonly Dictionary<int, TaskCompletionSource<object>> _userCompletionSources;
         private readonly Dictionary<int, Avatar> _avatars;
@@ -634,12 +632,14 @@ namespace VpNet
             }
         }
 
+        private int GetNextReferenceNumber() => ++_lastReferenceNumber;
+
         public virtual Task DeleteObjectAsync(VpObject vpObject)
         {
-            var referenceNumber = ObjectReferenceCounter.GetNextReference();
             var tcs = new TaskCompletionSource<object>();
             lock (this)
             {
+                var referenceNumber = GetNextReferenceNumber();
                 _objectCompletionSources.Add(referenceNumber, tcs);
                 Functions.vp_int_set(NativeInstanceHandle, IntegerAttribute.ReferenceNumber, referenceNumber);
 
@@ -656,10 +656,10 @@ namespace VpNet
 
         public virtual async Task<int> LoadObjectAsync(VpObject vpObject)
         {
-            var referenceNumber = ObjectReferenceCounter.GetNextReference();
             var tcs = new TaskCompletionSource<object>();
             lock (this)
             {
+                var referenceNumber = GetNextReferenceNumber();
                 _objectCompletionSources.Add(referenceNumber, tcs);
                 Functions.vp_int_set(NativeInstanceHandle, IntegerAttribute.ReferenceNumber, referenceNumber);
                 Functions.vp_int_set(NativeInstanceHandle, IntegerAttribute.ObjectId, vpObject.Id);
@@ -694,10 +694,10 @@ namespace VpNet
 
         public virtual async Task<int> AddObjectAsync(VpObject vpObject)
         {
-            var referenceNumber = ObjectReferenceCounter.GetNextReference();
             var tcs = new TaskCompletionSource<object>();
             lock (this)
             {
+                var referenceNumber = GetNextReferenceNumber();
                 _objectCompletionSources.Add(referenceNumber, tcs);
                 Functions.vp_int_set(NativeInstanceHandle, IntegerAttribute.ReferenceNumber, referenceNumber);
                 Functions.vp_int_set(NativeInstanceHandle, IntegerAttribute.ObjectId, vpObject.Id);
@@ -730,10 +730,10 @@ namespace VpNet
 
         public virtual Task ChangeObjectAsync(VpObject vpObject)
         {
-            var referenceNumber = ObjectReferenceCounter.GetNextReference();
             var tcs = new TaskCompletionSource<object>();
             lock (this)
             {
+                var referenceNumber = GetNextReferenceNumber();
                 _objectCompletionSources.Add(referenceNumber, tcs);
                 Functions.vp_int_set(NativeInstanceHandle, IntegerAttribute.ReferenceNumber, referenceNumber);
                 Functions.vp_int_set(NativeInstanceHandle, IntegerAttribute.ObjectId, vpObject.Id);
@@ -763,10 +763,10 @@ namespace VpNet
 
         public virtual async Task<VpObject> GetObjectAsync(int id)
         {
-            var referenceNumber = ObjectReferenceCounter.GetNextReference();
             var tcs = new TaskCompletionSource<object>();
             lock (this)
             {
+                var referenceNumber = GetNextReferenceNumber();
                 _objectCompletionSources.Add(referenceNumber, tcs);
                 Functions.vp_int_set(NativeInstanceHandle, IntegerAttribute.ReferenceNumber, referenceNumber);
                 var rc = Functions.vp_object_get(NativeInstanceHandle, id);
