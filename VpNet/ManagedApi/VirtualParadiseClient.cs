@@ -636,6 +636,11 @@ namespace VpNet
 
         public virtual Task DeleteObjectAsync(VpObject vpObject)
         {
+            return DeleteObjectAsync(vpObject.Id);
+        }
+
+        public virtual Task DeleteObjectAsync(int id)
+        {
             var tcs = new TaskCompletionSource<object>();
             lock (this)
             {
@@ -643,7 +648,7 @@ namespace VpNet
                 _objectCompletionSources.Add(referenceNumber, tcs);
                 Functions.vp_int_set(NativeInstanceHandle, IntegerAttribute.ReferenceNumber, referenceNumber);
 
-                int rc = Functions.vp_object_delete(NativeInstanceHandle,vpObject.Id);
+                int rc = Functions.vp_object_delete(NativeInstanceHandle, id);
                 if (rc != 0)
                 {
                     _objectCompletionSources.Remove(referenceNumber);

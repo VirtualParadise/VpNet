@@ -8,13 +8,13 @@ namespace VpNet
         ///     Gets the object angle.
         /// </summary>
         /// <value>The object angle.</value>
-        public double Angle { get; internal set; } = double.PositiveInfinity;
+        public double Angle { get; set; } = double.PositiveInfinity;
 
         /// <summary>
         ///     Gets the <c>Action</c> field of this object.
         /// </summary>
         /// <value>The value of the <c>Action</c> field.</value>
-        public string Action { get; internal set; } = string.Empty;
+        public string Action { get; set; } = string.Empty;
 
         /// <summary>
         ///     Gets the cell in which this object is located.
@@ -34,31 +34,31 @@ namespace VpNet
         ///     Gets the <c>Description</c> field of this object.
         /// </summary>
         /// <value>The value of the <c>Description</c> field.</value>
-        public string Description { get; internal set; } = string.Empty;
+        public string Description { get; set; } = string.Empty;
 
         /// <summary>
         ///     Gets the object data.
         /// </summary>
         /// <value>The object data.</value>
-        public byte[] Data { get; internal set; }
+        public byte[] Data { get; set; }
 
         /// <summary>
         ///     Gets the object ID.
         /// </summary>
         /// <value>The object ID.</value>
-        public int Id { get; internal set; }
+        public int Id { get; set; }
 
         /// <summary>
         ///     Gets the <c>Model</c> field of this object.
         /// </summary>
         /// <value>The value of the <c>Model</c> field.</value>
-        public string Model { get; internal set; } = string.Empty;
+        public string Model { get; set; } = string.Empty;
 
         /// <summary>
         ///     Gets the owner of the object.
         /// </summary>
         /// <value>The owner of the object.</value>
-        public int Owner { get; internal set; }
+        public int Owner { get; set; }
 
         /// <summary>
         ///     Gets the position of this object.
@@ -70,19 +70,19 @@ namespace VpNet
         ///     Gets the rotation of this object.
         /// </summary>
         /// <value>A <see cref="Vector3" /> representing the rotation.</value>
-        public Vector3 Rotation { get; internal set; }
+        public Vector3 Rotation { get; set; }
 
         /// <summary>
         ///     Gets the date and time at which this object was last modified.
         /// </summary>
         /// <value>The <see cref="DateTimeOffset" /> representing the date and time at which this object was last modified.</value>
-        public DateTimeOffset Time { get; internal set; }
+        public DateTimeOffset Time { get; set; }
 
         /// <summary>
         ///     Gets the object type.
         /// </summary>
         /// <value>The object type.</value>
-        public int Type { get; internal set; }
+        public int Type { get; set; }
 
         internal int ReferenceNumber { get; set; }
 
