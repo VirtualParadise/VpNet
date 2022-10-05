@@ -1,16 +1,20 @@
-﻿using System;
+﻿using Microsoft.Extensions.Configuration;
 using System.Threading.Tasks;
 using VpNet;
 
-Console.WriteLine("Hello World!");
+var config = new ConfigurationBuilder()
+    .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
+    .AddEnvironmentVariables()
+    .AddCommandLine(args)
+    .Build();
 
 VirtualParadiseClient client = new();
 client.AvatarEntered += VirtualParadiseClientOnAvatarEnter;
 client.AvatarLeft += VirtualParadiseClientOnAvatarLeave;
 
 await client.ConnectAsync();
-await client.LoginAsync("<<your username here>>", "<<yourpassword>>", "<<yourbotname>>");
-await client.EnterAsync("<<world here>>");
+await client.LoginAsync(config["Username"], config["Password"], config["BotName"]);
+await client.EnterAsync(config["World"]);
 client.UpdateAvatar();
 
 while (true)
