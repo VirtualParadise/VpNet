@@ -449,24 +449,18 @@ namespace VpNet
 
         private void OnObjectCreateNative(IntPtr sender)
         {
-            if (ObjectCreated is null && QueryCellResult is null)
-                return;
-
-            int session;
-
-            lock (this)
-            {
-                session = Functions.vp_int(sender, IntegerAttribute.AvatarSession);
-            }
-
-            var avatar = GetAvatar(session);
-
+            int session = Functions.vp_int(sender, IntegerAttribute.AvatarSession);
             GetVpObject(sender, out VpObject vpObject);
 
             if (session == 0)
-                QueryCellResult?.Invoke(this, new QueryCellResultArgs(vpObject));
+            {
+                _currentCellObjects.Add(vpObject);
+            }
             else
+            {
+                var avatar = GetAvatar(session);
                 ObjectCreated?.Invoke(this, new ObjectCreateArgs(avatar, vpObject));
+            }
         }
 
         private void OnObjectChangeNative(IntPtr sender)
@@ -485,16 +479,19 @@ namespace VpNet
 
         private void OnQueryCellEndNative(IntPtr sender)
         {
-            if (QueryCellEnd == null) return;
-            int x;
-            int z;
-            lock (this)
-            {
-                x = Functions.vp_int(sender, IntegerAttribute.CellX);
-                z = Functions.vp_int(sender, IntegerAttribute.CellZ);
-            }
+            int x = Functions.vp_int(sender, IntegerAttribute.CellX);
+            int z = Functions.vp_int(sender, IntegerAttribute.CellZ);
 
-            QueryCellEnd(this, new QueryCellEndArgs(new Cell(x, z)));
+            var index = _queryCellCompletionSources.FindIndex(cell => cell.Cell == new Cell(x, z));
+            var item = _queryCellCompletionSources[index];
+            _queryCellCompletionSources.RemoveAt(index);
+            item.CompletionSource.SetResult(new QueryCellResult
+            {
+                Status = (CellStatus)Functions.vp_int(sender, IntegerAttribute.CellStatus),
+                Revision = Functions.vp_int(sender, IntegerAttribute.CellRevision),
+                Objects = _currentCellObjects
+            });
+            _currentCellObjects = new List<VpObject>();
         }
 
         private void OnWorldListNative(IntPtr sender)

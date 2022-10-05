@@ -26,6 +26,10 @@ namespace VpNet
         private TaskCompletionSource<object> _connectCompletionSource;
         private TaskCompletionSource<object> _loginCompletionSource;
         private TaskCompletionSource<object> _enterCompletionSource;
+        
+        private List<VpObject> _currentCellObjects;
+        private List<(Cell Cell, TaskCompletionSource<QueryCellResult> CompletionSource)> _queryCellCompletionSources;
+
         private NetConfig _netConfig;
         private GCHandle _instanceHandle;
 
@@ -40,7 +44,9 @@ namespace VpNet
             _worlds = new Dictionary<string, World>();
             _avatars = new Dictionary<int, Avatar>();
             _users = new Dictionary<int, User>();
-            
+            _currentCellObjects = new List<VpObject>();
+            _queryCellCompletionSources = new List<(Cell cell, TaskCompletionSource<QueryCellResult>)>();
+
             InitOnce();
             InitVpNative();
         }
@@ -141,16 +147,6 @@ namespace VpNet
         ///     Occurs when the client has been disconnected from the universe server.
         /// </summary>
         public event VpEventHandler<UniverseDisconnectEventArgs> UniverseDisconnected;
-
-        /// <summary>
-        ///     Occurs when object data has been received as a result of calling <see cref="QueryCell(int,int)" />.
-        /// </summary>
-        public event VpEventHandler<QueryCellResultArgs> QueryCellResult;
-        
-        /// <summary>
-        ///     Occurs when all objects within a cell have been fetched as a result of calling <see cref="QueryCell(int,int)" />.
-        /// </summary>
-        public event VpEventHandler<QueryCellEndArgs> QueryCellEnd;
 
         /// <summary>
         ///     Occurs when this bot has entered a world.
@@ -549,20 +545,29 @@ namespace VpNet
             }
         }
 
-        public virtual void QueryCell(int cellX, int cellZ)
+        public virtual Task<QueryCellResult> QueryCellAsync(int cellX, int cellZ)
         {
             lock (this)
             {
                 CheckReasonCode(Functions.vp_query_cell(NativeInstanceHandle, cellX, cellZ));
+                return WaitForQueryResultAsync(cellX, cellZ);
             }
         }
 
-        public virtual void QueryCell(int cellX, int cellZ, int revision)
+        public virtual Task<QueryCellResult> QueryCellAsync(int cellX, int cellZ, int revision)
         {
             lock (this)
             {
                 CheckReasonCode(Functions.vp_query_cell_revision(NativeInstanceHandle, cellX, cellZ, revision));
+                return WaitForQueryResultAsync(cellX, cellZ);
             }
+        }
+
+        private Task<QueryCellResult> WaitForQueryResultAsync(int cellX, int cellZ)
+        {
+            var tcs = new TaskCompletionSource<QueryCellResult>();
+            _queryCellCompletionSources.Add((new Cell(cellX, cellZ), tcs));
+            return tcs.Task;
         }
 
         public void ClickObject(VpObject vpObject)
@@ -1110,8 +1115,6 @@ namespace VpNet
                 WorldSettingsChanged = null;
                 WorldDisconnected = null;
                 UniverseDisconnected = null;
-                QueryCellResult = null;
-                QueryCellEnd = null;
                 FriendAdded = null;
                 FriendReceived = null;
             }

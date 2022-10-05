@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Configuration;
+using System;
 using System.Threading.Tasks;
 using VpNet;
 
@@ -16,6 +17,17 @@ await client.ConnectAsync();
 await client.LoginAsync(config["Username"], config["Password"], config["BotName"]);
 await client.EnterAsync(config["World"]);
 client.UpdateAvatar();
+
+
+for (int z = -2; z < 2; ++z)
+{
+    for (int x = -2; x < 2; ++x)
+    {
+        Console.Write($"Querying {x}, {z}...");
+        var result = await client.QueryCellAsync(x, z);
+        Console.WriteLine($" found {result.Objects.Count} objects, revision {result.Revision}.");
+    }
+}
 
 while (true)
 {

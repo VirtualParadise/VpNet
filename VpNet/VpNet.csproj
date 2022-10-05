@@ -3,6 +3,7 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <RootNamespace>VpNet</RootNamespace>
     <AssemblyName>VpNet</AssemblyName>
+	<LangVersion>9</LangVersion>
     
     <Title>Virtual Paradise .NET SDK</Title>
     <Authors>Sjef van Leeuwen, Edwin Rijkee</Authors>
