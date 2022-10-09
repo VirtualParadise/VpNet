@@ -8,14 +8,19 @@ namespace VpNet
 {
     public partial class VirtualParadiseClient
     {
-        
+        // These collections are here to prevent the delegate objects from being garbage collected. Do not remove.
+        private readonly Dictionary<Events, EventDelegate> _nativeEvents = new();
+        private readonly Dictionary<Callbacks, CallbackDelegate> _nativeCallbacks = new();
+
         private void SetNativeEvent(Events eventType, EventDelegate eventFunction)
         {
+            _nativeEvents[eventType] = eventFunction;
             Functions.vp_event_set(NativeInstanceHandle, (int) eventType, eventFunction);
         }
 
         private void SetNativeCallback(Callbacks callbackType, CallbackDelegate callbackFunction)
         {
+            _nativeCallbacks[callbackType] = callbackFunction;
             Functions.vp_callback_set(NativeInstanceHandle, (int) callbackType, callbackFunction);
         }
 
