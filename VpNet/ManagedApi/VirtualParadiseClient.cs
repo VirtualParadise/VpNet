@@ -20,7 +20,7 @@ namespace VpNet
         private readonly Dictionary<int, TaskCompletionSource<object>> _userCompletionSources;
         private readonly Dictionary<int, Avatar> _avatars;
         private readonly Dictionary<string, World> _worlds;
-        private readonly Dictionary<int, User> _users;
+        private readonly Dictionary<int, User> _cachedUsers;
         private TaskCompletionSource<object> _connectCompletionSource;
         private TaskCompletionSource<object> _loginCompletionSource;
         private TaskCompletionSource<object> _enterCompletionSource;
@@ -41,7 +41,7 @@ namespace VpNet
             _userCompletionSources = new Dictionary<int, TaskCompletionSource<object>>();
             _worlds = new Dictionary<string, World>();
             _avatars = new Dictionary<int, Avatar>();
-            _users = new Dictionary<int, User>();
+            _cachedUsers = new Dictionary<int, User>();
             _currentCellObjects = new List<VpObject>();
             _queryCellCompletionSources = new List<(Cell cell, TaskCompletionSource<QueryCellResult>)>();
 
@@ -235,30 +235,47 @@ namespace VpNet
         /// <returns>A <see cref="User" /> containing details about the specified user.</returns>
         public async Task<User> GetUserAsync(int userId)
         {
-            if (_users.TryGetValue(userId, out User user))
-                return user;
-            
-            var taskCompletionSource = new TaskCompletionSource<object>();
+            TaskCompletionSource<object> taskCompletionSource;
+            User user;
 
             lock (this)
             {
-                _userCompletionSources.Add(userId, taskCompletionSource);
-                // Functions.vp_int_set(NativeInstanceHandle, IntegerAttribute.ReferenceNumber, referenceNumber);
-                // (may be necessary if the native SDK is ever refactored to use a callback rather than event)
-                int rc = Functions.vp_user_attributes_by_id(NativeInstanceHandle, userId);
-                if (rc != 0)
+                if (_cachedUsers.TryGetValue(userId, out user))
+                    return user;
+
+                if (!_userCompletionSources.TryGetValue(userId, out taskCompletionSource))
                 {
-                    _userCompletionSources.Remove(userId);
-                    throw new VpException((ReasonCode) rc);
+                    taskCompletionSource = new();
+                    _userCompletionSources.Add(userId, taskCompletionSource);
+
+                    // Functions.vp_int_set(NativeInstanceHandle, IntegerAttribute.ReferenceNumber, referenceNumber);
+                    // (may be necessary if the native SDK is ever refactored to use a callback rather than event)
+                    int rc = Functions.vp_user_attributes_by_id(NativeInstanceHandle, userId);
+                    if (rc != 0)
+                    {
+                        _userCompletionSources.Remove(userId);
+                        throw new VpException((ReasonCode)rc);
+                    }
                 }
             }
 
             user = (User) await taskCompletionSource.Task.ConfigureAwait(false);
-            
-            if (_users.ContainsKey(userId)) _users[userId] = user;
-            else _users.Add(userId, user);
+            return user;
+        }
 
-            _userCompletionSources.Remove(userId);
+        public async Task<User> GetCachedUserAsync(int userId)
+        {
+            lock (this)
+            {
+                if (_cachedUsers.TryGetValue(userId, out User cachedUser))
+                    return cachedUser;
+            }
+
+            var user = await GetUserAsync(userId);
+            lock (this)
+            {
+                _cachedUsers[userId] = user;
+            }
             return user;
         }
 

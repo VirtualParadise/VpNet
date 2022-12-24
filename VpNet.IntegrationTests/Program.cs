@@ -18,6 +18,8 @@ await client.LoginAsync(config["Username"], config["Password"], config["BotName"
 await client.EnterAsync(config["World"]);
 client.UpdateAvatar();
 
+await TestGetUserAsync(client);
+
 await TestQuery(client);
 
 await TestBuilding(client);
@@ -36,6 +38,14 @@ void VirtualParadiseClientOnAvatarLeave(VirtualParadiseClient sender, AvatarLeav
 void VirtualParadiseClientOnAvatarEnter(VirtualParadiseClient sender, AvatarEnterEventArgs args)
 {
     sender.ConsoleMessage(args.Avatar, "greetings", $"Welcome to {client.Configuration.World.Name}, {args.Avatar.Name}.");
+}
+
+static async Task TestGetUserAsync(VirtualParadiseClient client)
+{
+    var task1 = client.GetUserAsync(1);
+    var task2 = client.GetUserAsync(1);
+    var user1 = await task1;
+    var user2 = await task2;
 }
 
 static async Task TestQuery(VirtualParadiseClient client)

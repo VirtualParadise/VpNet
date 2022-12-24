@@ -122,7 +122,7 @@ namespace VpNet
 
             if (_userCompletionSources.TryGetValue(userId, out TaskCompletionSource<object> taskCompletionSource))
             {
-                // can't use SetCompletionSource
+                _userCompletionSources.Remove(userId);
                 SetCompletionResult(taskCompletionSource, 0, user);
             }
         }
@@ -271,7 +271,7 @@ namespace VpNet
                 else _avatars.Add(session, avatar);
             }
 
-            avatar.User = await GetUserAsync(userId); // cannot await in lock
+            avatar.User = await GetCachedUserAsync(userId); // cannot await in lock
 
             if (AvatarEntered is null) return;
 
