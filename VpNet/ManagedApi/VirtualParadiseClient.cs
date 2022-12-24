@@ -356,6 +356,7 @@ namespace VpNet
         private void SetCompletionResult(int referenceNumber, int rc, object result)
         {
             var tcs = _objectCompletionSources[referenceNumber];
+            _objectCompletionSources.Remove(referenceNumber);
             SetCompletionResult(tcs, rc, result);
         }
 
