@@ -834,7 +834,7 @@ namespace VpNet
             }
         }
 
-        public virtual void UpdateAvatar(double x = 0.0f, double y = 0.0f, double z = 0.0f,double yaw = 0.0f, double pitch = 0.0f)
+        public virtual void UpdateAvatar(double x = 0.0f, double y = 0.0f, double z = 0.0f,double yaw = 0.0f, double pitch = 0.0f, int type = 0)
         {
             lock (this)
             {
@@ -843,6 +843,7 @@ namespace VpNet
                 Functions.vp_double_set(NativeInstanceHandle, FloatAttribute.MyZ, z);
                 Functions.vp_double_set(NativeInstanceHandle, FloatAttribute.MyYaw, yaw);
                 Functions.vp_double_set(NativeInstanceHandle, FloatAttribute.MyPitch, pitch);
+                Functions .vp_int_set(NativeInstanceHandle, IntegerAttribute.MyType, type);
                 CheckReasonCode(Functions.vp_state_change(NativeInstanceHandle));
 
             }
@@ -853,9 +854,9 @@ namespace VpNet
             UpdateAvatar(position.X, position.Y, position.Z);
         }
 
-        public void UpdateAvatar(Vector3 position, Vector3 rotation)
+        public void UpdateAvatar(Vector3 position, Vector3 rotation, int type = 0)
         {
-            UpdateAvatar(position.X, position.Y, position.Z, rotation.X, rotation.Y);
+            UpdateAvatar(position.X, position.Y, position.Z, rotation.X, rotation.Y, type);
         }
 
         public void AvatarClick(int session)
