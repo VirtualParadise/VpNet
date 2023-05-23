@@ -115,19 +115,33 @@ namespace VpNet
         private static void ReceiveCallback(IAsyncResult ar)
         {
             var connection = ar.AsyncState as Connection;
-            int bytesRead;
+			if (!connection.socket.Connected)
+			{
+				return;
+			}
+
+			int bytesRead;
 
             try
             {
                 bytesRead = connection.socket.EndReceive(ar);
             }
             catch (SocketException e)
-            {
-                connection.Notify(NetworkNotification.Disconnect, e.ErrorCode);
+			{
+				if (connection.vpConnection != IntPtr.Zero)
+				{
+                    connection.Notify(NetworkNotification.Disconnect, e.ErrorCode);
+				}
+				
                 return;
             }
 
-            if (bytesRead < connection.pendingBuffer.Length)
+			if (connection.vpConnection == IntPtr.Zero)
+			{
+				return;
+			}
+
+			if (bytesRead < connection.pendingBuffer.Length)
             {
                 var buffer = new byte[bytesRead];
                 Array.Copy(connection.pendingBuffer, buffer, bytesRead);
@@ -142,18 +156,25 @@ namespace VpNet
             if (connection.vpConnection != IntPtr.Zero)
             {
                 if (bytesRead > 0)
-                {
-                    connection.Notify(NetworkNotification.ReadReady, 0);
+				{
+					connection.Notify(NetworkNotification.ReadReady, 0);
 
-                    try
-                    {
-                        connection.socket.BeginReceive(connection.pendingBuffer, 0, 1024, SocketFlags.None, ReceiveCallback, connection);
-                    }
-                    catch (SocketException e)
-                    {
-                       connection.Notify(NetworkNotification.Disconnect, e.ErrorCode);
-                    }
-                } else
+                    // the connection might be closed in response to the notification
+					if (connection.vpConnection == IntPtr.Zero)
+					{
+						return;
+					}
+
+					try
+					{
+						connection.socket.BeginReceive(connection.pendingBuffer, 0, 1024, SocketFlags.None, ReceiveCallback, connection);
+					}
+					catch (SocketException e)
+					{
+						connection.Notify(NetworkNotification.Disconnect, e.ErrorCode);
+					}
+				}
+				else
                 {
                     connection.Notify(NetworkNotification.Disconnect, 0);
                 }
@@ -189,6 +210,7 @@ namespace VpNet
         public void BeforeDestroy()
         {
             vpConnection = IntPtr.Zero;
+            socket.Close();
         }
 
 
