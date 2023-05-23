@@ -10,7 +10,7 @@ namespace VpNet
     /// <summary>
     ///     Provides a managed API which offers full encapsulation of the native SDK.
     /// </summary>
-    public partial class VirtualParadiseClient
+    public partial class VirtualParadiseClient : IDisposable
     {
         private const string DefaultUniverseHost = "universe.virtualparadise.org";
         private const int DefaultUniversePort = 57000;
@@ -1151,7 +1151,7 @@ namespace VpNet
                 Functions.vp_destroy(NativeInstanceHandle);
             }
             
-            if (_instanceHandle != GCHandle.FromIntPtr(IntPtr.Zero))
+            if (_instanceHandle.IsAllocated)
             {
                 _instanceHandle.Free();
             }
