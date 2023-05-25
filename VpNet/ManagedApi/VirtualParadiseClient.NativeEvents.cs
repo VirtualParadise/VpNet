@@ -582,8 +582,13 @@ namespace VpNet
 
 		private void OnTerrainQueryCallbackNative(IntPtr sender, int rc, int reference)
 		{
-            SetCompletionResult(reference, rc, _currentTerrainNodes.ToArray());
-            _currentTerrainNodes.Clear();
+			SetCompletionResult(reference, rc, _currentTerrainNodes.ToArray());
+			_currentTerrainNodes.Clear();
+		}
+
+		private void OnTerrainNodeSetCallbackNative(IntPtr sender, int rc, int reference)
+		{
+			SetCompletionResult(reference, rc, null);
 		}
 	}
 }

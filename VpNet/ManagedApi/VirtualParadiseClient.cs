@@ -1217,12 +1217,25 @@ namespace VpNet
 			return (TerrainNode[])await tcs.Task.ConfigureAwait(false);
 		}
 
-        public void SetTerrainNode(int tileX, int tileZ, int nodeX, int nodeZ, TerrainCell[,] cells)
-        {
-            lock (this)
+        public async Task SetTerrainNodeAsync(int tileX, int tileZ, int nodeX, int nodeZ, TerrainCell[] cells)
+		{
+            if (cells.Length != 8*8)
             {
-                CheckReasonCode(Functions.vp_terrain_node_set(NativeInstanceHandle, tileX, tileZ, nodeX, nodeZ, cells));
+                throw new ArgumentException("Incorrect number of cells for setting terrain node", nameof(cells));
             }
-        }
-    }
+
+			var tcs = new TaskCompletionSource<object>();
+			lock (this)
+			{
+				var referenceNumber = GetNextReferenceNumber();
+				_objectCompletionSources.Add(referenceNumber, tcs);
+
+				Functions.vp_int_set(NativeInstanceHandle, IntegerAttribute.ReferenceNumber, referenceNumber);
+				CheckReasonCode(Functions.vp_terrain_node_set(NativeInstanceHandle, tileX, tileZ, nodeX, nodeZ, cells));
+			}
+			await tcs.Task.ConfigureAwait(false);
+		}
+		public Task SetTerrainNodeAsync(int tileX, int tileZ, TerrainNode node) => SetTerrainNodeAsync(tileX, tileZ, node.X, node.Z, node.Cells);
+
+	}
 }
