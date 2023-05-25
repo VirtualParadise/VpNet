@@ -573,5 +573,17 @@ namespace VpNet
                 JoinRequestReceived?.Invoke(this, args);
             }
         }
-    }
+
+        private void OnTerrainNodeNative(IntPtr sender)
+        {
+            var node = new TerrainNode(sender);
+            _currentTerrainNodes.Add(node);
+		}
+
+		private void OnTerrainQueryCallbackNative(IntPtr sender, int rc, int reference)
+		{
+            SetCompletionResult(reference, rc, _currentTerrainNodes.ToArray());
+            _currentTerrainNodes.Clear();
+		}
+	}
 }

@@ -1,16 +1,21 @@
 using System;
+using System.Net.NetworkInformation;
+using System.Runtime.InteropServices;
 using VpNet.NativeApi;
 
 namespace VpNet
 {
     public class TerrainNode
     {
-        /// <summary>
-        ///     Initializes a new instance of the <see cref="TerrainNode" /> class.
-        /// </summary>
-        public TerrainNode()
+		private const int TerrainCellDataSize = 8;
+        private const int NodeDataSize = TerrainCellDataSize * 8 * 8;
+
+		/// <summary>
+		///     Initializes a new instance of the <see cref="TerrainNode" /> class.
+		/// </summary>
+		public TerrainNode()
         {
-            Cells = new TerrainCell[8, 8];
+            Cells = new TerrainCell[8 * 8];
         }
 
         /// <summary>
@@ -23,20 +28,26 @@ namespace VpNet
             Z = Functions.vp_int(instanceHandle, IntegerAttribute.TerrainNodeZ);
             Revision = Functions.vp_int(instanceHandle, IntegerAttribute.TerrainNodeRevision);
 
-            var data = Functions.GetData(instanceHandle, DataAttribute.TerrainNodeData);
-            Cells = DataConverters.NodeDataTo2DArray(data);
+            var dataPtr = Functions.vp_data(instanceHandle, DataAttribute.TerrainNodeData, out int dataLength);
+            if (dataLength != NodeDataSize)
+            {
+                throw new ArgumentException("Unexpected data size for terrain node data");
+            }
+
+            var cells = new TerrainCell[8 * 8];
+            for (int i = 0; i < cells.Length; i++)
+            {
+				var cell = Marshal.PtrToStructure<TerrainCell>(dataPtr + TerrainCellDataSize * i);
+				cells[i] = cell;
+            }
+
+            Cells = cells;
         }
 
         /// <summary>
         ///     Gets or sets the cells within this node.
         /// </summary>
-        public TerrainCell[,] Cells { get; set; }
-
-        /// <summary>
-        ///     Gets or sets the parent tile.
-        /// </summary>
-        /// <value>The parent tile.</value>
-        public TerrainTile Parent { get; set; }
+        public TerrainCell[] Cells { get; set; }
 
         /// <summary>
         ///     Gets or sets the tile revision number.
@@ -44,9 +55,15 @@ namespace VpNet
         /// <value>The tile revision number.</value>
         public int Revision { get; set; }
 
+        /// <summary>
+        /// X-coordinate of node within a tile. 0-4.
+        /// </summary>
         public int X { get; set; }
 
-        public int Z { get; set; }
+		/// <summary>
+		/// Z-coordinate of node within a tile. 0-4.
+		/// </summary>
+		public int Z { get; set; }
 
         /// <summary>
         ///     Gets or sets the terrain cell value based on one-dimensional index, in X-major order (e.g. TerrainNode[5] = col 5,
@@ -58,15 +75,11 @@ namespace VpNet
         {
             get
             {
-                var x = i % 8;
-                var z = (i - x) / 8;
-                return this[x, z];
+                return Cells[i];
             }
             set
             {
-                var x = i % 8;
-                var z = (i - x) / 8;
-                this[x, z] = value;
+                Cells[i] = value;
             }
         }
 
@@ -78,8 +91,8 @@ namespace VpNet
         /// <value>The cell at the specified index.</value>
         public TerrainCell this[int x, int z]
         {
-            get => Cells[x, z];
-            set => Cells[x, z] = value;
+            get => Cells[z * 8 + x];
+            set => Cells[z * 8 + x] = value;
         }
     }
 }

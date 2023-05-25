@@ -16,6 +16,10 @@ client.AvatarLeft += VirtualParadiseClientOnAvatarLeave;
 await client.ConnectAsync();
 await client.LoginAsync(config["Username"], config["Password"], config["BotName"]);
 await client.EnterAsync(config["World"]);
+
+var terrainNodes = await client.QueryTerrainAsync(0, 0, new int[4 * 4]);
+Console.WriteLine("Received {0} terrain nodes", terrainNodes.Length);
+
 client.UpdateAvatar();
 
 await TestGetUserAsync(client);

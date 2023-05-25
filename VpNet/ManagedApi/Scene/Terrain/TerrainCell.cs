@@ -1,16 +1,19 @@
+using System.Runtime.InteropServices;
+
 namespace VpNet
 {
-    /// <summary>
-    ///     Represents a terrain cell.
-    /// </summary>
-    public class TerrainCell
+	/// <summary>
+	///     Represents a terrain cell.
+	/// </summary>
+	[StructLayout(LayoutKind.Sequential)]
+	public struct TerrainCell
     {
         /// <summary>
         ///     Gets or sets the height of this terrain cell.
         /// </summary>
         /// <value>The height of this terrain cell.</value>
-        public double Height { get; set; }
-        
+        public float Height;
+
         /// <summary>
         ///     Gets or sets the attributes for this terrain cell. 
         /// </summary>
@@ -19,7 +22,7 @@ namespace VpNet
         /// <seealso cref="IsHole" />
         /// <seealso cref="Rotation" />
         /// <seealso cref="Texture" />
-        public ushort Attributes { get; set; }
+        public ushort Attributes;
 
         /// <summary>
         ///     Gets or sets a value indicating whether this terrain cell is a hole.

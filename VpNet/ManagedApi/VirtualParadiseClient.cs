@@ -26,6 +26,7 @@ namespace VpNet
         private TaskCompletionSource<object> _enterCompletionSource;
         
         private List<VpObject> _currentCellObjects;
+        private List<TerrainNode> _currentTerrainNodes;
         private List<(Cell Cell, TaskCompletionSource<QueryCellResult> CompletionSource)> _queryCellCompletionSources;
 
         private NetConfig _netConfig;
@@ -43,6 +44,7 @@ namespace VpNet
             _avatars = new Dictionary<int, Avatar>();
             _cachedUsers = new Dictionary<int, User>();
             _currentCellObjects = new List<VpObject>();
+            _currentTerrainNodes = new List<TerrainNode>();
             _queryCellCompletionSources = new List<(Cell cell, TaskCompletionSource<QueryCellResult>)>();
 
             InitOnce();
@@ -336,6 +338,7 @@ namespace VpNet
             SetNativeEvent(Events.Teleport, OnTeleportNative);
             SetNativeEvent(Events.UserAttributes, OnUserAttributesNative);
             SetNativeEvent(Events.Join, OnJoinNative);
+            SetNativeEvent(Events.TerrainNode, OnTerrainNodeNative);
             SetNativeCallback(Callbacks.ObjectAdd, OnObjectCreateCallbackNative);
             SetNativeCallback(Callbacks.ObjectChange, OnObjectChangeCallbackNative);
             SetNativeCallback(Callbacks.ObjectDelete, OnObjectDeleteCallbackNative);
@@ -351,9 +354,10 @@ namespace VpNet
             //SetNativeCallback(Callbacks.WorldPermissionUserSet, OnWorldPermissionUserSetCallbackNative);
             //SetNativeCallback(Callbacks.WorldPermissionSessionSet, OnWorldPermissionSessionSetCallbackNative);
             //SetNativeCallback(Callbacks.WorldSettingSet, OnWorldSettingsSetCallbackNative);
+            SetNativeCallback(Callbacks.TerrainQuery, OnTerrainQueryCallbackNative);
         }
 
-        private void SetCompletionResult(int referenceNumber, int rc, object result)
+		private void SetCompletionResult(int referenceNumber, int rc, object result)
         {
             var tcs = _objectCompletionSources[referenceNumber];
             _objectCompletionSources.Remove(referenceNumber);
@@ -1199,13 +1203,19 @@ namespace VpNet
             }
         }
 
-        public void TerrianQuery(int tileX, int tileZ, int[,] nodes)
-        {
-            lock (this)
-            {
-                CheckReasonCode(Functions.vp_terrain_query(NativeInstanceHandle, tileX, tileZ, nodes));
+        public async Task<TerrainNode[]> QueryTerrainAsync(int tileX, int tileZ, int[] nodeRevisions)
+		{
+			var tcs = new TaskCompletionSource<object>();
+			lock (this)
+			{
+				var referenceNumber = GetNextReferenceNumber();
+				_objectCompletionSources.Add(referenceNumber, tcs);
+
+				Functions.vp_int_set(NativeInstanceHandle, IntegerAttribute.ReferenceNumber, referenceNumber);
+				CheckReasonCode(Functions.vp_terrain_query(NativeInstanceHandle, tileX, tileZ, nodeRevisions));
             }
-        }
+			return (TerrainNode[])await tcs.Task.ConfigureAwait(false);
+		}
 
         public void SetTerrainNode(int tileX, int tileZ, int nodeX, int nodeZ, TerrainCell[,] cells)
         {
