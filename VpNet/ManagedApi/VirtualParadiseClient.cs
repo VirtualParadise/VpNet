@@ -355,6 +355,7 @@ namespace VpNet
             //SetNativeCallback(Callbacks.WorldPermissionSessionSet, OnWorldPermissionSessionSetCallbackNative);
             //SetNativeCallback(Callbacks.WorldSettingSet, OnWorldSettingsSetCallbackNative);
             SetNativeCallback(Callbacks.TerrainQuery, OnTerrainQueryCallbackNative);
+            SetNativeCallback(Callbacks.TerrainNodeSet, OnTerrainNodeSetCallbackNative);
         }
 
 		private void SetCompletionResult(int referenceNumber, int rc, object result)
