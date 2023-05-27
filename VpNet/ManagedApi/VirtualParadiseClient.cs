@@ -993,96 +993,51 @@ namespace VpNet
             }
         }
 
-        public virtual void WorldPermissionUser(string permission, int userId, int enable)
+        public virtual void SetUserPermission(string permission, int userId, bool enable)
         {
             lock (this)
             {
-                CheckReasonCode(Functions.vp_world_permission_user_set(NativeInstanceHandle, permission, userId, enable));
+                CheckReasonCode(Functions.vp_world_permission_user_set(NativeInstanceHandle, permission, userId, enable ? 1 : 0));
             }
         }
 
-        public virtual void WorldPermissionUserEnable(WorldPermissions permission, Avatar avatar)
+        public virtual void EnablePermissionForUser(WorldPermissions permission, Avatar avatar)
+        {
+            SetUserPermission(Enum.GetName(typeof(WorldPermissions), permission), avatar.User.Id, true);
+        }
+
+        public virtual void EnablePermissionForUser(WorldPermissions permission, int userId)
+		{
+			SetUserPermission(Enum.GetName(typeof(WorldPermissions), permission), userId, true);
+		}
+
+        public virtual void DisablePermissionForUser(WorldPermissions permission, Avatar avatar)
+		{
+			SetUserPermission(Enum.GetName(typeof(WorldPermissions), permission), avatar.User.Id, false);
+		}
+
+        public virtual void DisablePermissionForUser(WorldPermissions permission, int userId)
+		{
+			SetUserPermission(Enum.GetName(typeof(WorldPermissions), permission), userId, false);
+		}
+
+        public virtual void SetPermissionForSession(string permission, int sessionId, bool enable)
         {
             lock (this)
             {
-                CheckReasonCode(Functions.vp_world_permission_user_set(NativeInstanceHandle, Enum.GetName(typeof(WorldPermissions), permission), avatar.User.Id, 1));
+                CheckReasonCode(Functions.vp_world_permission_session_set(NativeInstanceHandle, permission, sessionId, enable ? 1 : 0));
             }
         }
 
-        public virtual void WorldPermissionUserEnable(WorldPermissions permission, int userId)
-        {
-            lock (this)
-            {
-                CheckReasonCode(Functions.vp_world_permission_user_set(NativeInstanceHandle, Enum.GetName(typeof(WorldPermissions), permission), userId, 1));
-            }
-        }
+		public virtual void EnablePermissionForSession(WorldPermissions permission, Avatar avatar) => SetPermissionForSession(Enum.GetName(typeof(WorldPermissions), permission), avatar.Session, true);
 
-        public virtual void WorldPermissionUserDisable(WorldPermissions permission, Avatar avatar)
-        {
-            lock (this)
-            {
-                CheckReasonCode(Functions.vp_world_permission_user_set(NativeInstanceHandle, Enum.GetName(typeof(WorldPermissions), permission), avatar.User.Id, 0));
-            }
-        }
+		public virtual void EnablePermissionForSession(WorldPermissions permission, int session) => SetPermissionForSession(Enum.GetName(typeof(WorldPermissions), permission), session, true);
 
-        public virtual void WorldPermissionUserDisable(WorldPermissions permission, int userId)
-        {
-            lock (this)
-            {
-                CheckReasonCode(Functions.vp_world_permission_user_set(NativeInstanceHandle, Enum.GetName(typeof(WorldPermissions), permission), userId, 0));
-            }
-        }
+		public virtual void DisablePermissionForSession(WorldPermissions permission, Avatar avatar) => SetPermissionForSession(Enum.GetName(typeof(WorldPermissions), permission), avatar.Session, false);
 
-        public virtual void WorldPermissionSession(string permission, int sessionId, int enable)
-        {
-            lock (this)
-            {
-                CheckReasonCode(Functions.vp_world_permission_session_set(NativeInstanceHandle, permission, sessionId, enable));
-            }
-        }
+		public virtual void DisablePermissionForSession(WorldPermissions permission, int session) => SetPermissionForSession(Enum.GetName(typeof(WorldPermissions), permission), session, false);
 
-        public virtual void WorldPermissionSessionEnable(WorldPermissions permission, Avatar avatar)
-        {
-            lock (this)
-            {
-                CheckReasonCode(Functions.vp_world_permission_user_set(NativeInstanceHandle, Enum.GetName(typeof(WorldPermissions), permission), avatar.Session, 1));
-            }
-        }
-
-        public virtual void WorldPermissionSessionEnable(WorldPermissions permission, int session)
-        {
-            lock (this)
-            {
-                CheckReasonCode(Functions.vp_world_permission_user_set(NativeInstanceHandle, Enum.GetName(typeof(WorldPermissions), permission), session, 1));
-            }
-        }
-
-
-        public virtual void WorldPermissionSessionDisable(WorldPermissions permission, Avatar avatar)
-        {
-            lock (this)
-            {
-                CheckReasonCode(Functions.vp_world_permission_user_set(NativeInstanceHandle, Enum.GetName(typeof(WorldPermissions), permission), avatar.Session, 0));
-            }
-        }
-
-        public virtual void WorldPermissionSessionDisable(WorldPermissions permission, int session)
-        {
-            lock (this)
-            {
-                CheckReasonCode(Functions.vp_world_permission_user_set(NativeInstanceHandle, Enum.GetName(typeof(WorldPermissions), permission), session, 0));
-            }
-        }
-
-        public virtual void WorldSettingSession(string setting, string value, Avatar toAvatar)
-        {
-            lock (this)
-            {
-                CheckReasonCode(Functions.vp_world_setting_set(NativeInstanceHandle, setting, value, toAvatar.Session));
-            }
-        }
-
-        public virtual void WorldSettingSession(string setting, string value, int  toSession)
+		public virtual void SetSettingForSession(string setting, string value, int  toSession)
         {
             lock (this)
             {
@@ -1090,7 +1045,11 @@ namespace VpNet
             }
         }
 
-        public Avatar GetAvatar(int session)
+		public virtual void SetSettingForSession(string setting, string value, Avatar toAvatar) => SetSettingForSession(setting, value, toAvatar.Session);
+
+		public void SetSetting(string setting, string value) => SetSettingForSession(setting, value, 0);
+
+		public Avatar GetAvatar(int session)
         {
             _avatars.TryGetValue(session, out Avatar avatar);
             return avatar;
