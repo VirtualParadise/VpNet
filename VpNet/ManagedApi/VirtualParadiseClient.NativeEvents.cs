@@ -299,7 +299,10 @@ namespace VpNet
                 double pitch = Functions.vp_double(sender, FloatAttribute.AvatarPitch);
                 double yaw = Functions.vp_double(sender, FloatAttribute.AvatarYaw);
 
-                avatar.Name = Functions.vp_string(sender, StringAttribute.AvatarName);
+                var name = Functions.vp_string(sender, StringAttribute.AvatarName);
+                if (!string.IsNullOrEmpty(name)) {
+                    avatar.Name = name;
+                }
                 avatar.AvatarType = Functions.vp_int(sender, IntegerAttribute.AvatarType);
 
                 var location = avatar.Location;
